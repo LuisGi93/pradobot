@@ -114,5 +114,8 @@ build-iPhoneSimulator/
 
 #Ignoro fichero utilizado para testear cambios.
 test*.rb
+
+#Ignoro fichero donde establezco que me falta por hacer
+todo
 .env
 
