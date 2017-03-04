@@ -17,8 +17,8 @@ class BaseDeDatosTest < Test::Unit::TestCase
 
 
     should "Es posible insertar y obtener datos usuarios de telegram correctamente" do
-      @tabla_usuarios_telegram.insert(:id_telegram => 0101, :id_moodle => 0101,
-                                         :nombre_usuario => 'pulgarcito', :fecha_alta => '2012-08-03 15:00:01' )
+      @tabla_usuarios_telegram.insert(:id_telegram => 0101, :email => '0@0.com',
+                                         :fecha_alta => '2012-08-03 15:00:01' )
       assert_equal @db.from(:usuarios_telegram).where(:id_telegram => 0101).all[0][:nombre_usuario], 'pulgarcito'
     end
 
