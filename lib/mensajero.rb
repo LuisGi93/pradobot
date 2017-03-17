@@ -2,9 +2,8 @@
 #!/usr/bin/env ruby
 require 'telegram/bot'
 require 'sequel'
-require_relative 'manejadores/manejador_mensajes_administrador'
 require_relative 'manejadores/manejador_mensajes_profesor'
-require_relative '../lib/Mensaje'
+require_relative '../lib/mensaje'
 class Mensajero
 
   attr_reader :token

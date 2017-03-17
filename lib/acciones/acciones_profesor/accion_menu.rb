@@ -1,6 +1,6 @@
-require_relative '../accion.rb'
+require_relative '../accion_profesor'
 
-class AccionMenu < Accion
+class AccionMenu < AccionProfesor
 
   def initialize
     super
