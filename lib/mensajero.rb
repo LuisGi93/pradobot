@@ -32,6 +32,7 @@ class Mensajero
   def empezar
     @bot.run(@token_bot_telegram) do |botox|
       Accion.establecer_bot(botox)
+      Accion.establecer_db(@db)
       botox.listen do |message|
         begin
 

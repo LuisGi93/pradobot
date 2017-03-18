@@ -1,15 +1,15 @@
+require 'sequel'
 
 class Accion
   @@bot=nil
+  @@db=nil
   @nombre="Accion"
-  def initialize
-    @db=Sequel.connect(ENV['URL_DATABASE'])
-  end
 
   def recibir_mensaje(mensaje)
     raise NotImplementedError.new
   end
-  def ejecutar()
+
+  def ejecutar(id_telegram)
     raise NotImplementedError.new
   end
 
@@ -21,6 +21,10 @@ class Accion
 
   def self.establecer_bot bot
     @@bot=bot
+  end
+
+  def self.establecer_db db
+    @@db=db
   end
 
   private_class_method :new

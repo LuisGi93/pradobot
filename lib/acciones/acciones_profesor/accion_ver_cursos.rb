@@ -7,7 +7,7 @@ class AccionVerCursos< AccionProfesor
     @accion_padre=accion_padre
   end
 
-  def ejecutar(mensaje)
+  def ejecutar(id_telegram)
 
   end
 
