@@ -12,8 +12,6 @@ class Mensajero
     @bot=Telegram::Bot::Client;
     @token_bot_telegram=token
     @db=Sequel.connect(ENV['URL_DATABASE'])
-   # @manejador_mensajes_administrador=ManejadorMensajesAdministrador.new
-   #@manejador_mensajes_desconocido=ManejadorMensajesDesconocido.new
     @manejador_mensajes_profesor=ManejadorMensajesProfesor.new
 
   end
@@ -35,32 +33,22 @@ class Mensajero
       Accion.establecer_db(@db)
       botox.listen do |message|
         begin
-
           mensaje=Mensaje.new(message)
           id_telegram=mensaje.obtener_identificador_telegram
           tipo_usuario=obtener_tipo_usuario(id_telegram)
+          puts tipo_usuario
 
           case tipo_usuario
-
             when "desconocido"
 
-              #Manejador de mesnajes de desconocido, dar de alta desconocido
-              #botox.api.send_message(chat_id: message.chat.id, text: 'Usuario desconocido contacte con el administrados: nanana@email.com')
-              #@manejador_mensajes_profesor.recibir_mensaje(message,botox)
             when "administrador"
-          #botox.api.send_message(chat_id: message.chat.id, text: 'Eres el admin')
 
-          #@manejador_mensajes_administrador.recibir_mensaje(message, botox)
-          when "profesor"
-          botox.api.send_message(chat_id: message.chat.id, text: 'Usuario profesor')
+            when "profesor"
+              @manejador_mensajes_profesor.recibir_mensaje(mensaje,botox)
 
-          @manejador_mensajes_profesor.recibir_mensaje(mensaje,botox)
+            when "alumno"
 
-          when "alumno"
-          #botox.api.send_message(chat_id: message.chat.id, text: 'Usuario alumno')
-
-          else
-          #botox.api.send_message(chat_id: message.chat.id, text: 'Usuario desconocido contacte con el administrados: nanana@email.com')
+            else
 
 
           end

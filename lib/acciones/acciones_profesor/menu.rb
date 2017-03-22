@@ -1,56 +1,48 @@
 require_relative '../accion'
 
 class Menu < Accion
+  attr_reader :tipo
 
   @acciones=nil
+  def initialize
+    @accion_pulsada=nil
+    @tipo=nil
+  end
+
+  def inicializar_acciones
+    raise NotImplementedError.new
+  end
+  def cambiar_curso(curso)
+    raise NotImplementedError.new
+  end
 
   def ejecutar(id_telegram)
     kb= Array.new
     @acciones.keys.each{
         |accion|
-
       kb <<   Telegram::Bot::Types::KeyboardButton.new( text: accion, )
     }
+    iniciar_acciones_defecto(kb)
+
     markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: kb)
-    @@bot.api.send_message( chat_id: id_telegram, text: 'Elija que quiere hacer',  reply_markup: markup)
+    @@bot.api.send_message( chat_id: id_telegram, text: "Elija entre las acciones del menu",  reply_markup: markup)
     return self
   end
 
   def accion_pulsada id_telegram,datos_mensaje
-    accion=@acciones[datos_mensaje]
-    if accion
-      kb = Telegram::Bot::Types::ReplyKeyboardRemove.new(remove_keyboard: true)
-      @@bot.api.send_message(chat_id: id_telegram, text: datos_mensaje, reply_markup: kb)
-    end
-    return accion
+    raise NotImplementedError.new
   end
 
   def obtener_siguiente_accion(id_telegram, datos_mensaje)
-    siguiente_accion=nil
-    if datos_mensaje== "Atras" && @accion_padre
-      siguiente_accion=@accion_padre
-    else
-      siguiente_accion=accion_pulsada(id_telegram,datos_mensaje)
-
-      if siguiente_accion.nil?
-        siguiente_accion=self
-      end
-    end
-    return siguiente_accion
+    raise NotImplementedError.new
   end
 
-  def recibir_mensaje(mensaje)
 
-    id_telegram=mensaje.obtener_identificador_telegram
-    datos_mensaje=mensaje.obtener_datos_mensaje
-
-
-    siguiente_accion=obtener_siguiente_accion(id_telegram, datos_mensaje)
-
-    siguiente_accion.ejecutar(id_telegram)
-
-    return siguiente_accion
+  def iniciar_acciones_defecto kb
+    kb <<   Telegram::Bot::Types::KeyboardButton.new( text: "Cambiar curso. Curso actual: #{@curso}", )
+    kb <<   Telegram::Bot::Types::KeyboardButton.new( text: "Atras", )
   end
+
 
   public_class_method :new
 end

@@ -26,7 +26,14 @@ end
 db.create_table! :tokens_tipo_usuario_moodle do
   String      :tipo_usuario
   String      :nombre_rol_moodle
-  String      :id_rol_moodle
+  Integer      :id_rol_moodle
   String      :token_moodle
+end
+
+db.create_table! :cursos do
+  String      :nombre_curso
+  Integer     :id_curso_moodle
+  Integer     :id_telegram_profesor_responsable
+  String     :nombre_chat_telegram
 end
 

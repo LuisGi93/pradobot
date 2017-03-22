@@ -5,11 +5,8 @@ class Mensaje
   end
   def obtener_identificador_telegram()
     tipo_mensaje = @mensaje.class
-    if (tipo_mensaje == Telegram::Bot::Types::CallbackQuery)
-      id_telegram= @mensaje.message.from.id
-    elsif (tipo_mensaje == Telegram::Bot::Types::Message)
-      id_telegram=@mensaje.from.id
-    end
+    id_telegram= @mensaje.from.id
+
   end
 
   def obtener_identificador_mensaje()
@@ -23,9 +20,10 @@ class Mensaje
 
   def obtener_datos_mensaje()
     tipo_mensaje = @mensaje.class
-
-    if (tipo_mensaje == Telegram::Bot::Types::Message)
-      return @mensaje.text
+    if (tipo_mensaje == Telegram::Bot::Types::CallbackQuery)
+      datos_mensaje= @mensaje.data
+    elsif (tipo_mensaje == Telegram::Bot::Types::Message)
+      datos_mensaje= @mensaje.text
     end
   end
 end
