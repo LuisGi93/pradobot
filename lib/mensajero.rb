@@ -3,7 +3,9 @@
 require 'telegram/bot'
 require 'sequel'
 require_relative 'manejadores/manejador_mensajes_profesor'
+require_relative 'manejadores/manejador_mensajes_grupales'
 require_relative '../lib/mensaje'
+
 class Mensajero
 
   attr_reader :token
@@ -13,7 +15,7 @@ class Mensajero
     @token_bot_telegram=token
     @db=Sequel.connect(ENV['URL_DATABASE'])
     @manejador_mensajes_profesor=ManejadorMensajesProfesor.new
-
+    @manejador_mensajes_grupales=ManejadorMensajesGrupales.new(@db)
   end
 
 
@@ -28,44 +30,46 @@ class Mensajero
   end
 
   def mensajes_chats_grupo mensaje
-
+     @manejador_mensajes_grupales.recibir_mensaje(mensaje)
   end
 
   def mensajes_chats_privados mensaje
+    tipo_usuario=obtener_tipo_usuario(id_telegram)
+    case tipo_usuario
+      when "desconocido"
 
+      when "administrador"
+
+      when "profesor"
+        @manejador_mensajes_profesor.recibir_mensaje(mensaje)
+
+      when "alumno"
+
+      else
+
+
+    end
   end
 
   def empezar
     @bot.run(@token_bot_telegram) do |botox|
       Accion.establecer_bot(botox)
       Accion.establecer_db(@db)
+      @manejador_mensajes_grupales.establecer_bot(botox)
       botox.listen do |message|
         begin
           mensaje=Mensaje.new(message)
-          id_telegram=mensaje.obtener_identificador_telegram
-          tipo_usuario=obtener_tipo_usuario(id_telegram)
-          puts tipo_usuario
-
-          case tipo_usuario
-            when "desconocido"
-
-            when "administrador"
-
-            when "profesor"
-              @manejador_mensajes_profesor.recibir_mensaje(mensaje,botox)
-
-            when "alumno"
-
-            else
-
-
+          tipo_chat= mensaje.obtener_tipo_chat
+          puts "tipo_chat #{tipo_chat}"
+          if tipo_chat == "privado"
+            mensajes_chats_privados(mensaje)
+          elsif tipo_chat == "grupal"
+            mensajes_chats_grupo(mensaje)
           end
-
-
         end
-    end
-
       end
+
+    end
   end
 
 

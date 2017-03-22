@@ -12,7 +12,7 @@ class ManejadorMensajesProfesor
     @profesores=Hash.new
   end
 
-  def recibir_mensaje(mensaje,bot)
+  def recibir_mensaje(mensaje)
     id_telegram=mensaje.obtener_identificador_telegram
     accion=@profesores[id_telegram]
     puts "se va a ejecutar #{accion}"
