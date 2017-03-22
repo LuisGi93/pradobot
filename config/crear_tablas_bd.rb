@@ -34,6 +34,8 @@ db.create_table! :cursos do
   String      :nombre_curso
   Integer     :id_curso_moodle
   Integer     :id_telegram_profesor_responsable
-  String     :nombre_chat_telegram
+  String      :nombre_chat_telegram
+  Integer     :id_chat_telegram
+
 end
 

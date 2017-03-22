@@ -27,6 +27,14 @@ class Mensajero
 
   end
 
+  def mensajes_chats_grupo mensaje
+
+  end
+
+  def mensajes_chats_privados mensaje
+
+  end
+
   def empezar
     @bot.run(@token_bot_telegram) do |botox|
       Accion.establecer_bot(botox)
