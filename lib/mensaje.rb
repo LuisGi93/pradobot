@@ -19,6 +19,7 @@ class Mensaje
   end
 
   def obtener_datos_mensaje()
+    puts "El tipo de mensaje es #{@tipo_mensaje}"
     if (@tipo_mensaje == Telegram::Bot::Types::CallbackQuery)
       datos_mensaje= @mensaje.data
     elsif (@tipo_mensaje == Telegram::Bot::Types::Message)
@@ -32,7 +33,7 @@ class Mensaje
     elsif (@tipo_mensaje == Telegram::Bot::Types::Message)
       tipo_chat=@mensaje.chat.type
     end
-    if tipo_chat == "group" || tipo_chat == "supergroup" || "channel"
+    if tipo_chat == "group" || tipo_chat == "supergroup" || tipo_chat =="channel"
       return "grupal"
     else
       return "privado"

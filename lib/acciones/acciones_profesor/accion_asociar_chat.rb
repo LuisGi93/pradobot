@@ -43,7 +43,7 @@ class AccionAsociarChat< AccionProfesor
 
     case @fase
       when 'inicio'
-          @@bot.api.send_message( chat_id: @id_telegram, text: "Introduzca el nombre del chat al cual quiere asociar *#{}*", parse_mode: 'Markdown')
+          @@bot.api.send_message( chat_id: @id_telegram, text: "Introduzca el nombre del chat al cual quiere asociar *#{@curso}*", parse_mode: 'Markdown')
           @fase='peticion_nombre_chat'
       when 'peticion_nombre_chat'
         asociar_chat_curso(datos_mensaje, @curso)
@@ -57,7 +57,7 @@ class AccionAsociarChat< AccionProfesor
   end
 
   def obtener_cursos_profesor
-    cursos_profesor= @@db[:cursos].where(:id_telegram_profesor_responsable => @id_telegram).to_a
+    cursos_profesor= @@db[:cursos].where(:id_telegram_profesor => @id_telegram).to_a
   end
 
 

@@ -82,7 +82,7 @@ class AccionVerCursos< AccionProfesor
   end
 
   def obtener_cursos_profesor
-    cursos_profesor= @@db[:cursos].where(:id_telegram_profesor_responsable => @id_telegram).to_a
+    cursos_profesor= @@db[:cursos].where(:id_telegram_profesor => @id_telegram).to_a
   end
 
 

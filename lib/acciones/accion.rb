@@ -14,7 +14,7 @@ class Accion
 
   def introduce_nuevo_grupo id_telegram
     kb = Array.new
-    cursos=@@db[:cursos].where(:id_telegram_profesor_responsable => id_telegram).to_a
+    cursos=@@db[:cursos].where(:id_telegram_profesor => id_telegram).to_a
 
     if cursos
       cursos.each{|curso|
