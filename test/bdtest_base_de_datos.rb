@@ -13,6 +13,17 @@ class BaseDeDatosTest < Test::Unit::TestCase
       @tabla_usuarios_moodle=@db.from(:usuarios_moodle)
       @db.from(:usuarios_telegram).where(:id_telegram => 0101).delete
       @db.from(:usuarios_moodle).where(:id_moodle => 1010101).delete
+
+
+
+
+      @db=Sequel.connect(ENV['URL_DATABASE']+'/bd_prueba')
+
+      @db.from(:usuarios).insert(:tipo_usuario => 'profesor_bot', :email => 'email@email.com')
+      @db.from(:usuarios).insert(:tipo_usuario => 'alumno_bot',  :email => 'email2@email2.com')
+
+      @db.from(:usuarios_telegram).insert(:id_telegram => 11111, :nombre_usuario => 'usuario1111', :email => 'email@email.com')
+      @db.from(:usuarios_telegram).insert(:id_telegram => 22222, :nombre_usuario => 'usuario2222', :email => 'email2@email2.com')
     end
 
 

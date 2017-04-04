@@ -77,7 +77,6 @@ DEPENDENCIES
   pg
   rake
   rspec
-  rspec-mocks
   sequel
   shoulda
   telegram-bot-ruby

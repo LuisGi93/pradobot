@@ -23,8 +23,11 @@ class Mensajero
   end
 
 
+  private
+
+
   def obtener_tipo_usuario(id_telegram)
-    usuario_moodle= @db[:usuarios_bot].where(:id_telegram => id_telegram).select(:rol_usuario).to_a
+    usuario= @db[:usuario_telegram].where(:id_telegram => id_telegram).select(:rol_usuario).to_a
     if usuario_moodle.empty?
       tipo_usuario="desconocido"
     else
@@ -56,6 +59,8 @@ class Mensajero
     end
   end
 
+  public
+
   def empezar
     @bot.run(@token_bot_telegram) do |botox|
       Accion.establecer_bot(botox)
@@ -74,14 +79,6 @@ class Mensajero
         end
       end
 
-    end
-  end
-
-
-
-  def validez_token
-    @bot.run(@token) do |botox|
-      return botox.api.get_me
     end
   end
 

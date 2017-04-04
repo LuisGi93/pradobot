@@ -1,4 +1,6 @@
-require_relative '../accion'
+require_relative 'accion'
+require 'telegram/bot'
+
 
 class Menu < Accion
   attr_reader :tipo
@@ -45,4 +47,6 @@ class Menu < Accion
 
 
   public_class_method :new
+  private :inicializar_acciones
+
 end

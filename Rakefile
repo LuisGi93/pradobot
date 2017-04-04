@@ -1,4 +1,5 @@
 require 'rake/testtask'
+require 'rspec/core/rake_task'
 require_relative 'config/crear_tablas_bd'
 require 'sequel'
 
@@ -39,6 +40,20 @@ namespace :tasks do
 
     end
 
+  end
+
+  namespace :tests do
+    desc "Tests sobre clases que no se utiliza la bd."
+    Rake::TestTask.new :tests_no_bd do |t|
+        t.test_files = FileList['test/test_mensaje.rb']
+        t.verbose = false
+        t.warning = false
+    end
+    RSpec::Core::RakeTask.new(:spec) do |t|
+      t.pattern = Dir.glob('test/test_menu_acciones.rb')
+      t.rspec_opts = '--format documentation'
+# t.rspec_opts << ' more options'
+    end
   end
 end
 

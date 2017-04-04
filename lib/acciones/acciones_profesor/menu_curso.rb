@@ -1,5 +1,5 @@
 require_relative 'accion_ver_cursos'
-require_relative 'menu_acciones'
+require_relative '../menu_acciones'
 
 
 class MenuCurso < MenuDeAcciones

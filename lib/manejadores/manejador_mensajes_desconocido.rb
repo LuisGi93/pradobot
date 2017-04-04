@@ -4,7 +4,6 @@ require_relative '../acciones/accion_inicializar_desconocido'
 class ManejadorMensajesDesconocido
 
   def initialize()
-
     @desconocidos=Hash.new
   end
 

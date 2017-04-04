@@ -1,5 +1,5 @@
 require_relative  'accion_asociar_chat'
-require_relative 'menu_acciones'
+require_relative '../menu_acciones'
 
 
 class MenuChat < MenuDeAcciones

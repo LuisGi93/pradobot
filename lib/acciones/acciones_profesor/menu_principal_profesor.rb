@@ -1,8 +1,7 @@
 
 require_relative 'menu_curso'
 require_relative 'menu_chat'
-require_relative 'menu_de_menus'
-require_relative 'accion_elegir_curso'
+require_relative '../menu_de_menus'
 class MenuPrincipalProfesor < MenuDeMenus
 
   def initialize
