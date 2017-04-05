@@ -33,7 +33,7 @@ namespace :tasks do
 
       desc "Borramos la base de datos"
       task :destruir  do
-        db=Sequel.connect(ENV['URL_DATABASE'])
+        db=Sequel.connect(ENV['URL_DATABASE']+'/bd_prueba')
         db.run "DROP DATABASE bd_prueba"
         db.disconnect
       end
