@@ -11,7 +11,7 @@ class MenuChat < MenuDeAcciones
   end
 
   def inicializar_acciones
-    @acciones[AccionAsociarChat.nombre] = AccionAsociarChat.new(@accion_padre)
+    @acciones[AccionAsociarChat.nombre] = AccionAsociarChat.new()
   end
   private :inicializar_acciones
 

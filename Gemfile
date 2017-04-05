@@ -8,5 +8,6 @@ gem 'rspec'
 gem 'telegram-bot-ruby'
 gem 'json'
 gem 'rspec'
+gem 'webmock'
       # for rspec-core, rspec-expectations, rspec-mocks
 

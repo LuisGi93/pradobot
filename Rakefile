@@ -50,7 +50,7 @@ namespace :tasks do
         t.warning = false
     end
     RSpec::Core::RakeTask.new(:spec) do |t|
-      t.pattern = Dir.glob('test/test_menu_acciones.rb')
+      t.pattern = Dir.glob('test/test_borrame.rb')
       t.rspec_opts = '--format documentation'
 # t.rspec_opts << ' more options'
     end

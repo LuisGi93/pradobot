@@ -3,11 +3,10 @@ require 'active_support/inflector'
 class AccionAsociarChat< AccionProfesor
 
   @nombre='Asociar chat curso'
-  def initialize accion_padre
+  def initialize
     @fase='inicio'
     @datos=Hash.new
     @id_telegram=nil
-    @accion_padre=accion_padre
   end
 
   def establecer_id_telegram(id_telegram)

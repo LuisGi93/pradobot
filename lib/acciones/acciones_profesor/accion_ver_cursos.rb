@@ -3,13 +3,14 @@ require_relative 'accion_profesor'
 class AccionVerCursos< AccionProfesor
 
   @nombre='Ver cursos'
-  def initialize accion_padre
+  def initialize
     @estado='inicio'
     @id_telegram=nil
-    @accion_padre=accion_padre
   end
 
-  def establecer_id_telegram(id_telegram)
+  def establecer_id_telegram(id_telegram)   #Me parece a mi que lo mas simple es crear una clase entrega, otra curso, otra tutoria y asi y a lo mejor aislar la llamda a las apis.
+                                            #Las acciones filtran el input del usuario y descubren haber que quieren y se la solicitan a las subacciones.
+    #Usuario quiero tal, la accion dilucida que quiere y le pide esto a la subaccion, la subaccion habla con moodle y la accion con el usuario.
     @id_telegram=id_telegram
   end
 
