@@ -5,6 +5,7 @@ require 'sequel'
 require_relative 'manejadores/manejador_mensajes_profesor'
 require_relative 'manejadores/manejador_mensajes_grupales'
 require_relative 'manejadores/manejador_mensajes_desconocido'
+require_relative 'manejadores/manejador_mensajes_estudiante'
 
 require_relative '../lib/mensaje'
 
@@ -17,6 +18,7 @@ class Mensajero
     @token_bot_telegram=token
     @db=Sequel.connect(ENV['URL_DATABASE'])
     @manejador_mensajes_profesor=ManejadorMensajesProfesor.new
+    @manejador_mensajes_estudiante=ManejadorMensajesEstudiante.new(@db)
     @manejador_mensajes_desconocido=ManejadorMensajesDesconocido.new
     @manejador_mensajes_grupales=ManejadorMensajesGrupales.new(@db)     #Puedo tener una clase hitos donde se guarden como cache todos los hitos de la asingatura y cuando se le pregutne al bot
                                                                       #por algun hito guarde todos los hitos para el curso tal y los borre a los 5 minutos.
@@ -27,12 +29,25 @@ class Mensajero
 
 
   def obtener_tipo_usuario(id_telegram)
-    usuario= @db[:usuario_telegram].where(:id_telegram => id_telegram).select(:rol_usuario).to_a
-    if usuario_moodle.empty?
-      tipo_usuario="desconocido"
-    else
-      tipo_usuario=usuario_moodle[0][:rol_usuario]
+    usuario= @db[:usuario_telegram].where(:id_telegram => id_telegram).first
+    tipo_usuario="desconocido"
+    if usuario
+      es_profesor=@db[:profesor].where(:id_telegram => id_telegram).first
+      if es_profesor
+        tipo_usuario='profesor'
+      else
+        es_estudiante=@db[:estudiante].where(:id_telegram => id_telegram).first
+        if es_estudiante
+          tipo_usuario='estudiante'
+        else
+          es_admin=@db[:admin].where(:id_telegram => id_telegram).first
+            if es_admin
+              tipo_usuario='admin'
+            end
+        end
+      end
     end
+    return tipo_usuario
 
   end
 
@@ -48,11 +63,13 @@ class Mensajero
     case tipo_usuario
       when "desconocido"
         @manejador_mensajes_desconocido.recibir_mensaje(mensaje)
-      when "profesor_bot"
+      when "profesor"
         @manejador_mensajes_profesor.recibir_mensaje(mensaje)
 
-      when "alumno_bot"
+      when "estudiante"
+        @manejador_mensajes_estudiante.recibir_mensaje(mensaje)
 
+      when "admin"
       else
 
 

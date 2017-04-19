@@ -15,13 +15,17 @@ class Mensaje
 
   def obtener_identificador_mensaje()
     if (@tipo_mensaje == Telegram::Bot::Types::CallbackQuery)
-      @id_telegram= @mensaje.message.message_id
+      @id_telegram= @mensaje.id
     elsif (@tipo_mensaje == Telegram::Bot::Types::Message)
       @id_telegram=@mensaje.message_id
     end
   end
 
-  def obtener_datos_mensaje()
+  def obtener_nombre_usuario
+      nombre=@mensaje.from.first_name+@mensaje.from.last_name
+  end
+
+  def obtener_datos_mensaje
     puts "El tipo de mensaje es #{@tipo_mensaje}"
     if (@tipo_mensaje == Telegram::Bot::Types::CallbackQuery)
       @datos_mensaje= @mensaje.data

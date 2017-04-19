@@ -1,6 +1,6 @@
-require_relative 'accion_profesor'
+require_relative '../accion'
 
-class AccionVerCursos< AccionProfesor
+class AccionVerCursos< Accion
 
   @nombre='Ver cursos'
   def initialize

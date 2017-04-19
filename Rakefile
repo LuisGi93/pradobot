@@ -43,14 +43,8 @@ namespace :tasks do
   end
 
   namespace :tests do
-    desc "Tests sobre clases que no se utiliza la bd."
-    Rake::TestTask.new :tests_no_bd do |t|
-        t.test_files = FileList['test/test_mensaje.rb']
-        t.verbose = false
-        t.warning = false
-    end
     RSpec::Core::RakeTask.new(:spec) do |t|
-      t.pattern = Dir.glob('test/test_borrame.rb')
+      t.pattern = Dir.glob('test/test_*.rb')
       t.rspec_opts = '--format documentation'
 # t.rspec_opts << ' more options'
     end
@@ -60,4 +54,6 @@ end
 
 
 desc "Ejecutamos los test sobre la base de datos"
-task :test => ['tasks:db:test:crear', 'tasks:db:test:tests_bd', 'tasks:db:test:destruir' ]
+task :testbd => ['tasks:db:test:crear', 'tasks:db:test:tests_bd', 'tasks:db:test:destruir' ]
+
+task :test => ['tasks:tests:spec' ]

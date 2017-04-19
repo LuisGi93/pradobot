@@ -3,7 +3,7 @@ require_relative '../menu_acciones'
 
 
 class MenuChat < MenuDeAcciones
-  @nombre= 'Chat Telegram'
+  @nombre= 'Chats asociados cursos'
   def initialize accion_padre
     @accion_padre=accion_padre
     @acciones=Hash.new
