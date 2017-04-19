@@ -57,3 +57,5 @@ desc "Ejecutamos los test sobre la base de datos"
 task :testbd => ['tasks:db:test:crear', 'tasks:db:test:tests_bd', 'tasks:db:test:destruir' ]
 
 task :test => ['tasks:tests:spec' ]
+
+task :default => :test
