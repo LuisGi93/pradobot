@@ -1,39 +1,97 @@
-require 'sequel'
+
+def crear_tablas db
+
+  db.create_table! :curso do
+    primary_key :id_moodle, :type => 'integer'
+    String      :nombre_curso
+  end
+
+  db.create_table! :chat_telegram do
+    Integer :id_chat
+    primary_key      :nombre_chat, :type => 'varchar(100)'
+  end
 
 
-db = Sequel.connect(ENV['URL_DATABASE'])
+  db.create_table! :chat_curso do
+    foreign_key :nombre_chat_telegram, :chat_telegram, :key => 'nombre_chat', :type => 'varchar(100)',:on_delete => :cascade, :on_update => :cascade
+    foreign_key :id_moodle_curso, :curso, :key => 'id_moodle', :on_delete => :cascade, :on_update => :cascade
+    primary_key [:nombre_chat_telegram, :id_moodle_curso]
+  end
 
-db.create_table! :usuarios_moodle do
-  primary_key :id
-  String      :nombre,      :size => 255
-  String      :apellidos,   :size => 510
-  String      :email,       :size => 765
-  String      :contraseña,    :size => 255
-  String      :tipo_usuario
-  DateTime    :fecha_alta
-  Integer     :id_moodle
+
+  db.create_table! :usuario_telegram do
+    String      :nombre_usuario
+    primary_key :id_telegram, :type => 'integer'
+  end
+
+
+  db.create_table! :estudiante do
+    foreign_key :id_telegram, :usuario_telegram, :on_delete => :cascade, :on_update => :cascade, :primary_key => true
+    Column    :email,  :type => 'varchar(100)', :unique  => true
+  end
+
+  db.create_table! :profesor do
+    foreign_key :id_telegram, :usuario_telegram, :on_delete => :cascade, :on_update => :cascade, :primary_key => true
+    Column     :email, :type => 'varchar(100)', :unique  => true
+  end
+
+  db.create_table! :estudiante_curso do
+    foreign_key :id_estudiante, :estudiante, :on_delete => :cascade, :on_update => :cascade
+    foreign_key :id_moodle_curso, :curso, :on_delete => :cascade, :on_update => :cascade
+    primary_key [:id_estudiante, :id_moodle_curso]
+  end
+
+  db.create_table! :profesor_curso do
+    foreign_key :id_profesor, :profesor, :on_delete => :cascade, :on_update => :cascade
+    foreign_key :id_moodle_curso, :curso, :on_delete => :cascade, :on_update => :cascade
+    primary_key [:id_profesor, :id_moodle_curso]
+  end
+
+
+  db.create_table! :admin do
+    foreign_key :id_telegram, :usuario_telegram, :on_delete => :cascade, :on_update => :cascade, :primary_key => true
+    String      :nombre_usuario
+
+  end
+
+
+  db.create_table! :estudiante_moodle do
+    foreign_key :email, :estudiante, :key =>  'email', :type => 'varchar(100)', :on_delete => :cascade, :on_update => :cascade, :primary_key => true
+    Integer :id_moodle
+    String      :token
+  end
+
+  db.create_table! :profesor_moodle do
+    foreign_key :email, :profesor, :key =>  'email', :type => 'varchar(100)', :on_delete => :cascade, :on_update => :cascade, :primary_key => true
+    Integer :id_moodle
+    String      :token
+  end
+
+
+  db.create_table! :dudas do
+    foreign_key :id_estudiante, :estudiante, :type => 'integer', :on_delete => :cascade, :on_update => :cascade
+    foreign_key :id_moodle_curso, :curso, :type => 'integer', :on_delete => :cascade, :on_update => :cascade
+    String      :contenido
+    primary_key [:id_estudiante, :contenido]
+  end
+
+
+
+  db.create_table! :tutoria do
+    foreign_key :id_profesor, :profesor, :key => 'id_telegram', :on_delete => :cascade, :on_update => :cascade
+    String     :dia_semana_hora, :unique => true
+    primary_key [:id_profesor, :dia_semana_hora]
+  end
+
+  db.create_table! :peticion_tutoria do
+    foreign_key :id_profesor, :profesor, :on_delete => :cascade, :on_update => :cascade
+    foreign_key :id_estudiante, :estudiante, :on_delete => :cascade, :on_update => :cascade
+    foreign_key :dia_semana_hora, :tutoria, :key => 'dia_semana_hora', :type => 'varchar(100)', :on_delete => :cascade, :on_update => :cascade
+    DateTime    :hora_solicitud
+    primary_key [:id_profesor, :id_estudiante, :dia_semana_hora]
+  end
+
+
+
+
 end
-
-db.create_table! :usuarios_telegram do
-  Integer     :id_telegram
-  String      :email,       :size => 765
-  primary_key :id
-  String      :tipo_usuario             #duplicado pero agiliza la consulta del tipo de usuario cuando llega mensaje al bot
-  DateTime    :fecha_alta
-end
-
-
-db.create_table! :tokens_tipo_usuario_moodle do
-  String      :tipo_usuario
-  String      :nombre_rol_moodle
-  Integer      :id_rol_moodle
-  String      :token_moodle
-end
-
-db.create_table! :cursos do
-  String      :nombre_curso
-  Integer     :id_curso_moodle
-  Integer     :id_telegram_profesor_responsable
-  String     :nombre_chat_telegram
-end
-

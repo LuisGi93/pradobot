@@ -7,5 +7,7 @@ gem 'shoulda'
 gem 'rspec'
 gem 'telegram-bot-ruby'
 gem 'json'
-gem 'rspec-mocks'
+gem 'rspec'
+gem 'webmock'
+      # for rspec-core, rspec-expectations, rspec-mocks
 

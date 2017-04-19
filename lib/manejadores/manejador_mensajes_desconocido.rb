@@ -1,25 +1,22 @@
 
-require_relative '../procesadores_entradas/procesador_entradas_profesor'
-require_relative '../usuarios/profesor'
-require_relative '../estado/profesor'
+require_relative '../acciones/accion_inicializar_desconocido'
 
 class ManejadorMensajesDesconocido
 
   def initialize()
-    @estado_usuarios_profesor=EstadoProfesor.new
-    @desconocido=Desconocido.new(@estado_usuarios_profesor)
+    @desconocidos=Hash.new
   end
 
-  def recibir_mensaje(mensaje,bot)
-
-    #estado_admin=@estado_usuarios_administrador.obtener_estado_actual(mensaje.from.id)
-
-    if(false)
-
+  def recibir_mensaje(mensaje)
+    id_telegram=mensaje.obtener_identificador_telegram
+    accion=@desconocidos[id_telegram]
+    if accion
+      @desconocidos[id_telegram]=accion.recibir_mensaje(mensaje)
     else
-      @desconocido.inicializar_usuario(mensaje, bot)
-
+      @desconocidos[id_telegram]=AccionInicializarDesconocido.new()
+      @desconocidos[id_telegram].ejecutar(id_telegram)
     end
+
   end
 
 end
