@@ -87,8 +87,8 @@ def crear_tablas db
   db.create_table! :peticion_tutoria do
     Integer :id_profesor
     foreign_key :id_estudiante, :estudiante, :on_delete => :cascade, :on_update => :cascade
-    String :dia_semana, :unique=>true
-    Time :hora, :unique=>true
+    String :dia_semana
+    Time :hora
     DateTime    :hora_solicitud
     primary_key [:id_profesor, :id_estudiante, :dia_semana, :hora]
     foreign_key [:dia_semana, :hora, :id_profesor], :tutoria, :on_delete => :cascade, :on_update => :cascade

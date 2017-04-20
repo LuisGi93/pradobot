@@ -3,7 +3,7 @@ require_relative '../menu_acciones'
 
 
 class MenuTutorias < MenuDeAcciones
-  @nombre= 'Tutorias.'
+  @nombre= 'Tutorías'
   def initialize accion_padre
     @accion_padre=accion_padre
     @acciones=Hash.new
