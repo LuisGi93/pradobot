@@ -2,6 +2,7 @@
 require_relative 'menu_curso'
 require_relative 'menu_chat'
 require_relative '../menu_de_menus'
+require_relative 'menu_tutorias'
 class MenuPrincipalProfesor < MenuDeMenus
 
   def initialize
@@ -12,6 +13,8 @@ class MenuPrincipalProfesor < MenuDeMenus
   def inicializar_acciones
   #  @acciones[MenuCurso.nombre] = MenuCurso.new(self)
     @acciones[MenuChat.nombre] = MenuChat.new(self)
+    @acciones[MenuTutorias.nombre] = MenuTutorias.new(self)
+
   end
 
   def iniciar_acciones_defecto kb

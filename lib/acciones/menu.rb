@@ -33,7 +33,7 @@ class Menu < Accion
     id_cursos_usuario=obtener_cursos_usuario(id_telegram)
     unless id_cursos_usuario.empty?
       cursos=Array.new
-      id_cursos_usuari.each{|id_curso|
+      id_cursos_usuario.each{|id_curso|
         cursos << @@db[:curso].where(:id_moodle => id_curso[:id_moodle_curso]).first
       }
       puts cursos.to_s

@@ -36,15 +36,12 @@ class MenuDeAcciones < Menu
   def accion_pulsada datos_mensaje
 
     accion_pulsada=@acciones[datos_mensaje]
-    puts @acciones.to_s
-    puts accion_pulsada
     if accion_pulsada
       if @accion_pulsada
         @accion_pulsada.reiniciar
       end
       @accion_pulsada=accion_pulsada
     end
-    return accion_pulsada
   end
 
 
@@ -57,13 +54,13 @@ class MenuDeAcciones < Menu
       siguiente_accion=@accion_padre
       @accion_pulsada=nil
     else
-      ha_pulsado_accion=accion_pulsada(datos_mensaje)
+        accion_pulsada(datos_mensaje)
 
-      if siguiente_accion.nil? && @accion_pulsada.nil?
-        siguiente_accion=self
+        if siguiente_accion.nil? && @accion_pulsada.nil?
+          siguiente_accion=self
 
-      else
-        siguiente_accion=@accion_pulsada
+        else
+          siguiente_accion=@accion_pulsada
       end
     end
     return siguiente_accion

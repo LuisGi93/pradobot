@@ -6,7 +6,6 @@ require_relative 'accion'
 class AccionInicializarDesconocido < Accion
   def initialize
     @fase='inicio'
-    @datos=Hash.new
     @usuario=Usuario.new
     @moodle=Moodle.new(ENV['TOKEN_BOT_MOODLE'])
   end
