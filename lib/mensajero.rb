@@ -9,6 +9,7 @@ require_relative 'manejadores/manejador_mensajes_estudiante'
 
 require_relative '../lib/mensaje'
 
+
 class Mensajero
 
   attr_reader :token
@@ -78,7 +79,7 @@ class Mensajero
 
   public
 
-  def empezar
+  def recibir_mensajes
     @bot.run(@token_bot_telegram) do |botox|
       Accion.establecer_bot(botox)
       Accion.establecer_db(@db)

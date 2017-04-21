@@ -31,6 +31,7 @@ class MenuTutorias < MenuDeAcciones
 
     if datos_mensaje== "Atras" && @accion_padre
       siguiente_accion=@accion_padre
+      @accion_pulsada.reiniciar
       @accion_pulsada=nil
     elsif datos_mensaje =~ /Volver al menú/
       siguiente_accion=self
