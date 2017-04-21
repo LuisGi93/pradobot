@@ -27,7 +27,7 @@ module TrabajosPeriodicos
   # Actualiza las fechas de las tutorias de los profesores cuya fecha ya ha pasado
   def self.actualizar_tutorias
     scheduler = Rufus::Scheduler.new
-    scheduler.cron '32 18 * * *' do
+    scheduler.cron '00 00 * * *' do
       db=Sequel.connect(ENV['URL_DATABASE'])
 
 
