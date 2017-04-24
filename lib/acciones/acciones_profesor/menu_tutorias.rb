@@ -2,7 +2,7 @@ require_relative  'establecer_tutorias'
 require_relative '../menu_acciones'
 
 
-class MenuTutorias < MenuDeAcciones
+class MenuTutoriasg < MenuDeAcciones
   @nombre= 'Tutorías'
   def initialize accion_padre
     @accion_padre=accion_padre

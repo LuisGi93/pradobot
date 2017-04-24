@@ -2,19 +2,22 @@ require_relative '../accion'
 require_relative '../../moodle/entrega'
 require_relative '../../moodle/curso'
 require_relative '../../moodle_api'
-
+require_relative '../../usuarios/estudiante'
 class AccionMostrarEntregas < Accion
 
   attr_reader :moodle
   @nombre='Ver proximas entregas'
-  def initialize moodle
+  def initialize
     @estado='inicio'
-    @moodle=moodle
+    @moodle=nil
     @id_telegram=nil
   end
 
+
   def establecer_id_telegram(id_telegram)
     @id_telegram=id_telegram
+    estudiante=Estudiante.new(@id_telegram)
+    @moodle=Moodle.new(estudiante.token_moodle)
   end
 
 

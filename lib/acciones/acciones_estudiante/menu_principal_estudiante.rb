@@ -1,5 +1,6 @@
 require_relative '../menu_de_menus'
 require_relative '../acciones_estudiante/menu_entregas'
+require_relative 'menu_tutorias'
 class MenuPrincipalEstudiante < MenuDeMenus
 
   def initialize moodle
@@ -8,7 +9,9 @@ class MenuPrincipalEstudiante < MenuDeMenus
   end
 
   def inicializar_acciones moodle
-    @acciones[MenuEntregas.nombre] = MenuEntregas.new(self, moodle)
+    @acciones[MenuEntregas.nombre] = MenuEntregas.new(self)
+    @acciones[MenuTutorias.nombre] = MenuTutorias.new(self)
+
   end
 
   def iniciar_acciones_defecto kb

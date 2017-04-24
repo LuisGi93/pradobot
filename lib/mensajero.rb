@@ -19,7 +19,7 @@ class Mensajero
     @token_bot_telegram=token
     @db=Sequel.connect(ENV['URL_DATABASE'])
     @manejador_mensajes_profesor=ManejadorMensajesProfesor.new
-    @manejador_mensajes_estudiante=ManejadorMensajesEstudiante.new(@db)
+    @manejador_mensajes_estudiante=ManejadorMensajesEstudiante.new
     @manejador_mensajes_desconocido=ManejadorMensajesDesconocido.new
     @manejador_mensajes_grupales=ManejadorMensajesGrupales.new(@db)     #Puedo tener una clase hitos donde se guarden como cache todos los hitos de la asingatura y cuando se le pregutne al bot
                                                                       #por algun hito guarde todos los hitos para el curso tal y los borre a los 5 minutos.

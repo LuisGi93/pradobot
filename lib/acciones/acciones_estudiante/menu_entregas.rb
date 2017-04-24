@@ -4,15 +4,15 @@ require_relative 'accion_mostrar_entregas'
 
 class MenuEntregas < MenuDeAcciones
   @nombre= 'Entregas'
-  def initialize accion_padre, moodle
+  def initialize accion_padre
     @accion_padre=accion_padre
     @acciones=Hash.new
-    inicializar_acciones moodle
+    inicializar_acciones
   end
 
 
-  def inicializar_acciones moodle
-    @acciones[AccionMostrarEntregas.nombre] = AccionMostrarEntregas.new(moodle)
+  def inicializar_acciones
+    @acciones[AccionMostrarEntregas.nombre] = AccionMostrarEntregas.new
   end
 
 
