@@ -1,4 +1,5 @@
 require_relative '../accion'
+require_relative '../../usuarios/tutoria'
 require 'active_support/inflector'
 class AccionEstablecerTutorias < Accion
 
@@ -42,7 +43,7 @@ class AccionEstablecerTutorias < Accion
         dia_semana_a_numero=1
       when 'Martes'
         dia_semana_a_numero=2
-      when 'Miercoles'
+      when 'Miércoles'
         dia_semana_a_numero=3
       when 'Jueves'
         dia_semana_a_numero=4
@@ -71,12 +72,11 @@ class AccionEstablecerTutorias < Accion
 
 
   def crear_nueva_tutoria
+    profesor=Profesor.new(@id_telegram)
+
     fecha_tutoria=obtener_fecha_proxima_tutoria(@datos['dia_semana'], @datos['hora_comienzo_tutoria'])
-    puts fecha_tutoria
-    tutoria=@@db[:tutoria].where(:id_profesor => @id_telegram, :dia_semana_hora => fecha_tutoria)
-    if tutoria.empty?
-      @@db[:tutoria].insert(:id_profesor => @id_telegram, :dia_semana_hora => fecha_tutoria)
-    end
+    tutoria=Tutoria.new(profesor,fecha_tutoria)
+    profesor.establecer_nueva_tutoria(tutoria)
   end
 
   def recibir_mensaje(mensaje)
@@ -91,6 +91,7 @@ class AccionEstablecerTutorias < Accion
         ejecutar(id_telegram)
       when 'elegir_dia_semana'      #$Hay que chequear que meta Lunes, Martes, Miercoles.. y de mientras no cambiar de fase
         @datos['dia_semana']=datos_mensaje
+
         texto="Dia elegido *#{datos_mensaje}*. Introduzca la hora de comienzo de las tutorías (hh:mm)(ej: 22:00 ó 5:00:00):"
         @@bot.api.send_message( chat_id: @id_telegram, text: texto, parse_mode: 'Markdown' )
         @fase='hora_comienzo_tutorias'

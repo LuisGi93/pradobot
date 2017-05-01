@@ -1,8 +1,7 @@
 
-require_relative '../../lib/usuarios/tutoria'
-require_relative 'conexion_bd'
+require_relative 'usuario'
 
-class Estudiante < ConexionBD
+class Estudiante < Usuario
 
   attr_reader :id
   def initialize id_estudiante
@@ -43,9 +42,7 @@ class Estudiante < ConexionBD
     return cursos_alumno
   end
 
-  def token_moodle
 
-  end
 
   def obtener_peticiones_tutorias
     peticiones=Array.new
@@ -62,6 +59,16 @@ class Estudiante < ConexionBD
   def establecer_db db #Es importante ya que vease el caso de estudiante obtener peticiones es absurdo que para crear un profesor tenga que pasarle una conexcion base datos
     #es mas sencillo sencillamente que esta se pueda establecer "por fuera" y mas intuitivo
     @@db=db
+  end
+
+  def token_moodle
+    if @token_moodle.nil?
+      datos_estudiante=@@db[:estudiante].where(:id_telegram => @id).select(:email).first
+      @email=datos_estudiante[:email]
+      datos_estudiante=@@db[:estudiante_moodle].where(:email => @email).select(:token).first
+      @token_moodle=datos_estudiante[:token]
+    end
+    return @token_moodle
   end
 
 end

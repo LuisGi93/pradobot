@@ -1,5 +1,5 @@
 require_relative '../accion'
-require 'active_support/inflector'
+require_relative '../../usuarios/curso'
 class AccionAsociarChat< Accion
 
   @nombre='Asociar chat curso'
@@ -17,7 +17,7 @@ class AccionAsociarChat< Accion
     if @id_telegram.nil?
       establecer_id_telegram(id_telegram)
     end
-    @@bot.api.send_message( chat_id: @id_telegram, text: "Introduzca el nombre del chat al cual quiere asociar *#{@curso['nombre_curso']}*", parse_mode: 'Markdown')
+    @@bot.api.send_message( chat_id: @id_telegram, text: "Introduzca el nombre del chat al cual quiere asociar *#{@curso[0].nombre}*", parse_mode: 'Markdown')
     @fase='peticion_nombre_chat'
   end
 
@@ -26,16 +26,8 @@ class AccionAsociarChat< Accion
     @fase='inicio'
   end
 
-  def asociar_chat_curso nombre_chat_telegram, id_moodle_curso
-    chat=@@db[:chat_telegram].where(:nombre_chat => nombre_chat_telegram)
-
-     if chat.empty?
-       @@db[:chat_telegram].insert(:nombre_chat => nombre_chat_telegram.titleize)
-       @@db[:chat_curso].insert(:nombre_chat_telegram => nombre_chat_telegram.titleize, :id_moodle_curso => id_moodle_curso)
-     else
-       puts @@db
-       @@db[:chat_curso].where(:id_moodle_curso =>id_moodle_curso ).update(:nombre_chat_telegram => nombre_chat_telegram.titleize)
-     end
+  def asociar_chat_curso nombre_chat_telegram
+    @curso[0].asociar_chat nombre_chat_telegram
   end
 
   def recibir_mensaje(mensaje)
@@ -47,11 +39,11 @@ class AccionAsociarChat< Accion
 
     case @fase
       when 'inicio'
-          @@bot.api.send_message( chat_id: @id_telegram, text: "Introduzca el nombre del chat al cual quiere asociar *#{@curso['nombre_curso']}*", parse_mode: 'Markdown')
+          @@bot.api.send_message( chat_id: @id_telegram, text: "Introduzca el nombre del chat al cual quiere asociar *#{@curso[0].nombre}*", parse_mode: 'Markdown')
           @fase='peticion_nombre_chat'
       when 'peticion_nombre_chat'
-        asociar_chat_curso(datos_mensaje, @curso['id_moodle'].to_i)
-        texto="Curso *#{@curso['nombre_curso']}*  asociado al chat *#{datos_mensaje}*"
+        @curso[0].asociar_chat datos_mensaje
+        texto="Curso *#{@curso[0].nombre}*  asociado al chat *#{datos_mensaje}*"
         @@bot.api.send_message( chat_id: @id_telegram, text: texto, parse_mode: 'Markdown' )
         reiniciar
     end

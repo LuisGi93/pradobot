@@ -1,10 +1,14 @@
-
+require_relative '../moodle_api'
 class Entrega
 attr_accessor :fecha_fin, :id, :nombre, :descripcion
-  def initialize fecha_fin, id, nombre
+
+@@moodle=Moodle.new(ENV['TOKEN_BOT_MOODLE'])
+
+  def initialize id, fecha_fin=nil, nombre=nil
     @fecha_fin=fecha_fin
     @id=id.to_i
     @nombre=nombre
+    @descripcion=nil
   end
 
   def dias_faltan
@@ -19,6 +23,16 @@ attr_accessor :fecha_fin, :id, :nombre, :descripcion
     return @fecha_fin < y.fecha_fin
   end
 
+  def obtener_descripcion
+
+    if @descripcion.nil?
+
+
+    end
+
+  end
+
 
 
 end
+

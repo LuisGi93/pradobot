@@ -1,4 +1,6 @@
 require_relative 'accion'
+require_relative '../../lib/usuarios/usuario'
+
 class AccionElegirCurso < Accion
 
   @nombre='Seleccionar curso'
@@ -16,11 +18,11 @@ class AccionElegirCurso < Accion
   def elegir_curso cursos
     kb = Array.new
     if cursos
-      puts "Cursos que llegan#{cursos.to_s}"
       cursos.each{|curso|
-        kb << Telegram::Bot::Types::InlineKeyboardButton.new(text: curso['nombre_curso'], callback_data: "curso_#{curso['id_moodle']}_#{curso['nombre_curso']}")
+        puts curso.nombre
+        kb << Telegram::Bot::Types::InlineKeyboardButton.new(text: curso.nombre, callback_data: "curso_#{curso.id_curso}##")
       }
-      kb << Telegram::Bot::Types::InlineKeyboardButton.new(text: "Todos cursos", callback_data: "curso_-1")
+      kb << Telegram::Bot::Types::InlineKeyboardButton.new(text: "Todos cursos", callback_data: "curso_-99")
 
       markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: kb)
 
@@ -33,7 +35,8 @@ class AccionElegirCurso < Accion
     if @id_telegram.nil?
       establecer_id_telegram(id_telegram)
     end
-    cursos=obtener_cursos_usuario
+
+    cursos=obtener_cursos_usuario(id_telegram)
     if cursos
       elegir_curso(cursos)
     else
@@ -57,33 +60,23 @@ class AccionElegirCurso < Accion
     if @id_telegram.nil?
       establecer_id_telegram(id_telegram)
     end
-
-    puts datos_mensaje
-        if datos_mensaje  =~ /curso_.+/
-          datos_mensaje.slice! "curso_"
-          id_moodle = datos_mensaje[/[0-9]{1,2}/]
-          datos_mensaje.slice! "#{id_moodle}_"
-          @padre.cambiar_curso(datos_mensaje,id_moodle)
-          siguiente_accion=@padre
-          @padre.ejecutar(id_telegram)
-        else
-          ejecutar(@id_telegram)
-        end
+    if datos_mensaje  =~ /curso_.+/
+      datos_mensaje.slice! "curso_"
+      id_curso = datos_mensaje[/-?[0-9]{1,2}/]
+      id_curso=id_curso.to_i
+      @padre.iniciar_cambio_curso(id_telegram,id_curso)
+      siguiente_accion=@padre
+      @padre.ejecutar(id_telegram)
+    else
+      ejecutar(@id_telegram)
+    end
 
     return siguiente_accion
   end
 
-  def obtener_cursos_usuario
-    id_cursos= @@db[:profesor_curso].where(:id_profesor => @id_telegram).select(:id_moodle_curso).to_a
-    if id_cursos.empty?
-      id_cursos= @@db[:estudiante_curso].where(:id_estudiante => @id_telegram).select(:id_moodle_curso).to_a
-    end
-    cursos=Array.new
-    id_cursos.each{|id|
-      curso=@@db[:curso].where(:id_moodle =>id[:id_moodle_curso]).first
-      cursos << {"nombre_curso" => curso[:nombre_curso], "id_moodle" => curso[:id_moodle]}
-    }
-    return cursos
+  def obtener_cursos_usuario id_telegram
+    usuario=Usuario.new(id_telegram)
+    return usuario.obtener_cursos_usuario
   end
 
   public_class_method :new

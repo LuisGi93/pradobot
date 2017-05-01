@@ -2,23 +2,19 @@
 require_relative 'menu'
 
 class MenuDeMenus < Menu
-  @nombre= 'Cursos'
 
-  def cambiar_curso(nombre_curso, id_curso)
-    puts "Mi nombre #{@nombre} y #{nombre_curso} #{id_curso}"
-    @curso={'nombre_curso' => nombre_curso, 'id_moodle' =>id_curso}
+  def cambiar_curso_parientes
     @acciones.each{|key,value|
-      if value.curso!=curso
-        value.cambiar_curso(nombre_curso, id_curso)
+      if value.curso!=@curso
+        puts "cambiando #{key} a #{value.curso}"
+        value.cambiar_curso(@curso)
+        puts "cambiando #{key} a #{value.curso}"
       end
     }
-
-    if @accion_padre && padre.curso!=@curso
-      @accion_padre.cambiar_curso(nombre_curso, id_curso)
+    if @accion_padre.curso!=@curso
+      @accion_padre.cambiar_curso(@curso)
     end
   end
-
-
 
 
   def accion_pulsada id_telegram,datos_mensaje

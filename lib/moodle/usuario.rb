@@ -1,4 +1,4 @@
-class Usuario
+class Usubario
   attr_accessor  :email, :rol, :cursos, :token, :contrasena, :id_telegram, :id_moodle, :nombre_usuario
 
   def initialize

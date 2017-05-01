@@ -1,10 +1,7 @@
 require_relative 'accion'
 require_relative '../moodle_api'
-class ChatCurso
+module MensajesTelegram
 
-  def initialize moodle
-    @moodle=Moodle.new(ENV['TOKEN_BOT_MOODLE'])
-  end
 
   def mostrar_entregas_del_curso id_chat, id_moodle_curso
       puts "El id de moodle es #{id_moodle_curso}"
@@ -25,25 +22,13 @@ class ChatCurso
 
   end
 
-  def mostrar_informacion_entrega id_entrega, id_curso
-    entrega=@moodle.obtener_entrega(id_entrega, id_curso)
-    if entrega
+  def  descripcion_completa_entrega entrega
       texto="*Nombre:* #{entrega.nombre}
-*Fecha entrega:* #{entrega.fecha_fin}
-*Descripcion*:#{entrega.descripcion}"
-    else
-      texto="Error"
-    end
-    @bot.api.send_message( chat_id: @id_telegram, text: texto, parse_mode: 'Markdown' )
+      *Fecha entrega:* #{entrega.fecha_fin}
+      *Descripcion*:#{entrega.descripcion}"
+      return texto
   end
 
 
-  def mostrar_informacion_entrega id_entrega, id_moodle_curso
-
-  end
-
-  def establecer_bot botox
-    @bot=botox
-  end
 
 end

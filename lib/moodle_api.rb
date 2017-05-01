@@ -3,9 +3,6 @@ require 'open-uri'
 require 'json'
 
 
-require_relative '../lib/moodle/entrega'
-require_relative '../lib/moodle/usuario'
-require_relative 'moodle/curso'
 
 class Moodle
 
@@ -38,21 +35,18 @@ class Moodle
     JSON.parse(page)
   end
 
-  def obtener_entregas_curso id_curso
+  def obtener_entregas_curso curso
 #Daria la fecha incorrecta si el servidor de moodle y el local tienen una hora diferentes
-    puts id_curso
-    datos_curso=api('mod_assign_get_assignments',"courseids[0]" => id_curso)
-    puts datos_curso.to_s
+    datos_curso=api('mod_assign_get_assignments',"courseids[0]" => curso.id_curso)
     id_curso=datos_curso['courses'][0]['id']
     nombre_curso=datos_curso['courses'][0]['fullname']
     entregas=datos_curso['courses'][0]['assignments']
 
-    curso=Curso.new(id_curso, nombre_curso)
     aux_entregas=Array.new
     entregas.each{
       |entrega|
       fecha_convertida=Time.at(entrega['duedate'].to_i).to_datetime
-       aux_entregas << Entrega.new(fecha_convertida, entrega['id'], entrega['name'])
+       aux_entregas << Entrega.new( entrega['id'], fecha_convertida, entrega['name'])
       if entrega['intro']
         aux_entregas.last.descripcion=entrega['intro']
       end
@@ -81,14 +75,13 @@ class Moodle
   end
 
 
-  def obtener_entrega id_entrega, id_curso
-    curso=obtener_entregas_curso(id_curso)
-    entrega=nil
+  def obtener_entrega entrega, curso
+    curso=obtener_entregas_curso(curso)
     index=0
     entregas_curso=curso.entregas
     tamanio_vector=entregas_curso.size
-    while(entrega.nil? && index < tamanio_vector )
-      if(entregas_curso[index].id == id_entrega)
+    while(index < tamanio_vector )
+      if(entregas_curso[index].id == entrega.id)
         entrega=entregas_curso[index]
         index=tamanio_vector
       end
@@ -101,3 +94,5 @@ class Moodle
 
 end
 
+require_relative 'usuarios/curso'
+require_relative '../lib/moodle/entrega'
