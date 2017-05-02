@@ -1,10 +1,4 @@
-require_relative '../../lib/mensaje'
-require_relative '../moodle_api'
-require_relative '../usuarios/usuario_desconocido'
-require_relative 'accion'
-require_relative '../../lib/acciones/acciones_estudiante/menu_principal_estudiante'
-require_relative '../../lib/acciones/acciones_profesor/menu_principal_profesor'
-require_relative '../acciones/accion_elegir_curso'
+
 
 class AccionInicializarDesconocido < Accion
   def initialize
@@ -86,3 +80,11 @@ class AccionInicializarDesconocido < Accion
 
   public_class_method :new
 end
+
+require_relative '../../lib/mensaje'
+require_relative '../moodle_api'
+require_relative '../usuarios/usuario_desconocido'
+require_relative 'accion'
+require_relative '../../lib/acciones/acciones_estudiante/menu_principal_estudiante'
+require_relative '../../lib/acciones/acciones_profesor/menu_principal_profesor'
+require_relative '../acciones/accion_elegir_curso'

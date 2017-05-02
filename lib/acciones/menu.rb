@@ -32,16 +32,27 @@ class Menu < Accion
 
   def solicitar_introducir_nuevo_curso id_telegram
     kb = Array.new
+    fila_botones=Array.new
+    array_botones=Array.new
+    contador=0
+
     usuario=Usuario.new(id_telegram)
     cursos=usuario.obtener_cursos_usuario
     unless cursos.empty?
-      cursos.each{|curso|
-        puts "Los puneteros cursos #{curso.to_s}"
-        kb << Telegram::Bot::Types::InlineKeyboardButton.new(text: curso.nombre, callback_data: "cambiando_a_curso_id_curso##{curso.id_curso}")
-      }
-      kb << Telegram::Bot::Types::InlineKeyboardButton.new(text: "Todos cursos", callback_data: "cambiando_a_curso_id_curso#-99")
 
-      markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: kb)
+      cursos.each{|curso|
+        array_botones << Telegram::Bot::Types::InlineKeyboardButton.new(text: curso.nombre, callback_data: "cambiando_a_curso_id_curso##{curso.id_curso}")
+        if array_botones.size == 2
+          fila_botones << array_botones.dup
+          array_botones.clear
+        end
+        contador+=1
+
+      }
+
+      fila_botones << Telegram::Bot::Types::InlineKeyboardButton.new(text: "Todos cursos", callback_data: "cambiando_a_curso_id_curso#-99")
+
+      markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: fila_botones)
 
       @@bot.api.send_message( chat_id: id_telegram, text: 'Elija curso:', reply_markup: markup)
     end
@@ -135,13 +146,22 @@ class Menu < Accion
 
   def ejecutar(id_telegram)
     kb= Array.new
+    fila_botones=Array.new
+    array_botones=Array.new
     @acciones.keys.each{
         |accion|
       kb <<   Telegram::Bot::Types::KeyboardButton.new( text: accion, )
+      array_botones << Telegram::Bot::Types::KeyboardButton.new( text: accion, )
+      if array_botones.size == 3
+        fila_botones << array_botones.dup
+        array_botones.clear
+      end
     }
-    iniciar_acciones_defecto(kb)
+    fila_botones << array_botones
 
-    markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: kb)
+    iniciar_acciones_defecto(fila_botones)
+
+    markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: fila_botones)
     @@bot.api.send_message( chat_id: id_telegram, text: "Elija entre las acciones del menu",  reply_markup: markup)
     return self
   end

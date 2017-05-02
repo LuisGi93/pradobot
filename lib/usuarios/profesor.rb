@@ -35,6 +35,8 @@ class Profesor < Usuario
 
 
   def establecer_nueva_tutoria  tutoria
+    puts tutoria.fecha
+    puts tutoria.fecha
     existe_tutoria=@@db[:tutoria].where(:id_profesor => @id, :dia_semana_hora => tutoria.fecha)
     if existe_tutoria.empty?
       @@db[:tutoria].insert(:id_profesor => @id, :dia_semana_hora => tutoria.fecha)

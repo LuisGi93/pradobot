@@ -1,7 +1,5 @@
 require_relative '../mensaje'
 require_relative '../moodle_api'
-require_relative '../acciones/acciones_chat/accion_ver_entregas'
-require_relative '../../lib/acciones/acciones_chat/accion_chat'
 require_relative '../acciones/chat_curso'
 require_relative '../usuarios/chat_telegram'
 
@@ -77,7 +75,7 @@ class EncargadoMensajesGrupales
     if dudas.empty?
       texto="No hay dudas para el curso."
     else
-      texto="Dudas actuales:\n"
+      texto="Dudas pendientes de ser contestadas:\n"
       dudas.each_with_index { |duda, indice|
         texto=texto+"    (*#{indice}*): \t #{duda.contenido}\n"
       }
@@ -95,7 +93,7 @@ class EncargadoMensajesGrupales
     else
       texto="Las próximas entregas son:\n"
       entregas.each_with_index { |entrega, indice|
-        texto=texto+"    (*#{indice}*): \t *Nombre*: #{entrega.nombre}\n\t*Fecha entrega*: #{entrega.fecha_fin}\n"
+        texto=texto+"    (*#{indice}*): \t *Nombre*: #{entrega.nombre}\n\t           *Fecha entrega*: #{entrega.fecha_fin}\n"
       }
     end
 
@@ -105,7 +103,7 @@ class EncargadoMensajesGrupales
 
 
   def mostrar_informacion_entrega id_chat, entrega
-      texto="Nombre: *#{entrega.nombre}*\nFecha entrega: *#{entrega.fecha_fin}*\nDescripcion:*#{entrega.descripcion}*"
+      texto="Nombre: *#{entrega.nombre}*\n          Fecha entrega: *#{entrega.fecha_fin}*\nDescripcion:*#{entrega.descripcion}*"
     @bot.api.send_message( chat_id: id_chat, text: texto, parse_mode: 'Markdown' )
   end
 

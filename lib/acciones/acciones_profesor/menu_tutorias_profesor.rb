@@ -14,14 +14,23 @@ class MenuTutoriasProfesor < MenuDeAcciones
   end
 
   def ejecutar(id_telegram)
-    kb= Array.new
-    @acciones.keys.each{
-        |accion|
-      kb <<   Telegram::Bot::Types::KeyboardButton.new( text: accion, )
-    }
-    iniciar_acciones_defecto(kb)
+  kb= Array.new
+  fila_botones=Array.new
+  array_botones=Array.new
+  @acciones.keys.each{
+      |accion|
+    kb <<   Telegram::Bot::Types::KeyboardButton.new( text: accion, )
+    array_botones << Telegram::Bot::Types::KeyboardButton.new( text: accion, )
+    if array_botones.size == 2
+      fila_botones << array_botones.dup
+      array_botones.clear
+    end
+  }
+  fila_botones << array_botones
 
-    markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: kb)
+  iniciar_acciones_defecto(fila_botones)
+
+    markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: fila_botones)
     @@bot.api.send_message( chat_id: id_telegram, text: "Elija entre las acciones del menu",  reply_markup: markup)
     if(@acciones[AccionEstablecerTutorias.nombre].teclado_menu_padre.nil?)
       @acciones[AccionEstablecerTutorias.nombre].teclado_menu_padre=markup
@@ -29,23 +38,29 @@ class MenuTutoriasProfesor < MenuDeAcciones
     return self
   end
 
-  def obtener_siguiente_accion(datos_mensaje)
+  def obtener_accion_recibe_mensaje(datos_mensaje)
     siguiente_accion=nil
 
+
+    puts "Los puneteros datos dle mensaje son #{datos_mensaje}"
     if datos_mensaje== "Atras" && @accion_padre
       siguiente_accion=@accion_padre
-      @accion_pulsada.reiniciar
+      if @accion_pulsada
+        @accion_pulsada.reiniciar
+      end
       @accion_pulsada=nil
-    elsif datos_mensaje =~ /Volver al menú/
+    elsif datos_mensaje =~ /Volver al men/
       siguiente_accion=self
-      @accion_pulsada.reiniciar
+      puts "Lalalala"
+
+      if @accion_pulsada
+        @accion_pulsada.reiniciar
+      end
       @accion_pulsada=nil
     else
-      accion_pulsada(datos_mensaje)
-
+      ha_pulsado_accion(datos_mensaje)
       if siguiente_accion.nil? && @accion_pulsada.nil?
         siguiente_accion=self
-
       else
         siguiente_accion=@accion_pulsada
       end

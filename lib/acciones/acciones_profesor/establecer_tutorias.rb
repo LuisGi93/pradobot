@@ -76,6 +76,7 @@ class AccionEstablecerTutorias < Accion
 
     fecha_tutoria=obtener_fecha_proxima_tutoria(@datos['dia_semana'], @datos['hora_comienzo_tutoria'])
     tutoria=Tutoria.new(profesor,fecha_tutoria)
+    puts fecha_tutoria
     profesor.establecer_nueva_tutoria(tutoria)
   end
 

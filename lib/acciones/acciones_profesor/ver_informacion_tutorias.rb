@@ -33,7 +33,7 @@ class VerInformacionTutorias < Accion
         fila_botones=Array.new
         array_botones=Array.new
         tutorias.each_with_index { |tutoria, index|
-          text+= "\t *#{index}* \t#{tutoria.fecha}"
+          text+= "\t (*#{index}*) \t#{tutoria.fecha.strftime('%a, %d %b %Y %H:%M:%S')}\n"
           array_botones << Telegram::Bot::Types::InlineKeyboardButton.new(text: index, callback_data: "tutoria_#{tutoria.fecha}")
           if array_botones.size == 3
             fila_botones << array_botones.dup
@@ -65,25 +65,32 @@ class VerInformacionTutorias < Accion
     @tutoria=Tutoria.new(@profesor, fecha_tutoria)
     @peticiones=@tutoria.peticiones
 
-    if @peticiones.empty?
+    peticiones_aprobadas=Array.new
+    @peticiones.each{ |peticion|
+      if(peticion.estado=="aceptada")
+        peticiones_aprobadas << peticion
+      end
+    }
+
+    if peticiones_aprobadas.empty?
       @@bot.api.send_message( chat_id: @id_telegram, text: "No ha aprobado ninguna petición para la tutoría elegida.", parse_mode: "Markdown" )
     else
-      text="Historial de peticiones:\n"
+      text="Cola asistencia tutoria:\n"
       fila_botones=Array.new
       array_botones=Array.new
       contador=0
-      @peticiones.sort
-      @peticiones.each{ |peticion|
-        if(peticion.estado=="aceptada")
-          text+= "\t *#{contador}º* \tNombre telegram estudiante:\t#{peticion.estudiante.nombre_usuario}\n"
-          text+= "    Hora petición: \t#{peticion.hora}"
+      #@peticiones.sort
+      peticiones_aprobadas.sort_by {|obj| obj.hora}
+
+      peticiones_aprobadas.each{ |peticion|
+          text+= "\t *#{contador}º* \tNombre telegram estudiante:\t *#{peticion.estudiante.nombre_usuario}\n*"
+          #text+= "    Hora petición: \t*#{peticion.hora}*"
           array_botones << Telegram::Bot::Types::InlineKeyboardButton.new(text: contador, callback_data: "peticion_#{peticion.estudiante.id}")
           if array_botones.size == 3
             fila_botones << array_botones.dup
             array_botones.clear
           end
           contador+=1
-        end
       }
       fila_botones << array_botones
       markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: fila_botones)

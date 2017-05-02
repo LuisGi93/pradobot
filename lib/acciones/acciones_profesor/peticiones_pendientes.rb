@@ -30,11 +30,11 @@ class PeticionesPendientesTutoria < Accion
       if tutorias.empty?
         @@bot.api.send_message( chat_id: id_telegram, text: "El profesor *#{profesor_curso.nombre_usuario}* a cargo de *#{curso[0].nombre}* no tiene tutorias", parse_mode: "Markdown" )
       else
-        text="Seleccione la tutoria de la cual  desea aprobar/denegar peticionesn:\n"
+        text="Seleccione la tutoria de la cual  desea aprobar/denegar peticiones:\n"
         fila_botones=Array.new
         array_botones=Array.new
         tutorias.each_with_index { |tutoria, index|
-          text+= "\t *#{index}* \t#{tutoria.fecha}"
+          text+= "\t (*#{index}*) \t#{tutoria.fecha.strftime('%a, %d %b %Y %H:%M:%S')}\n"
           array_botones << Telegram::Bot::Types::InlineKeyboardButton.new(text: index, callback_data: "tutoria_#{tutoria.fecha}")
           if array_botones.size == 3
             fila_botones << array_botones.dup
@@ -65,25 +65,28 @@ class PeticionesPendientesTutoria < Accion
 
     @tutoria=Tutoria.new(@profesor, fecha_tutoria)
     @peticiones=@tutoria.peticiones
-
-      if @peticiones.empty?
+    peticiones_pendientes=Array.new
+    @peticiones.each{ |peticion|
+      if(peticion.estado=="por aprobar")
+      peticiones_pendientes << peticion
+      end
+    }
+      if peticiones_pendientes.empty?
         @@bot.api.send_message( chat_id: @id_telegram, text: "No tiene peticiones para la tutoría elegida.", parse_mode: "Markdown" )
       else
         text="Seleccione la petición la cual  desea aprobar/denegar:\n"
         fila_botones=Array.new
         array_botones=Array.new
         contador=0
-        @peticiones.each{ |peticion|
-          if(peticion.estado=="por aprobar")
-            text+= "\t *#{contador}*) \tNombre telegram estudiante:\t#{peticion.estudiante.nombre_usuario}\n"
-            text+= "    Hora petición: \t#{peticion.hora}"
+        peticiones_pendientes.each{ |peticion|
+            text+= "\t (*#{contador}*) \tNombre telegram estudiante:\t *#{peticion.estudiante.nombre_usuario}*\n"
+            text+= "    Fecha realización petición: *\t#{peticion.hora.strftime('%d %b %Y %H:%M:%S')}* \n"
             array_botones << Telegram::Bot::Types::InlineKeyboardButton.new(text: contador, callback_data: "peticion_#{peticion.estudiante.id}")
             if array_botones.size == 3
               fila_botones << array_botones.dup
               array_botones.clear
             end
             contador+=1
-          end
         }
         fila_botones << array_botones
         markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: fila_botones)

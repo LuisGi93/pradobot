@@ -79,7 +79,7 @@ def crear_tablas db
 
   db.create_table! :tutoria do
     foreign_key :id_profesor, :profesor, :key => 'id_telegram', :on_delete => :cascade, :on_update => :cascade
-    Time :dia_semana_hora,  :only_time=>true
+    Time :dia_semana_hora
     primary_key [:dia_semana_hora, :id_profesor]
   end
 
@@ -87,7 +87,7 @@ def crear_tablas db
     Integer :id_profesor
     foreign_key :id_estudiante, :estudiante, :on_delete => :cascade, :on_update => :cascade
     Time :dia_semana_hora
-    Time    :hora_solicitud,  :only_time=>true
+    Time    :hora_solicitud
     String    :estado
     primary_key [:id_profesor, :id_estudiante, :dia_semana_hora]
     foreign_key [:dia_semana_hora, :id_profesor], :tutoria, :on_delete => :cascade, :on_update => :cascade

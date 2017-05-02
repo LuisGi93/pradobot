@@ -15,6 +15,10 @@ class BorrarTutorias < Accion
     @id_telegram=id_telegram
   end
 
+  def reiniciar
+    @profesor=nil
+    @id_telegram=nil
+  end
   def ejecutar(id_telegram)
 
     if @id_telegram.nil?
@@ -32,7 +36,7 @@ class BorrarTutorias < Accion
         tutorias.each_with_index { |tutoria, index|
           puts tutoria.fecha
           puts tutoria.numero_peticiones
-          text+= "\t *#{index}*) \t Fecha tutoria: *#{tutoria.fecha}*\n"
+          text+= "\t (*#{index}*) \t Fecha tutoria: *#{tutoria.fecha.strftime('%a, %d %b %Y %H:%M:%S')}*\n"
           array_botones << Telegram::Bot::Types::InlineKeyboardButton.new(text: index, callback_data: "borrar_tutoria_#{tutoria.fecha}")
           if array_botones.size == 3
             fila_botones << array_botones.dup

@@ -17,14 +17,25 @@ class AccionElegirCurso < Accion
 
   def elegir_curso cursos
     kb = Array.new
+    fila_botones=Array.new
+    array_botones=Array.new
+    contador=0
+
     if cursos
       cursos.each{|curso|
-        puts curso.nombre
-        kb << Telegram::Bot::Types::InlineKeyboardButton.new(text: curso.nombre, callback_data: "curso_#{curso.id_curso}##")
-      }
-      kb << Telegram::Bot::Types::InlineKeyboardButton.new(text: "Todos cursos", callback_data: "curso_-99")
 
-      markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: kb)
+        array_botones << Telegram::Bot::Types::InlineKeyboardButton.new(text: curso.nombre, callback_data: "curso_#{curso.id_curso}##")
+        if array_botones.size == 2
+          fila_botones << array_botones.dup
+          array_botones.clear
+        end
+        contador+=1
+
+      }
+
+      fila_botones << Telegram::Bot::Types::InlineKeyboardButton.new(text: "Todos cursos", callback_data: "curso_-99")
+
+      markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: fila_botones)
 
       @@bot.api.send_message( chat_id: @id_telegram, text: 'Elija curso:', reply_markup: markup)
     end

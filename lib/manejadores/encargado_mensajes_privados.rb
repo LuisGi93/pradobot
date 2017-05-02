@@ -3,6 +3,7 @@ require_relative '../../lib/acciones/accion'
 require_relative '../../lib/usuarios/usuario_desconocido'
 require_relative '../acciones/accion_elegir_curso'
 require_relative '../../lib/acciones/acciones_profesor/menu_principal_profesor'
+require_relative '../../lib/acciones/accion_inicializar_desconocido'
 
 #
 #
