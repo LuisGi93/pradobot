@@ -1,4 +1,4 @@
-require_relative '../lib/mensajero'
+require_relative '../lib/manejadores_mensajes/mensajero'
 require_relative '../config/trabajos_periodicos'
 
 TrabajosPeriodicos.actualizar_tutorias

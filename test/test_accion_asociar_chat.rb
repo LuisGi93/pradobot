@@ -1,6 +1,6 @@
 require "rspec"
-require_relative '../lib/acciones/acciones_profesor/accion_asociar_chat'
-require_relative '../lib/acciones/acciones_profesor/menu_chat'
+require_relative '../lib/actuadores_sobre_mensajes/acciones_profesor/accion_asociar_chat'
+require_relative '../lib/actuadores_sobre_mensajes/acciones_profesor/menu_chat'
 
 describe AccionAsociarChat do
 
