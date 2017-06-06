@@ -1,9 +1,6 @@
 
 def crear_tablas db
 
-
-
-
   db.create_table! :curso do
     primary_key :id_moodle, :type => 'integer'
     String      :nombre_curso

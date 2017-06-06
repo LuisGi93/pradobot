@@ -1,9 +1,8 @@
 
 require "rspec"
-require_relative "../lib/actuadores_sobre_mensajes/acciones_estudiante/accion_mostrar_entregas"
 require "telegram/bot"
 require_relative "../lib/actuadores_sobre_mensajes/acciones_estudiante/menu_entregas"
-require_relative "../lib/moodle/curso"
+require_relative "../lib/contenedores_datos/curso"
 require_relative "../lib/contenedores_datos/entrega"
 
 describe AccionMostrarEntregas do
