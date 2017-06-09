@@ -8,3 +8,6 @@ gem 'json'
 gem 'rufus-scheduler'
 gem 'activesupport'
 
+group :test do
+  gem 'rake'
+end
