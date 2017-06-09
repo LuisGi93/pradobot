@@ -1,11 +1,13 @@
-gem 'moodle-api'
+source "https://rubygems.org"
 gem 'sequel'
 gem 'pg'
 gem 'rake'
-gem 'test-unit'
-gem 'shoulda'
 gem 'rspec'
 gem 'telegram-bot-ruby'
 gem 'json'
-gem 'rspec-mocks'
+gem 'rufus-scheduler'
+gem 'activesupport'
 
+group :test do
+  gem 'rake'
+end
