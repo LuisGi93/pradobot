@@ -44,6 +44,10 @@ class Duda < ConexionBD
   end
 
   def == (y)
+    puts @contenido
+    puts y.contenido
+    puts @usuario.id_telegram
+    puts y.usuario.id_telegram
     return @contenido == y.contenido && @usuario.id_telegram == y.usuario.id_telegram
   end
 end
