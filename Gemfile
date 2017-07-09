@@ -7,7 +7,7 @@ gem 'telegram-bot-ruby'
 gem 'json'
 gem 'rufus-scheduler'
 gem 'activesupport'
-
+gem 'daemons'
 group :test do
   gem 'rake'
 end

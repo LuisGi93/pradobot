@@ -101,7 +101,7 @@ class AccionMostrarEntregas < Accion
   def recibir_mensaje(mensaje)
     @ultimo_mensaje=mensaje
     datos_mensaje=@ultimo_mensaje.obtener_datos_mensaje
-    puts datos_mensaje
+    #puts datos_mensaje
     case datos_mensaje
       when  /\#\#\$\$Entrega/
         datos_mensaje.slice! "#\#$$Entrega"

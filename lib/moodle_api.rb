@@ -23,7 +23,7 @@ class Moodle
       arguments= { :wstoken  => @user_token , :moodlewsrestformat => 'json', :wsfunction  => function}
     end
     uri.query = URI.encode_www_form(arguments)
-    puts uri.query
+   # puts uri.query
     page = Net::HTTP.get(uri)
     JSON.parse(page)
   end
@@ -39,8 +39,8 @@ class Moodle
   def obtener_entregas_curso curso
 #Daria la fecha incorrecta si el servidor de moodle y el local tienen una hora diferentes
     datos_curso=api('mod_assign_get_assignments',"courseids[0]" => curso.id_curso)
-    puts curso.id_curso
-    puts datos_curso.to_s
+    #puts curso.id_curso
+    #puts datos_curso.to_s
     id_curso=datos_curso['courses'][0]['id']
     nombre_curso=datos_curso['courses'][0]['fullname']
     entregas=datos_curso['courses'][0]['assignments']
@@ -70,6 +70,7 @@ class Moodle
     params={'field' => 'email', 'values[0]'  => email}
     usuario=api('core_user_get_users_by_field ', params)
 
+#puts usuario.to_s
     if usuario.size > 0
       id_usuario_moodle=usuario[0]['id'] #presupongo que el email de moodle es único
     end

@@ -58,6 +58,8 @@ class ListarDudas < Accion
 
 
   def mostrar_acciones(datos_mensaje)
+puts @dudas.to_s
+puts @indice_duda_seleccionada
     solucion_duda=@dudas[@indice_duda_seleccionada].solucion
     creador_o_profesor=@curso.obtener_profesor_curso.id_telegram == @ultimo_mensaje.id_telegram || @dudas[@indice_duda_seleccionada].usuario.id_telegram==@ultimo_mensaje.id_telegram
     if creador_o_profesor && solucion_duda
@@ -140,7 +142,7 @@ class ListarDudas < Accion
       when  /\#\#\$\$Responder duda/
         @@bot.api.answer_callback_query(callback_query_id: @ultimo_mensaje.id_callback, text: "Recibido!")
         # @@bot.api.delete_message(chat_id: @ultimo_mensaje.id_telegram, message_id: @ultimo_mensaje.id_mensaje2["result"]["message_id"])
-        @@bot.api.edit_message_text(:chat_id => @ultimo_mensaje.id_chat ,:message_id => @ultimo_mensaje.id_mensaje, text:  "Introduzca respuesta a *#{@dudas.at(datos_mensaje.to_i).contenido}*:", parse_mode: "Markdown"  )
+        @@bot.api.edit_message_text(:chat_id => @ultimo_mensaje.id_chat ,:message_id => @ultimo_mensaje.id_mensaje, text:  "Introduzca respuesta a *#{@dudas.at(@indice_duda_seleccionada).contenido}*:", parse_mode: "Markdown"  )
         @fase="responder_duda"
       when /\#\#\$\$Borrar duda/
         @curso.eliminar_duda(@dudas.at(@indice_duda_seleccionada))
@@ -205,6 +207,7 @@ class ListarDudas < Accion
 
   def resolver_duda indice_respuesta
     puts "resolvermos la jodida "
+	puts "Insertarndo solucion #{@respuestas.at(indice_respuesta).contenido}"
     @dudas.at(@indice_duda_seleccionada).insertar_solucion(@respuestas.at(indice_respuesta))
     @@bot.api.send_message( chat_id: @ultimo_mensaje.id_telegram, text:  "Duda #{@dudas.at(@indice_duda_seleccionada).contenido} resuelta por *#{@respuestas.at(indice_respuesta).contenido}*", parse_mode: "Markdown"  )
     @fase=nil
@@ -212,6 +215,8 @@ class ListarDudas < Accion
 
 
   def mostrar_menu_anterior
+
+puts @dudas.to_s
 
     puts @fase
     case @fase
@@ -223,7 +228,7 @@ class ListarDudas < Accion
 #        mostrar_dudas_pendientes("editar_mensaje")
         @fase="mostrar_dudas_pendientes"
       when "mostrando_respuestas"
-        mostrar_dudas_pendientes("editar_mensaje")
+        mostrar_dudas("editar_mensaje")
         @fase="opciones_sobre_duda"
       when "borrar_duda"
         mostrar_acciones(@indice_duda_seleccionada)
@@ -241,6 +246,8 @@ class ListarDudas < Accion
   end
 
   def mostrar_solucion_duda
+  puts @dudas.to_s
+  puts @indice_duda_seleccionada
     solucion_duda=@dudas.at(@indice_duda_seleccionada).solucion
     puts solucion_duda.to_s
     texto="Duda: *#{@dudas.at(@indice_duda_seleccionada).contenido}* \n Solución: *#{solucion_duda.contenido}*."

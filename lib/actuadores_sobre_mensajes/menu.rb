@@ -152,7 +152,7 @@ class Menu < Accion
     iniciar_acciones_defecto(fila_botones)
 
     markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: fila_botones)
-    @@bot.api.send_message( chat_id: id_telegram, text: "Elija entre las actuadores_sobre_mensajes del menu",  reply_markup: markup)
+    @@bot.api.send_message( chat_id: id_telegram, text: "Elija entre las opciones del menu",  reply_markup: markup)
     return self
   end
 

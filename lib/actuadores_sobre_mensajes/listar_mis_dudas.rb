@@ -61,10 +61,12 @@ class ListarMisDudas < ListarDudas
     puts "Datos del mensaje es #{datos_mensaje}"
     case datos_mensaje
       when /\#\#\$\$Solución duda/
-        @curso.eliminar_duda(@dudas.at(@indice_duda_seleccionada))
+#        @curso.eliminar_duda(@dudas.at(@indice_duda_seleccionada))
         @@bot.api.answer_callback_query(callback_query_id: @ultimo_mensaje.id_callback, text: "Buscando solución...")
         mostrar_solucion_duda
-        @fase="solucion_duda"
+
+        #@fase="solucion_duda"
+        @fase="opciones_sobre_duda"
       when  /\#\#\$\$Todas respuestas/
         datos_mensaje.slice! "#\#$$Ver respuestas"
         @@bot.api.answer_callback_query(callback_query_id: @ultimo_mensaje.id_callback, text: "Obteniendo respuestas...")
@@ -76,7 +78,7 @@ class ListarMisDudas < ListarDudas
 
   end
 
-
+=begin
   def mostrar_menu_anterior
     case @fase
       when "mostrando_respuestas"
@@ -91,7 +93,7 @@ class ListarMisDudas < ListarDudas
     end
   end
 
-
+=end
 
 
   public_class_method :new

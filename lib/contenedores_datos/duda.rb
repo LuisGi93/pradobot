@@ -26,12 +26,17 @@ class Duda < ConexionBD
   end
 
   def insertar_solucion respuesta
+puts "insertando solucion respuesta"
     @@db[:dudas_resueltas].insert(:id_usuario_duda => @usuario.id_telegram, :contenido_duda => @contenido)
+   puts @@db[:dudas_resueltas].to_a
+puts respuesta.contenido
     @@db[:respuesta_resuelve_duda].insert(:id_usuario_respuesta => respuesta.usuario.id_telegram, :contenido_respuesta => respuesta.contenido, :id_usuario_duda => @usuario.id_telegram, :contenido_duda => @contenido)
+  puts @@db[:respuesta_resuelve_duda].to_a
   end
 
   def solucion
     datos_respuesta=@@db[:respuesta_resuelve_duda].where(:id_usuario_duda => @usuario.id_telegram, :contenido_duda => @contenido).to_a
+	puts "Solucion duda"
     puts @usuario.id_telegram
     puts @contenido
     puts datos_respuesta.to_s
