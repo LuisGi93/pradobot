@@ -8,7 +8,7 @@ class Tutoria < ConexionBD
   end
 
   def posicion_peticion peticion
-    peticiones=@@db[:peticion_tutoria].where(:id_profesor => @profesor.id, :dia_semana_hora => @fecha).to_a
+    peticiones=@@db[:peticion_tutoria].where(:id_profesor => @profesor.id, :dia_semana_hora => @fecha).order(:hora_solicitud).to_a
     id_estudiante=peticion.estudiante.id_telegram
     contador=0
     while(contador < peticiones.size && peticiones[contador][:id_estudiante] != id_estudiante )
@@ -32,7 +32,9 @@ class Tutoria < ConexionBD
     return @peticiones
   end
 
-
+  def == (y)
+    return @profesor== y.profesor && @fecha == y.fecha
+  end
 end
 
 require_relative 'peticion'

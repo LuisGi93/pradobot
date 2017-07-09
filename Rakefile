@@ -28,7 +28,7 @@ namespace :tasks do
       end
 
       RSpec::Core::RakeTask.new(:tests_bd) do |t|
-        t.pattern = Dir.glob('test/test_bd_*.rb')
+        t.pattern = Dir.glob('test/test_db_usuario_desconocido.rb')
         t.rspec_opts = '--format documentation'
       end
 
@@ -61,6 +61,5 @@ end
 desc "Ejecutamos los test sobre la base de datos"
 task :testbd => ['tasks:db:test:crear', 'tasks:db:test:tests_bd', 'tasks:db:test:destruir' ]
 
-task :test => ['tasks:tests:spec' ]
 
-task :default => :testbd
+task :default => ['tasks:db:test:tests_bd']

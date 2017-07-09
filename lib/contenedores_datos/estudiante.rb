@@ -1,11 +1,12 @@
 
 require_relative 'usuario'
-
+require 'time'
 class Estudiante < Usuario
 
   attr_reader :id
   def initialize id_estudiante
     @id=id_estudiante
+    @id_telegram=@id
     inicializar_moodle
   end
 
@@ -54,28 +55,15 @@ class Estudiante < Usuario
   def obtener_peticiones_tutorias
     peticiones=Array.new
     datos_peticiones=@@db[:peticion_tutoria].where(:id_estudiante => @id).to_a
-    puts datos_peticiones.to_s
-    #Al alumno se le pide que peticiones a realizado y no ha tutorio porque tutoria representa a una tutoria tal cual
     datos_peticiones.each{|datos_peticion|
-      tutoria=Tutoria.new(Profesor.new(datos_peticion[:id_profesor]), datos_peticion[:dia_semana_hora])
-        peticiones << Peticion.new(tutoria, Estudiante.new(datos_peticion[:id_estudiante]), datos_peticion[:hora_solicitud])
+      tutoria=Tutoria.new(Profesor.new(datos_peticion[:id_profesor]), datos_peticion[:dia_semana_hora].strftime("%Y-%m-%d %H:%M:%S"))
+        peticiones << Peticion.new(tutoria, Estudiante.new(datos_peticion[:id_estudiante]), datos_peticion[:hora_solicitud].strftime("%Y-%m-%d %H:%M:%S"))
     }
     return peticiones
   end
 
 
 
-  def token_moodle
-=begin
-    if @token_moodle.nil?
-      datos_estudiante=@@db[:estudiante].where(:id_telegram => @id).select(:email).first
-      @email=datos_estudiante[:email]
-      datos_estudiante=@@db[:estudiante_moodle].where(:email => @email).select(:token).first
-      @token_moodle=datos_estudiante[:token]
-    end
-    return @token_moodle
-=end
-  end
 
   def obtener_entregas_realizadas curso
     entregas_curso=@moodle.obtener_entregas_curso(curso)

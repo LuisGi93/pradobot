@@ -13,7 +13,7 @@ class Peticion < ConexionBD
   def hora
     if @hora.nil?
       datos_peticion=@@db[:peticion_tutoria].where(:id_profesor => @tutoria.profesor.id_telegram, :dia_semana_hora => @tutoria.fecha, :id_estudiante=>@estudiante.id).select(:hora_solicitud)
-      @hora=datos_peticion[:hora_solicitud]
+      @hora=datos_peticion.to_a[0][:hora_solicitud].strftime("%Y-%m-%d %H:%M:%S")
     end
     return @hora
   end
@@ -37,7 +37,17 @@ class Peticion < ConexionBD
   end
 
   def <=>(y)
-    return hora < y.hora
+    if  hora < y.hora
+        return -1
+    elsif hora == y.hora
+        return 0
+    else
+        return 1
+    end
+
   end
 
+  def == (y)
+    return  @tutoria == y.tutoria && @estudiante == y.estudiante
+  end
 end
