@@ -13,9 +13,8 @@ class MenuDeAcciones < Menu
 
 
   def recibir_mensaje(mensaje)
-    id_telegram=mensaje.obtener_identificador_telegram
-    datos_mensaje=mensaje.obtener_datos_mensaje
-
+    id_telegram=mensaje.usuario.id_telegram
+    datos_mensaje=mensaje.datos_mensaje
     quiere_cambiar_curso=cambiar_curso_pulsado(mensaje)
 
     unless quiere_cambiar_curso
@@ -101,26 +100,6 @@ class MenuDeAcciones < Menu
     return siguiente_accion
   end
 
-  def crear_menu_indice (acciones, prefijo)
-    fila_botones=Array.new
-    array_botones=Array.new
-    acciones.each{|accion|
-      array_botones << Telegram::Bot::Types::InlineKeyboardButton.new(text: accion, callback_data: "#\#$$#{prefijo} #{accion}")
-      if array_botones.size == 4
-        fila_botones << array_botones.dup
-        array_botones.clear
-      end
-    }
-
-    if(prefijo =="duda_")
-      fila_botones << array_botones
-    else
-      fila_botones << array_botones << Telegram::Bot::Types::InlineKeyboardButton.new(text: "Volver", callback_data: "#\#$$Volver")
-    end
-
-    markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: fila_botones)
-    return markup
-  end
 
 
 

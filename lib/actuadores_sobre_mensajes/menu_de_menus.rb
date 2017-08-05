@@ -9,8 +9,8 @@ class MenuDeMenus < Menu
 
 
   def recibir_mensaje(mensaje)
-    id_telegram=mensaje.obtener_identificador_telegram
-    datos_mensaje=mensaje.obtener_datos_mensaje
+    id_telegram=mensaje.usuario.id_telegram
+    datos_mensaje=mensaje.datos_mensaje
     if cambiar_curso_pulsado(mensaje)
       siguiente_accion=self
     else
@@ -47,7 +47,7 @@ class MenuDeMenus < Menu
 
   def obtener_siguiente_opcion(id_telegram, datos_mensaje)
     siguiente_accion=nil
-
+puts datos_mensaje
     if datos_mensaje== "Atras" && @accion_padre
       siguiente_accion=@accion_padre
     else

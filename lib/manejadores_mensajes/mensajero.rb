@@ -36,11 +36,9 @@ class Mensajero
   #   - +mensaje+ -> un nuevo mensaje recibido por parte del bot
   #
   def clasificar_mensaje mensaje
-    tipo_chat= mensaje.obtener_tipo_chat
-    puts "tipo_chat #{tipo_chat}"
-    if tipo_chat == "privado"
+    if mensaje.tipo_chat == "privado"
       @encargado_mensajes_privados.recibir_mensaje(mensaje)
-    elsif tipo_chat == "grupal"
+    elsif mensaje.tipo_chat == "grupal"
       @encargado_mensajes_grupales.recibir_mensaje(mensaje)
     end
   end
@@ -67,5 +65,3 @@ class Mensajero
 
 
 end
-
-

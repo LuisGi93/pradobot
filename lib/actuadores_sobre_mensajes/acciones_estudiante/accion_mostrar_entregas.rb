@@ -3,6 +3,8 @@ require_relative '../../contenedores_datos/entrega'
 require_relative '../../contenedores_datos/curso'
 require_relative '../../moodle_api'
 require_relative '../../contenedores_datos/estudiante'
+require_relative '../menu_inline_telegram.rb'
+
 class AccionMostrarEntregas < Accion
 
   attr_reader :moodle
@@ -15,27 +17,6 @@ class AccionMostrarEntregas < Accion
 
   def establecer_id_telegram(id_telegram)
     @id_telegram=id_telegram
-  end
-
-  def crear_menu_indice (acciones, prefijo, tipo)
-    fila_botones=Array.new
-    array_botones=Array.new
-    acciones.each{|accion|
-      array_botones << Telegram::Bot::Types::InlineKeyboardButton.new(text: accion, callback_data: "#\#$$#{prefijo} #{accion}")
-      if array_botones.size == 4
-        fila_botones << array_botones.dup
-        array_botones.clear
-      end
-    }
-
-    if(tipo =="final")
-      fila_botones << array_botones
-    else
-      fila_botones << array_botones << Telegram::Bot::Types::InlineKeyboardButton.new(text: "Volver", callback_data: "#\#$$Volver")
-    end
-
-    markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: fila_botones)
-    return markup
   end
 
   def obtener_mensaje
@@ -56,12 +37,13 @@ class AccionMostrarEntregas < Accion
 
   def mostrar_entregas opcion
     indices=[*0..@entregas.size-1]
-    menu=crear_menu_indice(indices, "Entrega", "final")
+    
+    menu=MenuInlineTelegram.crear_menu_indice(indices, "Entrega", "final")
     texto = obtener_mensaje
     if opcion == "editar_mensaje"
       @@bot.api.edit_message_text(:chat_id => @ultimo_mensaje.id_chat ,:message_id => @ultimo_mensaje.id_mensaje, text: texto,reply_markup: menu, parse_mode: "Markdown" )
     else
-      @@bot.api.send_message( chat_id: @ultimo_mensaje.id_telegram, text: texto,reply_markup: menu, parse_mode: "Markdown"  )
+      @@bot.api.send_message( chat_id: @ultimo_mensaje.usuario.id_telegram, text: texto,reply_markup: menu, parse_mode: "Markdown"  )
     end
   end
 
@@ -79,28 +61,13 @@ class AccionMostrarEntregas < Accion
       texto="#{entrega.nombre} no cuenta con ninguna descripción."
     end
     acciones=[ "Volver"]
-    menu=crear_menu(acciones)
+    menu=MenuInlineTelegram.crear(acciones)
     @@bot.api.edit_message_text(:chat_id => @ultimo_mensaje.id_chat ,:message_id => @ultimo_mensaje.id_mensaje, text: texto,reply_markup: menu, parse_mode: 'Markdown' )
-  end
-
-  def crear_menu(acciones)
-    fila_botones=Array.new
-    array_botones=Array.new
-    acciones.each{|accion|
-      array_botones << Telegram::Bot::Types::InlineKeyboardButton.new(text: accion, callback_data: "#\#$$#{accion}")
-      if array_botones.size == 3
-        fila_botones << array_botones.dup
-        array_botones.clear
-      end
-    }
-    fila_botones << array_botones
-    markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: fila_botones)
-    return markup
   end
 
   def recibir_mensaje(mensaje)
     @ultimo_mensaje=mensaje
-    datos_mensaje=@ultimo_mensaje.obtener_datos_mensaje
+    datos_mensaje=@ultimo_mensaje.datos_mensaje
     #puts datos_mensaje
     case datos_mensaje
       when  /\#\#\$\$Entrega/

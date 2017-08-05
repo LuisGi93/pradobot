@@ -5,22 +5,8 @@ class AccionAsociarChat< Accion
   @nombre='Asociar chat curso'
   def initialize
     @fase='inicio'
-    @id_telegram=nil
-  end
-
-  def establecer_id_telegram(id_telegram)
-    @id_telegram=id_telegram
-  end
-
-  def ejecutar(id_telegram)
-
-    if @id_telegram.nil?
-      establecer_id_telegram(id_telegram)
+    @ultimo_mensaje=nil
     end
-    @@bot.api.send_message( chat_id: @id_telegram, text: "Introduzca el nombre del chat al cual quiere asociar *#{@curso.nombre}*", parse_mode: 'Markdown')
-    @fase='peticion_nombre_chat'
-  end
-
 
   def reiniciar
     @fase='inicio'
@@ -31,20 +17,14 @@ class AccionAsociarChat< Accion
   end
 
   def recibir_mensaje(mensaje)
-    id_telegram=mensaje.obtener_identificador_telegram
-    datos_mensaje=mensaje.obtener_datos_mensaje
-    if @id_telegram.nil?
-      establecer_id_telegram(id_telegram)
-    end
-
     case @fase
       when 'inicio'
-          @@bot.api.send_message( chat_id: @id_telegram, text: "Introduzca el nombre del chat al cual quiere asociar *#{@curso.nombre}*", parse_mode: 'Markdown')
+          @@bot.api.send_message( chat_id: mensaje.usuario.id_telegram, text: "Introduzca el nombre del chat al cual quiere asociar *#{@curso.nombre}*", parse_mode: 'Markdown')
           @fase='peticion_nombre_chat'
       when 'peticion_nombre_chat'
-        @curso.asociar_chat datos_mensaje
-        texto="Curso *#{@curso.nombre}*  asociado al chat *#{datos_mensaje}*"
-        @@bot.api.send_message( chat_id: @id_telegram, text: texto, parse_mode: 'Markdown' )
+        @curso.asociar_chat mensaje.datos_mensaje
+        texto="Curso *#{@curso.nombre}*  asociado al chat *#{mensaje.datos_mensaje}*"
+        @@bot.api.send_message( chat_id: mensaje.usuario.id_telegram, text: texto, parse_mode: 'Markdown' )
         reiniciar
     end
 

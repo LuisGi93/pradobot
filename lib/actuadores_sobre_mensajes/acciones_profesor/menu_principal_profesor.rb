@@ -1,5 +1,4 @@
 
-require_relative 'menu_curso'
 require_relative 'menu_chat'
 require_relative '../menu_dudas'
 require_relative '../menu_de_menus'
@@ -29,7 +28,7 @@ class MenuPrincipalProfesor < MenuDeMenus
   end
 
   def iniciar_acciones_defecto kb
-    kb <<   Telegram::Bot::Types::KeyboardButton.new( text: "Cambiar curso. Curso actual: #{@curso.nombre}.")
+    kb <<   Telegram::Bot::Types::KeyboardButton.new( text: "Cambiar de curso. Curso actual: #{@curso.nombre}.")
 
   end
 

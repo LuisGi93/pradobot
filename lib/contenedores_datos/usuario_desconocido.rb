@@ -5,8 +5,9 @@ class UsuarioDesconocido < ConexionBD
 
   attr_accessor  :email, :rol, :cursos, :token, :contrasena, :id_telegram, :id_moodle, :nombre_usuario
 
-  def initialize id_telegram=nil
+  def initialize id_telegram, nombre_usuario
     @id_telegram= id_telegram
+    @nombre_usuario= nombre_usuario
     @cursos=Array.new
   end
 
@@ -50,27 +51,6 @@ class UsuarioDesconocido < ConexionBD
     end
   end
 
-  def que_tipo_usuario_soy
-    usuario= @@db[:usuario_telegram].where(:id_telegram => @id_telegram).first
-    tipo_usuario="desconocido"
-    if usuario
-      es_profesor=@@db[:profesor].where(:id_telegram => @id_telegram).first
-      if es_profesor
-        tipo_usuario='profesor'
-      else
-        es_estudiante=@@db[:estudiante].where(:id_telegram => @id_telegram).first
-        if es_estudiante
-          tipo_usuario='estudiante'
-        else
-          es_admin=@@db[:admin].where(:id_telegram => @id_telegram).first
-          if es_admin
-            tipo_usuario='admin'
-          end
-        end
-      end
-    end
-    return tipo_usuario
-  end
 
-  
+
 end

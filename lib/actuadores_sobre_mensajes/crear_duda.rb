@@ -8,21 +8,13 @@ class CrearDuda < Accion
   def initialize
     @fase='inicio'
     @duda
-    @id_telegram=nil
+    @ultimo_mensaje=nil
   end
 
 
-  def ejecutar(id_telegram)
-
-    if @id_telegram.nil?
-      @id_telegram=id_telegram
-    end
-    #tutorias=obtener_tutorias_alumno
-
+  def solicitar_escribir_duda
     text="Escriba a continuación la duda que desea crear relacionada con *#{@curso.nombre}*\n"
-    @@bot.api.send_message( chat_id: @id_telegram, text: text, parse_mode: "Markdown"  )
-
-
+    @@bot.api.send_message( chat_id: @ultimo_mensaje.id_telegram, text: text, parse_mode: "Markdown"  )
     @fase="escribiendo_duda"
   end
 
@@ -30,7 +22,7 @@ class CrearDuda < Accion
   def reiniciar
     @duda=nil
     @fase="inicio"
-    @id_telegram=nil
+    @ultimo_mensaje=nil
   end
 
   def confirmar_denegar_duda
@@ -49,16 +41,16 @@ class CrearDuda < Accion
 
 
 
-  def crear_descartar_duda datos_mensaje, id_mensaje
-      if datos_mensaje =~ /crear_duda_/
-        estudiante= Estudiante.new(@id_telegram)
+  def crear_descartar_duda
+      if @ultimo_mensaje.datos_mensaje =~ /crear_duda_/
+        estudiante= Estudiante.new(@ultimo_mensaje.usuario.id_telegram)
         duda= Duda.new(@duda, estudiante)
         @curso.nueva_duda(duda)
-        @@bot.api.answer_callback_query(callback_query_id: id_mensaje, text: "Creada")
+        @@bot.api.answer_callback_query(callback_query_id: @ultimo_mensaje.id_mensaje, text: "Creada")
         texto='Elija una opción del menú:'
-        @@bot.api.edit_message_text(:chat_id => @id_chat ,:message_id => @id_mensaje, text: "Se ha creado una nueva duda con el contenido: *#{@duda}*", parse_mode: "Markdown" )
+        @@bot.api.edit_message_text(:chat_id => @ultimo_mensaje.id_chat ,:message_id => @ultimo_mensaje.id_mensaje, text: "Se ha creado una nueva duda con el contenido: *#{@duda}*", parse_mode: "Markdown" )
       else
-        @@bot.api.answer_callback_query(callback_query_id: id_mensaje, text: "Descartada")
+        @@bot.api.answer_callback_query(callback_query_id: @ultimo_mensaje.id_mensaje, text: "Descartada")
        # @@bot.api.delete_message( chat_id: @id_chat, message_id: @id_mensaje)
         texto='Elija una opción del menú:'
         @@bot.api.edit_message_text(:chat_id => @id_chat ,:message_id => @id_mensaje, text: texto, parse_mode: "Markdown" )
@@ -71,24 +63,17 @@ class CrearDuda < Accion
 
 
   def recibir_mensaje(mensaje)
-    id_telegram=mensaje.obtener_identificador_telegram
-    datos_mensaje=mensaje.obtener_datos_mensaje
-    @id_chat= mensaje.obtener_identificador_chat
-    @id_mensaje=mensaje.obtener_identificador_mensaje
-
-    if @id_telegram.nil?
-      @id_telegram=id_telegram
-    end
+    @ultimo_mensaje=mensaje
 
     if @fase=="escribiendo_duda"
-      @duda=datos_mensaje
+      @duda=@ultimo_mensaje.datos_mensaje
       confirmar_denegar_duda
       @fase="solicitar_confirmacion"
-    elsif datos_mensaje =~ /(crear_duda_|descartar_duda_)/
-      crear_descartar_duda datos_mensaje, mensaje.obtener_identificador_callbackquery
+    elsif @ultimo_mensaje.datos_mensaje =~ /(crear_duda_|descartar_duda_)/
+      crear_descartar_duda
       reiniciar
     else
-      ejecutar(id_telegram)
+      solicitar_escribir_duda
     end
   end
 

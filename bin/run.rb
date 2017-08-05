@@ -10,13 +10,13 @@ options = {
 
 
 
-Daemons.call(options) do
+#Daemons.call(options) do   
   # Server loop:
 
 TrabajosPeriodicos.actualizar_tutorias
 bot =Mensajero.new(ENV['TOKEN_BOT'])
 bot.empezar_recibir_mensajes
 
-end
+#end    
 
 

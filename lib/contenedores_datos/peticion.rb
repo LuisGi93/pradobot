@@ -12,7 +12,7 @@ class Peticion < ConexionBD
 
   def hora
     if @hora.nil?
-      datos_peticion=@@db[:peticion_tutoria].where(:id_profesor => @tutoria.profesor.id_telegram, :dia_semana_hora => @tutoria.fecha, :id_estudiante=>@estudiante.id).select(:hora_solicitud)
+      datos_peticion=@@db[:peticion_tutoria].where(:id_profesor => @tutoria.profesor.id_telegram, :dia_semana_hora => @tutoria.fecha, :id_estudiante=>@estudiante.id_telegram).select(:hora_solicitud)
       @hora=datos_peticion.to_a[0][:hora_solicitud].strftime("%Y-%m-%d %H:%M:%S")
     end
     return @hora
@@ -20,7 +20,7 @@ class Peticion < ConexionBD
 
   def estado
     if @estado.nil?
-      datos_peticion=@@db[:peticion_tutoria].where(:id_profesor => @tutoria.profesor.id_telegram, :dia_semana_hora => @tutoria.fecha, :id_estudiante=>@estudiante.id).select(:estado)
+      datos_peticion=@@db[:peticion_tutoria].where(:id_profesor => @tutoria.profesor.id_telegram, :dia_semana_hora => @tutoria.fecha, :id_estudiante=>@estudiante.id_telegram).select(:estado)
       puts datos_peticion.to_a.to_s
       @estado=datos_peticion.to_a[0][:estado]
     end
@@ -28,12 +28,12 @@ class Peticion < ConexionBD
   end
 
   def aceptar
-      @@db[:peticion_tutoria].where(:id_profesor => @tutoria.profesor.id_telegram, :dia_semana_hora => @tutoria.fecha, :id_estudiante=>@estudiante.id).update(:estado => "aceptada")
+      @@db[:peticion_tutoria].where(:id_profesor => @tutoria.profesor.id_telegram, :dia_semana_hora => @tutoria.fecha, :id_estudiante=>@estudiante.id_telegram).update(:estado => "aceptada")
   end
 
 
   def denegar
-    @@db[:peticion_tutoria].where(:id_profesor => @tutoria.profesor.id_telegram, :dia_semana_hora => @tutoria.fecha, :id_estudiante=>@estudiante.id).update(:estado => "rechazada")
+    @@db[:peticion_tutoria].where(:id_profesor => @tutoria.profesor.id_telegram, :dia_semana_hora => @tutoria.fecha, :id_estudiante=>@estudiante.id_telegram).update(:estado => "rechazada")
   end
 
   def <=>(y)

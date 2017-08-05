@@ -26,7 +26,7 @@ class AccionEstablecerTutorias < Accion
   end
 
   def recibir_mensaje(mensaje)
-    id_telegram=mensaje.obtener_identificador_telegram
+    id_telegram=mensaje.usuario.id_telegram
     datos_mensaje=mensaje.obtener_datos_mensaje
     if @id_telegram.nil?
       @id_telegram=id_telegram

@@ -1,7 +1,7 @@
 
 require_relative 'usuario'
 
-class Profesor < Usuario
+class Profesor < UsuarioRegistrado
   attr_reader :id
   def initialize id_telegram=nil
     @id_telegram=id_telegram
@@ -16,7 +16,7 @@ class Profesor < Usuario
     begin
       puts Time.new.strftime("%Y-%m-%d %H:%M:%S")
       @@db[:peticion_tutoria].where(:id_profesor => @id_telegram, :dia_semana_hora => peticion.tutoria.fecha)
-        .insert(:id_profesor => @id_telegram, :dia_semana_hora => peticion.tutoria.fecha, :id_estudiante => peticion.estudiante.id, :hora_solicitud => Time.new.strftime("%Y-%m-%d %H:%M:%S"), :estado => "por aprobar")
+        .insert(:id_profesor => @id_telegram, :dia_semana_hora => peticion.tutoria.fecha, :id_estudiante => peticion.estudiante.id_telegram, :hora_solicitud => Time.new.strftime("%Y-%m-%d %H:%M:%S"), :estado => "por aprobar")
     rescue  Sequel::ForeignKeyConstraintViolation, Sequel::UniqueConstraintViolation => boom
       aceptada=false
 

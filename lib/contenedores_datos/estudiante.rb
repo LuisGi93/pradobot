@@ -1,17 +1,16 @@
 
-require_relative 'usuario'
+require_relative 'usuario_registrado'
 require 'time'
-class Estudiante < Usuario
+class Estudiante < UsuarioRegistrado
 
   attr_reader :id
   def initialize id_estudiante
-    @id=id_estudiante
-    @id_telegram=@id
+    @id_telegram=id_estudiante
     inicializar_moodle
   end
 
   def inicializar_moodle
-    email=@@db[:usuarios_moodle].where(:id_telegram => @id).select(:email).first[:email]
+    email=@@db[:usuarios_moodle].where(:id_telegram => @id_telegram).select(:email).first[:email]
     token=@@db[:datos_moodle].where(:email => email).select(:token).first[:token]
     @moodle=Moodle.new(token)
   end
@@ -42,7 +41,7 @@ class Estudiante < Usuario
 
 
   def obtener_cursos_estudiante
-    consulta_cursos_alumno=@@db[:estudiante_curso].where(:id_estudiante => @id).select(:id_moodle_curso).to_a
+    consulta_cursos_alumno=@@db[:estudiante_curso].where(:id_estudiante => @id_telegram).select(:id_moodle_curso).to_a
     cursos_alumno=Array.new
     consulta_cursos_alumno.each{|curso|
       cursos_alumno << Curso.new( curso[:id_moodle_curso])
@@ -54,11 +53,12 @@ class Estudiante < Usuario
 
   def obtener_peticiones_tutorias
     peticiones=Array.new
-    datos_peticiones=@@db[:peticion_tutoria].where(:id_estudiante => @id).to_a
+    datos_peticiones=@@db[:peticion_tutoria].where(:id_estudiante => @id_telegram).to_a
     datos_peticiones.each{|datos_peticion|
       tutoria=Tutoria.new(Profesor.new(datos_peticion[:id_profesor]), datos_peticion[:dia_semana_hora].strftime("%Y-%m-%d %H:%M:%S"))
         peticiones << Peticion.new(tutoria, Estudiante.new(datos_peticion[:id_estudiante]), datos_peticion[:hora_solicitud].strftime("%Y-%m-%d %H:%M:%S"))
     }
+    puts peticiones
     return peticiones
   end
 

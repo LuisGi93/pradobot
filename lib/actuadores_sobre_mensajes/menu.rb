@@ -1,5 +1,5 @@
 require_relative 'accion'
-require_relative '../../lib/contenedores_datos/usuario'
+require_relative '../../lib/contenedores_datos/usuario_registrado'
 
 #
 # Agrupa todas la funcionalidad común necesaria para poder mostrar un menú gráfico (https://core.telegram.org/bots/api#replykeyboardmarkup) con diferentes opciones.
@@ -12,6 +12,18 @@ class Menu < Accion
   end
 
 
+  #
+  #
+  # Muestra al usuario identificado por +id_telegram+ un mensaje de ayuda o explicativo sobre que hace la acción.
+  # * *Args*    :
+  #   - +id_telegram+ -> identificador del usuario que ha iniciado la ejecución de la acción
+  # * *Returns* :
+  #   - Se devuelve a si misma.
+  #
+  def ejecutar(id_telegram)
+    raise NotImplementedError.new
+  end
+  
   #
   # Manda al usuario  identificado por +id_telegram+ un mensaje para que elija un curso entre los que cursa.
   # * *Args*    :
@@ -54,18 +66,18 @@ class Menu < Accion
 
   def cambiar_curso_pulsado mensaje
     pulsado=false
-    datos_mensaje=mensaje.obtener_datos_mensaje
+    datos_mensaje=mensaje.datos_mensaje
     if datos_mensaje  =~ /Cambiar de curso.+/
-      solicitar_introducir_nuevo_curso mensaje.obtener_identificador_telegram
+      solicitar_introducir_nuevo_curso mensaje.usuario.id_telegram
       pulsado=true
     elsif datos_mensaje  =~ /cambiando_a_curso_id_curso#.+/
       datos_mensaje.slice! "cambiando_a_curso_id_curso#"
       id_curso = datos_mensaje[/^[0-9]{1,2}/]
       id_curso=id_curso.to_i
-      iniciar_cambio_curso(mensaje.obtener_identificador_telegram, id_curso)
+      iniciar_cambio_curso(mensaje.usuario.id_telegram, id_curso)
       pulsado=true
       @@bot.api.answer_callback_query(:callback_query_id => mensaje.id_callback, text:"Cambiando de curso..")
-      ejecutar(mensaje.obtener_identificador_telegram)
+      ejecutar(mensaje.usuario.id_telegram)
 
     end
 
@@ -113,7 +125,7 @@ class Menu < Accion
   #   - +id_curso+ -> Identifica al curso al cual desea cambiar el usuario identificado por +id_telegram+
 
   def iniciar_cambio_curso(id_telegram, id_curso)
-      usuario=Usuario.new(id_telegram)
+      usuario=UsuarioRegistrado.new(id_telegram)
       cursos=usuario.obtener_cursos_usuario
       @curso=nil
       cont=0

@@ -1,13 +1,12 @@
 require_relative '../contenedores_datos/mensaje'
 require_relative '../moodle_api'
-require_relative '../actuadores_sobre_mensajes/chat_curso'
+require_relative '../actuadores_sobre_mensajes/funciones_chat_grupales.rb'
 require_relative '../contenedores_datos/chat_telegram'
 
 class EncargadoMensajesGrupales
 
   def initialize  #se puede meter aqui lo relacionado con accion_chat si solamente se van a llamar funciones en los hijos de accion_chat
     @grupos=Hash.new  #! tienen que ser instanciadas las actuadores_sobre_mensajes asociadas a los chats privados/menus ya que suelen tener estado interno, otra cosa es que se pueda hacer una jearquia
-    #@chat_curso=ChatCurso.new(Moodle.new(ENV['TOKEN_BOT_MOODLE']))
   end
 
   #La única forma de identificar al chat es por su nombre ya que es lo único que se le permite ver al usuario profesor, no es posible por ejemplo obtener los nombres
@@ -62,7 +61,6 @@ class EncargadoMensajesGrupales
       when /\/entregas$/
         entregas_curso=@grupos[id_chat][:curso].entregas
         mostrar_entregas_del_curso(id_chat, entregas_curso)
-        #@chat_curso.mostrar_entregas_del_curso(id_chat, @grupos[id_chat])
       when /\/dudas$/
         dudas_curso=@grupos[id_chat][:curso].obtener_dudas_sin_resolver
         mostrar_dudas_curso id_chat, dudas_curso
@@ -111,7 +109,6 @@ class EncargadoMensajesGrupales
 
   def establecer_bot botox
     @bot=botox
-   # @chat_curso.establecer_bot(botox)
   end
 
 

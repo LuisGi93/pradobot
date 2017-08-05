@@ -86,13 +86,13 @@ def crear_tablas db
 
   db.create_table! :dudas do
     foreign_key :id_usuario_duda, :usuarios_moodle, :key => 'id_telegram', :type => 'integer', :on_delete => :cascade, :on_update => :cascade
-    Column     :contenido_duda, :type => 'varchar(100)'
+    Column     :contenido_duda, :type => 'varchar(1000)'
     primary_key [:id_usuario_duda, :contenido_duda]
   end
 
   db.create_table! :dudas_curso do
     Integer :id_usuario_duda
-    Column     :contenido_duda, :type => 'varchar(100)'
+    Column     :contenido_duda, :type => 'varchar(1000)'
     foreign_key :id_moodle_curso, :curso, :key => 'id_moodle', :on_delete => :cascade, :on_update => :cascade
     foreign_key [:id_usuario_duda, :contenido_duda], :dudas, :on_delete => :cascade, :on_update => :cascade
     primary_key [:id_usuario_duda, :contenido_duda, :id_moodle_curso]
@@ -102,7 +102,7 @@ def crear_tablas db
 
   db.create_table! :dudas_resueltas do
     Integer :id_usuario_duda
-    Column     :contenido_duda, :type => 'varchar(100)'
+    Column     :contenido_duda, :type => 'varchar(1000)'
     foreign_key [:id_usuario_duda, :contenido_duda], :dudas, :on_delete => :cascade, :on_update => :cascade
     primary_key [:id_usuario_duda, :contenido_duda]
   end
@@ -111,15 +111,15 @@ def crear_tablas db
 
   db.create_table! :respuestas do
     foreign_key :id_usuario_respuesta, :usuarios_moodle , :key => 'id_telegram', :type => 'integer', :on_delete => :cascade, :on_update => :cascade
-    Column     :contenido_respuesta, :type => 'varchar(100)'
+    Column     :contenido_respuesta, :type => 'varchar(1000)'
     primary_key [:id_usuario_respuesta, :contenido_respuesta]
   end
 
   db.create_table! :respuesta_duda do
     Integer :id_usuario_duda
-    Column     :contenido_duda, :type => 'varchar(100)'
+    Column     :contenido_duda, :type => 'varchar(1000)'
     Integer :id_usuario_respuesta
-    Column     :contenido_respuesta, :type => 'varchar(100)'
+    Column     :contenido_respuesta, :type => 'varchar(1000)'
     foreign_key [:id_usuario_duda, :contenido_duda], :dudas, :on_delete => :cascade, :on_update => :cascade
     foreign_key [:id_usuario_respuesta, :contenido_respuesta], :respuestas, :on_delete => :cascade, :on_update => :cascade
     primary_key [:id_usuario_respuesta, :contenido_respuesta, :id_usuario_duda, :contenido_duda]
@@ -128,9 +128,9 @@ def crear_tablas db
 
   db.create_table! :respuesta_resuelve_duda do
     Integer :id_usuario_duda
-    Column     :contenido_duda, :type => 'varchar(100)'
+    Column     :contenido_duda, :type => 'varchar(1000)'
     Integer :id_usuario_respuesta
-    Column     :contenido_respuesta, :type => 'varchar(100)'
+    Column     :contenido_respuesta, :type => 'varchar(1000)'
     foreign_key [:id_usuario_duda, :contenido_duda], :dudas, :on_delete => :cascade, :on_update => :cascade
     foreign_key [:id_usuario_respuesta, :contenido_respuesta], :respuestas, :on_delete => :cascade, :on_update => :cascade
     primary_key [:id_usuario_respuesta, :contenido_respuesta, :id_usuario_duda, :contenido_duda]

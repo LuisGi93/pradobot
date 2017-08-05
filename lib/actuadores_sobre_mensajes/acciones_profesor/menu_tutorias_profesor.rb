@@ -1,9 +1,6 @@
 require_relative  'establecer_tutorias'
-require_relative 'peticiones_pendientes'
 require_relative '../menu_acciones'
-require_relative 'borrar_tutorias'
-require_relative 'ver_informacion_tutorias'
-
+require_relative 'tutorias_profesor.rb'
 
 class MenuTutoriasProfesor < MenuDeAcciones
   @nombre= 'Tutorías'
@@ -70,10 +67,9 @@ class MenuTutoriasProfesor < MenuDeAcciones
 
   def inicializar_acciones
     @acciones[AccionEstablecerTutorias.nombre] = AccionEstablecerTutorias.new
-    @acciones[PeticionesPendientesTutoria.nombre] =PeticionesPendientesTutoria.new
-    @acciones[BorrarTutorias.nombre]= BorrarTutorias.new
-    @acciones[VerInformacionTutorias.nombre]= VerInformacionTutorias.new
+    @acciones[AccionSobreTutoria.nombre]= AccionSobreTutoria.new
   end
+
   private :inicializar_acciones
 
 end

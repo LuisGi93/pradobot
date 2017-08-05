@@ -41,12 +41,13 @@ class Curso < ConexionBD
   end
 
   def asociar_chat nombre_chat_telegram
-    chat=@@db[:chat_telegram].where(:nombre_chat => nombre_chat_telegram.titleize)
+
+    chat=@@db[:chat_curso].where(:id_moodle_curso => @id_curso)
     if chat.empty?
       @@db[:chat_telegram].insert(:nombre_chat => nombre_chat_telegram.titleize)
       @@db[:chat_curso].insert(:nombre_chat_telegram => nombre_chat_telegram.titleize, :id_moodle_curso => @id_curso)
     else
-      @@db[:chat_curso].where(:id_moodle_curso => @id_curso ).update(:nombre_chat_telegram => nombre_chat_telegram.titleize)
+      @@db[:chat_telegram].where(:nombre_chat => chat.first[:nombre_chat_telegram]).update(:nombre_chat => nombre_chat_telegram.titleize)
     end
   end
 
