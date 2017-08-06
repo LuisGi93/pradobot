@@ -3,7 +3,11 @@ require_relative 'borrar_tutorias'
 require_relative 'peticiones_pendientes'
 require_relative 'ver_informacion_tutorias'
 require_relative '../menu_inline_telegram'
-##Esta clase es como una especie de menu proxi entre menu_tutorias y las acciontes borrar, pendientes e informacion
+
+#
+#Esta clase es como una especie de proxy entre menu_tutorias y las acciontes borrar, pendientes e informacion. Se encarga de elegir cual es la tutoría sobre la cual actuan los mensajes del usuario y de cambiar la acción que recibe los mensajes que puede ser las acciones mencionadas anteriomente.
+#
+ 
 class AccionSobreTutoria < Accion
   attr_accessor :tutoria
   @nombre="Gestionar tutorías"
@@ -16,6 +20,11 @@ class AccionSobreTutoria < Accion
     @ultimo_mensaje=nil
   end
 
+  #
+  # Envia un mensaje solicitando que escoja una tutoría para lo cual muestra un menu tipo inline con las tutorías que ha creado el usuario.
+  #  * *Args*    :
+  #   - +modo+ -> Si es editar no manda un nuevo mensaje al chat del usuario sino que lo actualiza  para que muestre las tutorias del usuario. 
+  #
   def solicitar_seleccion_tutoria modo
       @accion=nil
       @tutoria=nil
@@ -50,7 +59,8 @@ class AccionSobreTutoria < Accion
 
 
 
-  def comprobar_seleccion_tutoria mensaje
+ 
+  def dcomprobar_seleccion_tutoria mensaje
 
       if mensaje.contenido =~ "\#\#\$\$tutoria.*"
 
@@ -67,18 +77,11 @@ class AccionSobreTutoria < Accion
     if @profesor.nil?
       @profesor=Profesor.new(@ultimo_mensaje.usuario.id_telegram)
     end
-    #if @tutoria
         if @accion
           @accion.generar_respuesta_mensaje(mensaje)
         else
-            if @tutoria.nil?
-
-            end
-          respuesta_segun_accion_pulsada mensaje.datos_mensaje
+         respuesta_segun_accion_pulsada mensaje.datos_mensaje
         end
-    #else
-     #  solicitar_seleccion_tutoria
-    #end
   end
 
 
@@ -87,6 +90,8 @@ class AccionSobreTutoria < Accion
     @tutoria=nil
   end
 
+  #  Muestra un menu tipo inline en el chat dle usuario con las opciones "Peticiones pendientes de aceptar", "Cola alumnos", "Borrar tutoria", "Volver"
+  #
 def mostrar_opciones_tutoria
 
     acciones=["Peticiones pendientes de aceptar", "Cola alumnos","Borrar tutoría" , "Volver"]
@@ -96,15 +101,19 @@ def mostrar_opciones_tutoria
 
 end
 
-  def respuesta_segun_accion_pulsada datos_mensaje
+  #
+  # Segun los datos recibidos del mensaje establece una nueva acción activa que recibirá los sucesivos mensajes. 
+# # * *Args*    :
+  #   - +datos_mensaje+ -> cadena de carácteres que determina la proxima acción activa
+  
+def respuesta_segun_accion_pulsada datos_mensaje
       puts datos_mensaje
     case datos_mensaje
         when /\#\#\$\$tutoria/
-          puts "entro"
-            indice_tutoria= datos_mensaje.slice! "#\#$$tutoria"
-          indice_tutoria=indice_tutoria.to_i
-          @tutoria=@tutorias.at(indice_tutoria)
-         mostrar_opciones_tutoria
+             indice_tutoria= datos_mensaje.slice! "#\#$$tutoria"
+             indice_tutoria=indice_tutoria.to_i
+             @tutoria=@tutorias.at(indice_tutoria)
+             mostrar_opciones_tutoria
         when /\#\#\$\$Borrar tutoría/
             @accion=BorrarTutorias.new(self,@tutoria)
             @accion.generar_respuesta_mensaje(@ultimo_mensaje)

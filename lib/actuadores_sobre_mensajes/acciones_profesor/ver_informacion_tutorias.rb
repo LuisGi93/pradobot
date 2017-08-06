@@ -17,7 +17,10 @@ class VerInformacionTutorias < Accion
   end
 
 
-
+  #
+  #  Dependiendo del contenido del mensaje manda un mensaje solicitando que se elija una tutoría o información acerca de los alumnos en cola de la tutoría activa
+  #     * *Args*    :
+  #   - +mensaje+ -> mensaje recibido por el bot procedente de un usuario de Telegram  #
 
   def generar_respuesta_mensaje(mensaje)
     @ultimo_mensaje=mensaje
@@ -34,6 +37,8 @@ class VerInformacionTutorias < Accion
 
 private
 
+#  Muestra un mensaje con información acerca de la cola para la tutoría activa junto con una opción para volver al menú principal de tutorías.
+#
   def mostrar_peticiones
 
     peticiones=@tutoria.peticiones

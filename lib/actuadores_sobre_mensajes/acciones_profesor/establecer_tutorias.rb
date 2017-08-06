@@ -8,46 +8,44 @@ class AccionEstablecerTutorias < Accion
   def initialize
     @fase='inicio'
     @datos=Hash.new
-    @id_telegram=nil
+    @ultimo_mensaje=nil
     @teclado_menu_padre=nil
   end
 
 
-  def ejecutar(id_telegram)
-
-    if @id_telegram.nil?
-      @id_telegram=id_telegram
-    end
+  def solicitar_seleccion_dia
     markup=Telegram::Bot::Types::ReplyKeyboardMarkup
         .new(keyboard: [%w(Lunes Martes), %w(Miércoles Jueves), %w(Viernes), "Volver al menú de tutorias"], one_time_keyboard: true)
 
-    @@bot.api.send_message( chat_id: id_telegram, text: "Elija el dia de la semana en el que desea establecer la tutoria",  reply_markup: markup, resize_keyboard: true )
+        @@bot.api.send_message( chat_id: @ultimo_mensaje.usuario.id_telegram, text: "Elija el dia de la semana en el que desea establecer la tutoria",  reply_markup: markup, resize_keyboard: true )
     @fase='elegir_dia_semana'
   end
 
   def recibir_mensaje(mensaje)
-    id_telegram=mensaje.usuario.id_telegram
-    datos_mensaje=mensaje.obtener_datos_mensaje
-    if @id_telegram.nil?
-      @id_telegram=id_telegram
-    end
-
+    @ultimo_mensaje=mensaje
     case @fase
       when 'inicio'
-        ejecutar(id_telegram)
-      when 'elegir_dia_semana'      #$Hay que chequear que meta Lunes, Martes, Miercoles.. y de mientras no cambiar de fase
-        @datos['dia_semana']=datos_mensaje
+        solicitar_seleccion_dia
+      when 'elegir_dia_semana' 
 
-        texto="Dia elegido *#{datos_mensaje}*. Introduzca la hora de comienzo de las tutorías (hh:mm)(ej: 22:00 ó 5:00:00):"
-        @@bot.api.send_message( chat_id: @id_telegram, text: texto, parse_mode: 'Markdown' )
+          if(@ultimo_mensaje.datos_mensaje=~ /(Lunes|Martes|Miércoles|Jueves|Viernes|Volver al menú de tutorias)/)
+              @datos['dia_semana']=@ultimo_mensaje.datos_mensaje
+
+        texto="Dia elegido *#{@ultimo_mensaje.datos_mensaje}*. Introduzca la hora de comienzo de las tutorías (hh:mm)(ej: 22:00 ó 5:00:00):"
+        @@bot.api.send_message( chat_id: @ultimo_mensaje.usuario.id_telegram, text: texto, parse_mode: 'Markdown' )
         @fase='hora_comienzo_tutorias'
+                  end
       when 'hora_comienzo_tutorias'
-        @datos['hora_comienzo_tutoria']=datos_mensaje
+          if @ultimo_mensaje.datos_mensaje=~ /([012]\d:\d\d|[012]\d:\d\d:\d\d)/
+        @datos['hora_comienzo_tutoria']=@ultimo_mensaje.datos_mensaje
         crear_nueva_tutoria
         texto="Tutoria establecida los *#{@datos['dia_semana']}* a las #{datos_mensaje}"
-        @@bot.api.send_message( chat_id: @id_telegram, text: texto, parse_mode: 'Markdown',  reply_markup:@teclado_menu_padre )
+        @@bot.api.send_message( chat_id: @ultimo_mensaje.usuario.id_telegram, text: texto, parse_mode: 'Markdown',  reply_markup:@teclado_menu_padre )
         reiniciar
-    end
+        else
+        @@bot.api.send_message( chat_id: @ultimo_mensaje.usuario.id_telegram, text: "Hora no válida vuelva a intentarlo", parse_mode: 'Markdown' )
+
+        end
 
   end
 
@@ -96,11 +94,10 @@ class AccionEstablecerTutorias < Accion
 
 
   def crear_nueva_tutoria
-    profesor=Profesor.new(@id_telegram)
+    profesor=Profesor.new(@ultimo_mensaje.usuario.id_telegram)
 
     fecha_tutoria=obtener_fecha_proxima_tutoria(@datos['dia_semana'], @datos['hora_comienzo_tutoria'])
     tutoria=Tutoria.new(profesor,fecha_tutoria)
-    puts fecha_tutoria
     profesor.establecer_nueva_tutoria(tutoria)
   end
 

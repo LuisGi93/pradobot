@@ -15,6 +15,11 @@ class PeticionesPendientesTutoria < Accion
     @ultimo_mensaje=nil
   end
 
+  #
+  #  Dependiendo del contenido del mensaje manda un mensaje solicitando que se elija una tutoría o un menú para que apruebe o deniegue las peticiones de asistencia que ha recibido la tutoría activa. 
+  #     * *Args*    :
+  #   - +mensaje+ -> mensaje recibido por el bot procedente de un usuario de Telegram  #
+  #
   def generar_respuesta_mensaje(mensaje)
     @ultimo_mensaje=mensaje
     datos_mensaje=@ultimo_mensaje.obtener_datos_mensaje
@@ -23,6 +28,10 @@ class PeticionesPendientesTutoria < Accion
     end
     respuesta_segun_datos_mensaje(datos_mensaje)
   end
+
+#       Segun el contenido del mensaje envía un nuevo mensaje al usuario con información acerca de las peticiones que ha recibido la tutoría activa o con la opción de aceptar una petición a una tutoría o denegarla
+  #         * *Args*    :
+  #   - +datos_mensaje+ -> Contido del último mensaje recibido por el bot de Telegram.
 
  def respuesta_segun_datos_mensaje datos_mensaje
     case datos_mensaje
@@ -54,6 +63,7 @@ class PeticionesPendientesTutoria < Accion
   end
 
   private
+#    Envía un mensaje al usuario para que elija entre  todas aquellas peticiones que ha recibido la tutoría activa y que el profesor no ha dicho si las acepta     
 
   def mostrar_peticiones_pendientes
 
@@ -85,6 +95,7 @@ class PeticionesPendientesTutoria < Accion
   end
 
 
+# Envía un mensaje al profesor pidiendo que elija si quiere aceptar esta petición o no.   
   def solicitar_accion_sobre_peticion id_estudiante_peticion
 
     @peticion_elegida=nil
@@ -111,6 +122,10 @@ class PeticionesPendientesTutoria < Accion
 
   end
 
+ # Acepta o deniega la petición elegida por el usuario para la tutoría activa. 
+  #   * *Args*    :
+  #   - +que_hacer+ -> Información contenida en el mensaje que se utiliza para saber si se acepta o deniega la petición. 
+
 
   def aceptar_denegar_peticion que_hacer
 
@@ -133,7 +148,8 @@ class PeticionesPendientesTutoria < Accion
 
 
 
-
+#  Dependiendo de que se ha hecho la última vez muestra el paso previo.
+  #
   def mostrar_menu_anterior
 
     case @fase

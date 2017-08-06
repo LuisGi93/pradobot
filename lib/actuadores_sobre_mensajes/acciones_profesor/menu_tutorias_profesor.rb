@@ -1,6 +1,6 @@
 require_relative  'establecer_tutorias'
 require_relative '../menu_acciones'
-require_relative 'tutorias_profesor.rb'
+require_relative 'accion_sobre_tutoria.rb'
 
 class MenuTutoriasProfesor < MenuDeAcciones
   @nombre= 'Tutorías'
@@ -28,7 +28,7 @@ class MenuTutoriasProfesor < MenuDeAcciones
   iniciar_acciones_defecto(fila_botones)
 
     markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: fila_botones)
-    @@bot.api.send_message( chat_id: id_telegram, text: "Elija entre las actuadores_sobre_mensajes del menu",  reply_markup: markup)
+    @@bot.api.send_message( chat_id: id_telegram, text: "Elija entre las opciones del menu",  reply_markup: markup)
     if(@acciones[AccionEstablecerTutorias.nombre].teclado_menu_padre.nil?)
       @acciones[AccionEstablecerTutorias.nombre].teclado_menu_padre=markup
     end
@@ -39,7 +39,6 @@ class MenuTutoriasProfesor < MenuDeAcciones
     siguiente_accion=nil
 
 
-    puts "Los puneteros datos dle mensaje son #{datos_mensaje}"
     if datos_mensaje== "Atras" && @accion_padre
       siguiente_accion=@accion_padre
       if @accion_pulsada
@@ -48,7 +47,6 @@ class MenuTutoriasProfesor < MenuDeAcciones
       @accion_pulsada=nil
     elsif datos_mensaje =~ /Volver al men/
       siguiente_accion=self
-      puts "Lalalala"
 
       if @accion_pulsada
         @accion_pulsada.reiniciar

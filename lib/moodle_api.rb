@@ -61,8 +61,13 @@ class Moodle
   end
 
   def obtener_cursos_usuario id_moodle_usuario
+        cursos_usuario=Array.new
         params={'userid' => id_moodle_usuario}
-        cursos_usuario=api('core_enrol_get_users_courses', params )
+        datos_cursos_usuario=api('core_enrol_get_users_courses', params )
+        datos_cursos_usuario.each{
+            |datos_curso|
+            cursos_usuario << Curso.new(datos_curso['id'], datos_curso['fullname'])
+        }
     return cursos_usuario
   end
 

@@ -12,7 +12,6 @@ class MenuPrincipalProfesor < MenuDeMenus
 
   private
   def inicializar_acciones
-  #  @actuadores_sobre_mensajes[MenuCurso.nombre] = MenuCurso.new(self)
     @acciones[MenuChat.nombre] = MenuChat.new(self)
     @acciones[MenuTutoriasProfesor.nombre] = MenuTutoriasProfesor.new(self)
     @acciones[MenuDudas.nombre] = MenuDudas.new(self)
