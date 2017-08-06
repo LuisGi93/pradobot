@@ -1,5 +1,5 @@
 
-require_relative 'usuario'
+require_relative 'usuario_registrado'
 
 class Profesor < UsuarioRegistrado
   attr_reader :id
