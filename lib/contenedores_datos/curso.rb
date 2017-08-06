@@ -76,15 +76,15 @@ class Curso < ConexionBD
   end
 
   def nueva_duda duda
-    @@db[:dudas].insert(:id_usuario_duda => duda.usuario.id, :contenido_duda => duda.contenido)
-    @@db[:dudas_curso].insert(:id_usuario_duda => duda.usuario.id, :id_moodle_curso => @id_curso, :contenido_duda => duda.contenido)
+    @@db[:dudas].insert(:id_usuario_duda => duda.usuario.id_telegram, :contenido_duda => duda.contenido)
+    @@db[:dudas_curso].insert(:id_usuario_duda => duda.usuario.id_telegram, :id_moodle_curso => @id_curso, :contenido_duda => duda.contenido)
   end
 
   def obtener_dudas_sin_resolver
       dudas_sin_resolver_curso = Array.new
       datos_dudas_curso=@@db[:dudas_curso].where(:id_moodle_curso => @id_curso).select(:id_usuario_duda, :contenido_duda).except(@@db[:dudas_resueltas]).to_a
       datos_dudas_curso.each{ |datos_duda|
-        dudas_sin_resolver_curso << Duda.new(datos_duda[:contenido_duda], Usuario.new(datos_duda[:id_usuario_duda]))
+        dudas_sin_resolver_curso << Duda.new(datos_duda[:contenido_duda], UsuarioRegistrado.new(datos_duda[:id_usuario_duda]))
 
       }
 
@@ -97,7 +97,7 @@ class Curso < ConexionBD
     datos_dudas_resueltas_curso=dudas_curso.where(:contenido_duda=>dudas_resueltas.select(:contenido_duda),:id_usuario_duda=>dudas_resueltas.select(:id_usuario_duda) ).to_a
     dudas_resueltas_curso= Array.new
     datos_dudas_resueltas_curso.each{ |datos_duda|
-      dudas_resueltas_curso<< Duda.new(datos_duda[:contenido_duda], Usuario.new(datos_duda[:id_usuario_duda]))
+      dudas_resueltas_curso<< Duda.new(datos_duda[:contenido_duda], UsuarioRegistrado.new(datos_duda[:id_usuario_duda]))
     }
 
     return dudas_resueltas_curso
@@ -108,7 +108,7 @@ class Curso < ConexionBD
     dudas_curso = Array.new
     datos_dudas_curso=@@db[:dudas_curso].where(:id_moodle_curso => @id_curso).select(:id_usuario_duda, :contenido_duda).to_a
     datos_dudas_curso.each{ |datos_duda|
-      dudas_curso << Duda.new(datos_duda[:contenido_duda], Usuario.new(datos_duda[:id_usuario_duda]))
+      dudas_curso << Duda.new(datos_duda[:contenido_duda], UsuarioRegistrado.new(datos_duda[:id_usuario_duda]))
 
     }
 

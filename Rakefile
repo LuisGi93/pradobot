@@ -28,7 +28,7 @@ namespace :tasks do
       end
 
       RSpec::Core::RakeTask.new(:tests_bd) do |t|
-        t.pattern = Dir.glob('test/test_db_usuario_desconocido.rb')
+          t.pattern = Dir.glob('test/test_db_*.rb')
         t.rspec_opts = '--format documentation'
       end
 
