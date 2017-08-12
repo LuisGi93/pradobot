@@ -44,9 +44,7 @@ class MenuDeAcciones < Menu
   def cambiar_curso_parientes
     @acciones.each{|key,value|
       if value.curso!=@curso
-        puts "cambiando #{key} a #{value.curso}"
         value.curso=curso
-        puts "cambiando #{key} a #{value.curso}"
       end
     }
     if @accion_padre.curso!=@curso

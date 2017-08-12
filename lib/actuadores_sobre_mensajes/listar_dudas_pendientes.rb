@@ -8,17 +8,18 @@ class ListarDudasPendientes < ListarDudas
     @dudas=@curso.obtener_dudas_sin_resolver
     if @dudas.empty?
       texto="El curso #{@curso.nombre} no hay ninguna duda pendiente de respuesta."
-      @@bot.api.send_message( chat_id: @ultimo_mensaje.id_telegram, text: texto)
+      @@bot.api.send_message( chat_id: @ultimo_mensaje.usuario.id_telegram, text: texto)
     else
       texto="Dudas sin solución para #{@curso.nombre} son:\n"
       texto+=crear_indice_respuestas_dudas(@dudas)
       indices_dudas=[*0..@dudas.size-1]
-      menu=crear_menu_indice(indices_dudas, "duda_", "final")
+      menu=MenuInlineTelegram.crear_menu_indice(indices_dudas, "Duda", "final")
       texto+="Elija una duda:"
       if opcion == "editar_mensaje"
         @@bot.api.edit_message_text(:chat_id => @ultimo_mensaje.id_chat ,:message_id => @ultimo_mensaje.id_mensaje, text: texto,reply_markup: menu, parse_mode: "Markdown" )
       else
-        @@bot.api.send_message( chat_id: @ultimo_mensaje.id_telegram, text: texto,reply_markup: menu, parse_mode: "Markdown"  )
+        @id_ultimo_mensaje_respuesta=@@bot.api.send_message( chat_id: @ultimo_mensaje.usuario.id_telegram, text: texto,reply_markup: menu, parse_mode: "Markdown"  )["result"]["message_id"]
+
       end
     end
 
@@ -26,7 +27,7 @@ class ListarDudasPendientes < ListarDudas
 
   def generar_respuesta_mensaje(mensaje)
 
-    datos_mensaje=mensaje.obtener_datos_mensaje
+    datos_mensaje=mensaje.datos_mensaje
 
     if mensaje.tipo== "callbackquery"
       if datos_mensaje =~ /\#\#\$\$Volver/
@@ -44,6 +45,12 @@ class ListarDudasPendientes < ListarDudas
 
   end
 
+
+def reiniciar
+    if @id_ultimo_mensaje_respuesta
+         @@bot.api.delete_message(chat_id: @ultimo_mensaje.id_chat, message_id: @id_ultimo_mensaje_respuesta)
+    end
+end
 
   public_class_method :new
 

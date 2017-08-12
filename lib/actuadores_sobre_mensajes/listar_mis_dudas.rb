@@ -3,10 +3,16 @@ class ListarMisDudas < ListarDudas
 
   @nombre= 'Mis dudas'
 
+def reiniciar
+    if @id_ultimo_mensaje_respuesta
+     @@bot.api.delete_message(chat_id: @ultimo_mensaje.id_chat, message_id: @id_ultimo_mensaje_respuesta)
+    end
+end
+
   def mostrar_dudas opcion
 
 
-    dudas_usuario=Usuario.new(@ultimo_mensaje.id_telegram).dudas
+    dudas_usuario=UsuarioRegistrado.new(@ultimo_mensaje.usuario.id_telegram).dudas
     dudas_curso=@curso.dudas
     @dudas=Array.new
     dudas_curso.each{|duda_curso|
@@ -20,17 +26,18 @@ class ListarMisDudas < ListarDudas
     }
     if @dudas.empty?
       texto="No ha creado ninguna duda para el curso #{@curso.nombre}."
-      @@bot.api.send_message( chat_id: @ultimo_mensaje.id_telegram, text: texto)
+      @@bot.api.send_message( chat_id: @ultimo_mensaje.usuario.id_telegram, text: texto)
     else
       texto="Sus dudas creadas para #{@curso.nombre} son:\n"
       texto+=crear_indice_respuestas_dudas(@dudas)
       indices_dudas=[*0..@dudas.size-1]
-      menu=crear_menu_indice(indices_dudas, "duda_", "final")
+      menu=MenuInlineTelegram.crear_menu_indice(indices_dudas, "Duda", "final")
       texto+="Elija una duda:"
       if opcion == "editar_mensaje"
         @@bot.api.edit_message_text(:chat_id => @ultimo_mensaje.id_chat ,:message_id => @ultimo_mensaje.id_mensaje, text: texto,reply_markup: menu, parse_mode: "Markdown" )
       else
-        @@bot.api.send_message( chat_id: @ultimo_mensaje.id_telegram, text: texto,reply_markup: menu, parse_mode: "Markdown"  )
+        @id_ultimo_mensaje_respuesta=@@bot.api.send_message( chat_id: @ultimo_mensaje.usuario.id_telegram, text: texto,reply_markup: menu, parse_mode: "Markdown"  )["result"]["message_id"]
+
       end
     end
 
@@ -38,7 +45,7 @@ class ListarMisDudas < ListarDudas
 
   def generar_respuesta_mensaje(mensaje)
 
-    datos_mensaje=mensaje.obtener_datos_mensaje
+    datos_mensaje=mensaje.datos_mensaje
 
     if mensaje.tipo== "callbackquery"
       if datos_mensaje =~ /\#\#\$\$Volver/
@@ -77,24 +84,6 @@ class ListarMisDudas < ListarDudas
     end
 
   end
-
-=begin
-  def mostrar_menu_anterior
-    case @fase
-      when "mostrando_respuestas"
-        @dudas.clear
-        mostrar_acciones(@indice_duda_seleccionada)
-        @fase="opciones_sobre_duda"
-      when "solucion_duda"
-        mostrar_acciones(@indice_duda_seleccionada)
-        @fase="opciones_sobre_duda"
-      else
-        super
-    end
-  end
-
-=end
-
 
   public_class_method :new
 

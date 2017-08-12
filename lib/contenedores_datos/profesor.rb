@@ -5,7 +5,6 @@ class Profesor < UsuarioRegistrado
   attr_reader :id
   def initialize id_telegram=nil
     @id_telegram=id_telegram
-    @id=id_telegram
     @nombre_usuario=nil
     ##HAY que quitar id y poner en todos donde se utilize id_telegram
   end

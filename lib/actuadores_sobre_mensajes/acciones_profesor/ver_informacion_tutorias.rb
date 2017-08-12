@@ -24,7 +24,7 @@ class VerInformacionTutorias < Accion
 
   def generar_respuesta_mensaje(mensaje)
     @ultimo_mensaje=mensaje
-    datos_mensaje=@ultimo_mensaje.obtener_datos_mensaje
+    datos_mensaje=@ultimo_mensaje.datos_mensaje
     if @profesor.nil?
       @profesor=Profesor.new(@ultimo_mensaje.usuario.id_telegram)
     end
@@ -45,22 +45,25 @@ private
 
     peticiones_aprobadas=Array.new
     peticiones.each{ |peticion|
+puts peticion.estado
       if(peticion.estado=="aceptada")
         peticiones_aprobadas << peticion
       end
     }
 
+    menu=MenuInlineTelegram.crear(Array.new << "Volver")
     if peticiones_aprobadas.empty?
-        menu=MenuInlineTelegram.crear(Array.new << "Volver")
         @@bot.api.edit_message_text(:chat_id => @ultimo_mensaje.id_chat ,:message_id => @ultimo_mensaje.id_mensaje, text: "No ha aprobado ninguna petición para la tutoría elegida.", parse_mode: "Markdown", reply_markup: menu)
       #@@bot.api.send_message( chat_id: @ultimo_mensaje.usuario.id_telegram, text: "No ha aprobado ninguna petición para la tutoría elegida.", parse_mode: "Markdown" )
     else
       texto="Cola asistencia tutoria:\n"
       peticiones_aprobadas.sort_by {|obj| obj.hora}
+contador=1
       peticiones_aprobadas.each{ |peticion|
           texto+= "\t *#{contador}º* \tNombre telegram estudiante:\t *#{peticion.estudiante.nombre_usuario}\n*"
+contador=contador+1
       }
-      @@bot.api.edit_message_text(:chat_id => @ultimo_mensaje.id_chat ,:message_id => @ultimo_mensaje.id_mensaje, text:  texto, parse_mode: "Markdown")
+      @@bot.api.edit_message_text(:chat_id => @ultimo_mensaje.id_chat ,:message_id => @ultimo_mensaje.id_mensaje, text:  texto, parse_mode: "Markdown", reply_markup: menu)
     end
 
   end

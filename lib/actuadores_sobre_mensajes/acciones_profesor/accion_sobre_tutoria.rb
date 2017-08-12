@@ -73,14 +73,16 @@ class AccionSobreTutoria < Accion
 
   def recibir_mensaje(mensaje)
     @ultimo_mensaje=mensaje
-
+    puts "alalalal"
+puts mensaje.datos_mensaje.to_s
+puts "noinini"
     if @profesor.nil?
       @profesor=Profesor.new(@ultimo_mensaje.usuario.id_telegram)
     end
         if @accion
           @accion.generar_respuesta_mensaje(mensaje)
         else
-         respuesta_segun_accion_pulsada mensaje.datos_mensaje
+         respuesta_segun_accion_pulsada @ultimo_mensaje.datos_mensaje
         end
   end
 
@@ -107,11 +109,10 @@ end
   #   - +datos_mensaje+ -> cadena de carácteres que determina la proxima acción activa
   
 def respuesta_segun_accion_pulsada datos_mensaje
-      puts datos_mensaje
     case datos_mensaje
         when /\#\#\$\$tutoria/
-             indice_tutoria= datos_mensaje.slice! "#\#$$tutoria"
-             indice_tutoria=indice_tutoria.to_i
+             datos_mensaje.slice! "#\#$$tutoria"
+             indice_tutoria=datos_mensaje.to_i
              @tutoria=@tutorias.at(indice_tutoria)
              mostrar_opciones_tutoria
         when /\#\#\$\$Borrar tutoría/

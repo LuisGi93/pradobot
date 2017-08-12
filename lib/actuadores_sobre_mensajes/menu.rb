@@ -35,7 +35,7 @@ class Menu < Accion
     array_botones=Array.new
     contador=0
 
-    usuario=Usuario.new(id_telegram)
+    usuario=UsuarioRegistrado.new(id_telegram)
     cursos=usuario.obtener_cursos_usuario
     unless cursos.empty?
 

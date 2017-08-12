@@ -10,7 +10,6 @@ class AccionInicializarDesconocido < Accion
 
   def reiniciar
     @fase='inicio'
-    usuario=Usuario.new
   end
 
   def ejecutar(id_telegram)
@@ -24,7 +23,7 @@ class AccionInicializarDesconocido < Accion
       @usuario_desconocido=UsuarioDesconocido.new(mensaje.usuario.id_telegram, mensaje.usuario.nombre_usuario)
     end
     @ultimo_mensaje=mensaje
-    datos_mensaje=@ultimo_mensaje.obtener_datos_mensaje
+    datos_mensaje=@ultimo_mensaje.datos_mensaje
     siguiente_accion=self
 
     case @fase
@@ -55,10 +54,9 @@ class AccionInicializarDesconocido < Accion
             @usuario_desconocido.registrarme_en_el_sistema
             @@bot.api.send_message( chat_id: @usuario_desconocido.id_telegram, text: "Dado de alta en el bot con exito, ya puede empezar a utilizarlo", parse_mode: 'Markdown' )
 
-            usuario=UsuarioRegistrado.new(id_telegram)
+            usuario=UsuarioRegistrado.new(@usuario_desconocido.id_telegram)
             cursos=usuario.obtener_cursos_usuario
 
-            menu.iniciar_cambio_curso(id_telegram,cursos[0].id_curso)
             if @usuario_desconocido.rol == "profesor"
                     
               siguiente_accion=MenuPrincipalProfesor.new
@@ -66,6 +64,7 @@ class AccionInicializarDesconocido < Accion
               siguiente_accion=MenuPrincipalEstudiante.new
             end
             siguiente_accion.iniciar_cambio_curso(@ultimo_mensaje.usuario.id_telegram,cursos[0].id_curso)
+            siguiente_accion.ejecutar(@usuario_desconocido.id_telegram)
           end
         else
           @@bot.api.send_message( chat_id: @usuario_desconocido.id_telegram, text: 'Datos de login incorrectos o bien el usuario no esta autorizado a utilizar el bot', parse_mode: 'Markdown' )

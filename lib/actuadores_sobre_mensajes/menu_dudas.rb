@@ -19,12 +19,6 @@ class MenuDudas < MenuDeAcciones
     @acciones[ListarMisDudas.nombre]=ListarMisDudas.new()
     @acciones[ListarDudasResueltas.nombre]=ListarDudasResueltas.new()
 
-    #LISTAR DUDAS YA RESUELTAS
-    #@actuadores_sobre_mensajes[CrearDuda.nombre] = CrearDuda.new()
-    #@actuadores_sobre_mensajes[ReponderDudas.nombre] = ReponderDudas.new()
-    #@actuadores_sobre_mensajes[BorrarDuda.nombre]= BorrarDuda.new()
-    #@actuadores_sobre_mensajes[MarcarResultaDuda.nombre]= MarcarResueltaDuda.new()
-    #Crear duda, Sin resolver, resueltas, mis dudas.
   end
   private :inicializar_acciones
 end

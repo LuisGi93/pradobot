@@ -13,8 +13,8 @@ class CrearDuda < Accion
 
 
   def solicitar_escribir_duda
-    text="Escriba a continuación la duda que desea crear relacionada con *#{@curso.nombre}*\n"
-    @@bot.api.send_message( chat_id: @ultimo_mensaje.id_telegram, text: text, parse_mode: "Markdown"  )
+    text="Escriba a continuación la duda que desea crear relacionada con *#{@curso.nombre}*:\n"
+    @@bot.api.send_message( chat_id: @ultimo_mensaje.usuario.id_telegram, text: text, parse_mode: "Markdown"  )
     @fase="escribiendo_duda"
   end
 
@@ -35,7 +35,7 @@ class CrearDuda < Accion
       fila_botones << array_botones
 
       markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: fila_botones)
-      @@bot.api.send_message( chat_id: @id_telegram, text: text,reply_markup: markup, parse_mode: "Markdown"  )
+      @@bot.api.send_message( chat_id: @ultimo_mensaje.usuario.id_telegram, text: text,reply_markup: markup, parse_mode: "Markdown"  )
 
   end
 
@@ -46,14 +46,14 @@ class CrearDuda < Accion
         estudiante= Estudiante.new(@ultimo_mensaje.usuario.id_telegram)
         duda= Duda.new(@duda, estudiante)
         @curso.nueva_duda(duda)
-        @@bot.api.answer_callback_query(callback_query_id: @ultimo_mensaje.id_mensaje, text: "Creada")
+        @@bot.api.answer_callback_query(callback_query_id: @ultimo_mensaje.id_callback, text: "Creada")
         texto='Elija una opción del menú:'
         @@bot.api.edit_message_text(:chat_id => @ultimo_mensaje.id_chat ,:message_id => @ultimo_mensaje.id_mensaje, text: "Se ha creado una nueva duda con el contenido: *#{@duda}*", parse_mode: "Markdown" )
       else
-        @@bot.api.answer_callback_query(callback_query_id: @ultimo_mensaje.id_mensaje, text: "Descartada")
+        @@bot.api.answer_callback_query(callback_query_id: @ultimo_mensaje.id_callback, text: "Descartada")
        # @@bot.api.delete_message( chat_id: @id_chat, message_id: @id_mensaje)
         texto='Elija una opción del menú:'
-        @@bot.api.edit_message_text(:chat_id => @id_chat ,:message_id => @id_mensaje, text: texto, parse_mode: "Markdown" )
+        @@bot.api.edit_message_text(:chat_id => @ultimo_mensaje.id_chat ,:message_id => @ultimo_mensaje.id_mensaje, text: texto, parse_mode: "Markdown" )
         reiniciar
         #@@bot.api.send_message( chat_id: @id_telegram, text:   "Se ha creado una nueva duda con el contenido: *#{@duda}*", parse_mode: "Markdown")
       end

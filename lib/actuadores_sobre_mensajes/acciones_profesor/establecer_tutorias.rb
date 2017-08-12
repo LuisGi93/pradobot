@@ -39,14 +39,14 @@ class AccionEstablecerTutorias < Accion
           if @ultimo_mensaje.datos_mensaje=~ /([012]\d:\d\d|[012]\d:\d\d:\d\d)/
         @datos['hora_comienzo_tutoria']=@ultimo_mensaje.datos_mensaje
         crear_nueva_tutoria
-        texto="Tutoria establecida los *#{@datos['dia_semana']}* a las #{datos_mensaje}"
+        texto="Tutoria establecida los *#{@datos['dia_semana']}* a las #{@ultimo_mensaje.datos_mensaje}"
         @@bot.api.send_message( chat_id: @ultimo_mensaje.usuario.id_telegram, text: texto, parse_mode: 'Markdown',  reply_markup:@teclado_menu_padre )
         reiniciar
         else
         @@bot.api.send_message( chat_id: @ultimo_mensaje.usuario.id_telegram, text: "Hora no válida vuelva a intentarlo", parse_mode: 'Markdown' )
 
         end
-
+      end
   end
 
   def reiniciar

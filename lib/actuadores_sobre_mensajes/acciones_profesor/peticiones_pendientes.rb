@@ -22,7 +22,7 @@ class PeticionesPendientesTutoria < Accion
   #
   def generar_respuesta_mensaje(mensaje)
     @ultimo_mensaje=mensaje
-    datos_mensaje=@ultimo_mensaje.obtener_datos_mensaje
+    datos_mensaje=@ultimo_mensaje.datos_mensaje
     if @profesor.nil?
       @profesor=Profesor.new(@ultimo_mensaje.usuario.id_telegram)
     end
@@ -34,9 +34,11 @@ class PeticionesPendientesTutoria < Accion
   #   - +datos_mensaje+ -> Contido del último mensaje recibido por el bot de Telegram.
 
  def respuesta_segun_datos_mensaje datos_mensaje
+     puts "Los pu;eteros datos son #{datos_mensaje}"
     case datos_mensaje
-      when  /\#\#\$\$Indice/
-        datos_mensaje.slice! "peticion_"
+      when  /\#\#\$\$Peticion /
+          puts "Entro en la peticion"
+        datos_mensaje.slice! "\#\#\$\$Peticion"
         id_estudiante_peticion=datos_mensaje[/[^_]*/]
         solicitar_accion_sobre_peticion id_estudiante_peticion
         @fase="peticion_elegida"
@@ -45,6 +47,7 @@ class PeticionesPendientesTutoria < Accion
       when /\#\#\$\$Volver/
         mostrar_menu_anterior
       else
+          puts "Entro en el else"
         mostrar_peticiones_pendientes
         fase="mostrando_peticiones"
       end
@@ -68,23 +71,22 @@ class PeticionesPendientesTutoria < Accion
   def mostrar_peticiones_pendientes
 
     @peticiones=@tutoria.peticiones
-    peticiones_pendientes=Array.new
+    @peticiones_pendientes=Array.new
     @peticiones.each{ |peticion|
       if(peticion.estado=="por aprobar")
-      peticiones_pendientes << peticion
+      @peticiones_pendientes << peticion
       end
     }
-
-      if peticiones_pendientes.empty?
+      if @peticiones_pendientes.empty?
         menu=MenuInlineTelegram.crear(Array.new << "Volver")
         @@bot.api.edit_message_text(:chat_id => @ultimo_mensaje.id_chat ,:message_id => @ultimo_mensaje.id_mensaje, text: "No tiene peticiones para la tutoría elegida.", parse_mode: "Markdown", reply_markup: menu)
       else
 
         texto="Seleccione la petición la cual  desea aprobar/denegar:\n"
         contador=0
-        indices_peticiones=[*0..peticiones_pendientes.size-1]
-        menu=MenuInlineTelegram.crear_menu_indice(peticiones_pendientes, "Peticion", "no_final")
-        peticiones_pendientes.each{ |peticion|
+        indices_peticiones=[*0..@peticiones_pendientes.size-1]
+        menu=MenuInlineTelegram.crear_menu_indice(indices_peticiones, "Peticion", "no_final")
+        @peticiones_pendientes.each{ |peticion|
             texto+= "\t (*#{contador}*) \tNombre telegram estudiante:\t *#{peticion.estudiante.nombre_usuario}*\n"
             texto+= "    Fecha realización petición: *\t#{peticion.hora.strftime('%d %b %Y %H:%M:%S')}* \n"
             contador+=1
@@ -100,9 +102,9 @@ class PeticionesPendientesTutoria < Accion
 
     @peticion_elegida=nil
     cont=0
-    while(@peticion_elegida.nil? && cont < @peticiones.size)
-      if @peticiones[cont].estudiante.id.to_i== id_estudiante_peticion.to_i
-        @peticion_elegida=@peticiones[cont]
+    while(@peticion_elegida.nil? && cont < @peticiones_pendientes.size)
+        if @peticiones_pendientes[cont].estudiante.id.to_i== id_estudiante_peticion.to_i
+        @peticion_elegida=@peticiones_pendientes[cont]
 
       end
       cont+=1
@@ -131,11 +133,11 @@ class PeticionesPendientesTutoria < Accion
 
     if que_hacer =~ /\#\#\$\$Aceptar/
       @peticion_elegida.aceptar
-      @@bot.api.answer_callback_query(callback_query_id: @ultimo_mensaje.id_mensaje, text: "Aceptada!")
+      @@bot.api.answer_callback_query(callback_query_id: @ultimo_mensaje.id_callback, text: "Aceptada!")
       @@bot.api.send_message( chat_id: @profesor.id, text: "Petición aceptada", parse_mode: "Markdown"  )
 
     elsif que_hacer =~ /\#\#\$\$Denegar/
-      @@bot.api.answer_callback_query(callback_query_id: @ultimo_mensaje.id_mensaje, text: "Denegada")
+      @@bot.api.answer_callback_query(callback_query_id: @ultimo_mensaje.id_callback, text: "Denegada")
       @@bot.api.send_message( chat_id: @profesor.id, text: "Petición rechazada", parse_mode: "Markdown"  )
       @peticion_elegida.denegar
     else

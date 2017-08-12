@@ -1,6 +1,5 @@
 require_relative '../contenedores_datos/mensaje'
 require_relative '../moodle_api'
-require_relative '../actuadores_sobre_mensajes/funciones_chat_grupales.rb'
 require_relative '../contenedores_datos/chat_telegram'
 
 class EncargadoMensajesGrupales
@@ -13,7 +12,7 @@ class EncargadoMensajesGrupales
   # de los usuarios de un chat.
 
   def comprobar_chat_registrado id_chat, mensaje
-    nombre_chat=mensaje.obtener_nombre_chat
+    nombre_chat=mensaje.nombre_chat
     chat=ChatTelegram.new(id_chat, nombre_chat)
     return chat.registrado?
   end
@@ -28,10 +27,10 @@ class EncargadoMensajesGrupales
   def recibir_mensaje(mensaje)
 
    # Thread.new do @estudiantes[id_telegram][:accion].recibir_mensaje(mensaje) end
-    id_chat=mensaje.obtener_identificador_chat
-    datos_mensaje=mensaje.obtener_datos_mensaje
+    id_chat=mensaje.id_chat
+        datos_mensaje=mensaje.datos_mensaje
     if @grupos[id_chat].nil? && comprobar_chat_registrado(id_chat, mensaje)
-      nombre_chat=mensaje.obtener_nombre_chat
+      nombre_chat=mensaje.nombre_chat
       dar_alta_chat(nombre_chat, id_chat)
       realizar_accion(id_chat, datos_mensaje)
     elsif @grupos[id_chat]
@@ -46,21 +45,32 @@ class EncargadoMensajesGrupales
 
   end
 
+  def obtener_proximas_entregas entregas
+      proximas_entregas=Array.new
+      fecha_actual=Date.new
+      puts fecha_actual
+        entregas.each{|entrega|
+        puts entrega.fecha_fin
+        puts entrega.fecha_fin.class
+        puts DateTime.strptime(entrega.fecha_fin,"%Y-%m-%d %H:%M:%S")
+        }
+  end
+
   def realizar_accion(id_chat, datos_mensaje)
     puts "Los datos del mensaje son #{datos_mensaje}"
     case datos_mensaje
       when /\/entrega .?.?/
         datos_mensaje.slice! "/entrega"
         id_entrega=datos_mensaje.strip.to_i
-
-
         entregas_curso=@grupos[id_chat][:curso].entregas
         if id_entrega < entregas_curso.size
           mostrar_informacion_entrega(id_chat, entregas_curso[id_entrega])
         end
       when /\/entregas$/
         entregas_curso=@grupos[id_chat][:curso].entregas
-        mostrar_entregas_del_curso(id_chat, entregas_curso)
+         obtener_proximas_entregas entregas_curso
+
+       mostrar_entregas_del_curso(id_chat, entregas_curso)
       when /\/dudas$/
         dudas_curso=@grupos[id_chat][:curso].obtener_dudas_sin_resolver
         mostrar_dudas_curso id_chat, dudas_curso

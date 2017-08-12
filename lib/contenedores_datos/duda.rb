@@ -14,14 +14,12 @@ class Duda < ConexionBD
   end
 
   def respuestas
-    if @respuestas.nil?
       @respuestas=Array.new
       array_dataset=@@db[:respuesta_duda].where(:id_usuario_duda => @usuario.id_telegram, :contenido_duda => @contenido).to_a
       puts array_dataset.to_s
       array_dataset.each{|dataset_respuesta|
         @respuestas << Respuesta.new(dataset_respuesta[:contenido_respuesta], UsuarioRegistrado.new(dataset_respuesta[:id_usuario_respuesta]), self)
       }
-    end
     return @respuestas
   end
 
