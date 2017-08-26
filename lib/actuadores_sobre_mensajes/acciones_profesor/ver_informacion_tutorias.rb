@@ -25,9 +25,6 @@ class VerInformacionTutorias < Accion
   def generar_respuesta_mensaje(mensaje)
     @ultimo_mensaje=mensaje
     datos_mensaje=@ultimo_mensaje.datos_mensaje
-    if @profesor.nil?
-      @profesor=Profesor.new(@ultimo_mensaje.usuario.id_telegram)
-    end
     if @ultimo_mensaje.tipo == "callbackquery" && datos_mensaje=="#\#$$Volver"
       @selector_tutorias.solicitar_seleccion_tutoria("editar")
     else

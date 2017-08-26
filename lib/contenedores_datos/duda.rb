@@ -16,7 +16,6 @@ class Duda < ConexionBD
   def respuestas
       @respuestas=Array.new
       array_dataset=@@db[:respuesta_duda].where(:id_usuario_duda => @usuario.id_telegram, :contenido_duda => @contenido).to_a
-      puts array_dataset.to_s
       array_dataset.each{|dataset_respuesta|
         @respuestas << Respuesta.new(dataset_respuesta[:contenido_respuesta], UsuarioRegistrado.new(dataset_respuesta[:id_usuario_respuesta]), self)
       }
@@ -24,20 +23,12 @@ class Duda < ConexionBD
   end
 
   def insertar_solucion respuesta
-puts "insertando solucion respuesta"
     @@db[:dudas_resueltas].insert(:id_usuario_duda => @usuario.id_telegram, :contenido_duda => @contenido)
-   puts @@db[:dudas_resueltas].to_a
-puts respuesta.contenido
     @@db[:respuesta_resuelve_duda].insert(:id_usuario_respuesta => respuesta.usuario.id_telegram, :contenido_respuesta => respuesta.contenido, :id_usuario_duda => @usuario.id_telegram, :contenido_duda => @contenido)
-  puts @@db[:respuesta_resuelve_duda].to_a
   end
 
   def solucion
     datos_respuesta=@@db[:respuesta_resuelve_duda].where(:id_usuario_duda => @usuario.id_telegram, :contenido_duda => @contenido).to_a
-	puts "Solucion duda"
-    puts @usuario.id_telegram
-    puts @contenido
-    puts datos_respuesta.to_s
     if datos_respuesta.empty?
       respuesta=nil
     else
@@ -47,10 +38,6 @@ puts respuesta.contenido
   end
 
   def == (y)
-    puts @contenido
-    puts y.contenido
-    puts @usuario.id_telegram
-    puts y.usuario.id_telegram
     return @contenido == y.contenido && @usuario.id_telegram == y.usuario.id_telegram
   end
 end

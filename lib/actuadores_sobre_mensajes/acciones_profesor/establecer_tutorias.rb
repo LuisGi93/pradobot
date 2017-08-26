@@ -106,5 +106,6 @@ class AccionEstablecerTutorias < Accion
 
 
   public_class_method :new
+  private :obtener_fecha_proxima_tutoria, :crear_nueva_tutoria, :solicitar_seleccion_dia, :obtener_fecha_proxima_tutoria
 
 end

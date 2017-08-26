@@ -12,8 +12,9 @@ class AccionInicializarDesconocido < Accion
     @fase='inicio'
   end
 
-  def ejecutar(id_telegram)
-    @@bot.api.send_message( chat_id: id_telegram, text: "Para empezar a utilizar el bot es necesario identificarse. Introduzca su email:", parse_mode: 'Markdown')
+  def ejecutar(mensaje)
+    @ultimo_mensaje=mensaje
+    @@bot.api.send_message( chat_id: @ultimo_mensaje.usuario.id_telegram, text: "Para empezar a utilizar el bot es necesario identificarse. Introduzca su email:", parse_mode: 'Markdown')
     @fase='peticion_email'
     return self
   end
@@ -71,7 +72,7 @@ class AccionInicializarDesconocido < Accion
         end
         reiniciar
       else
-        ejecutar(@ultimo_mensaje.usuario.id_telegram)
+        ejecutar(@ultimo_mensaje)
     end
 
 

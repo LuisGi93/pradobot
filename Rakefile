@@ -40,6 +40,10 @@ namespace :tasks do
         db.disconnect
       end
 
+      RSpec::Core::RakeTask.new(:tests_nobd) do |t|
+          t.pattern = Dir.glob('test/test_crear_duda.rb')
+        t.rspec_opts = '--format documentation'
+      end
     end
 
   end
@@ -60,6 +64,6 @@ end
 
 desc "Ejecutamos los test sobre la base de datos"
 task :testbd => ['tasks:db:test:crear', 'tasks:db:test:tests_bd', 'tasks:db:test:destruir' ]
+task :testnobd => ['tasks:db:test:tests_nobd' ]
 
-
-task :default => ['tasks:db:test:tests_bd']
+task :default => ['tasks:db:test:tests_nobd']

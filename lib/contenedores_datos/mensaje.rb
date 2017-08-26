@@ -2,7 +2,7 @@ require 'active_support/inflector'
 require_relative 'usuario'
 class Mensaje
 
-  attr_reader :id_telegram, :datos_mensaje, :tipo_chat, :id_chat, :nombre_chat, :datos_mensaje, :tipo, :id_mensaje, :id_callback, :usuario
+  attr_reader  :datos_mensaje, :tipo_chat, :id_chat, :nombre_chat, :tipo, :id_mensaje, :id_callback, :usuario
   def initialize(mensaje)
     @mensaje=mensaje
     if @mensaje.class == Telegram::Bot::Types::CallbackQuery
@@ -25,7 +25,6 @@ class Mensaje
       @datos_mensaje=@mensaje.text
     end
     @usuario=Usuario.new(@mensaje.from.id, @mensaje.from.first_name+@mensaje.from.last_name)
-    #@nombre_usuario=@mensaje.from.first_name+@mensaje.from.last_name
 
     if tipo_chat == "group" || tipo_chat == "supergroup" || tipo_chat =="channel"
       @tipo_chat= "grupal"

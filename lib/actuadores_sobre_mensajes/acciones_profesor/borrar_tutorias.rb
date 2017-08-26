@@ -38,7 +38,7 @@ class BorrarTutorias < Accion
       when  /\#\#\$\$Si/
 
      @profesor.borrar_tutoria(@tutoria)
-     enu=MenuInlineTelegram.crear(Array.new << "Volver")
+    menu=MenuInlineTelegram.crear(Array.new << "Volver")
  @@bot.api.answer_callback_query(callback_query_id: @ultimo_mensaje.id_callback, text: "Borrada!")
       @@bot.api.edit_message_text(:chat_id => @ultimo_mensaje.id_chat ,:message_id => @ultimo_mensaje.id_mensaje, text: "Tutoria #{@tutoria.fecha} borrada.", parse_mode: "Markdown", reply_markup: menu)
       when /\#\#\$\$No/

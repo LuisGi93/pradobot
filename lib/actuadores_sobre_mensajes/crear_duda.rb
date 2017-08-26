@@ -7,7 +7,6 @@ class CrearDuda < Accion
   @nombre='Nueva duda'
   def initialize
     @fase='inicio'
-    @duda
     @ultimo_mensaje=nil
   end
 
@@ -43,8 +42,8 @@ class CrearDuda < Accion
 
   def crear_descartar_duda
       if @ultimo_mensaje.datos_mensaje =~ /crear_duda_/
-        estudiante= Estudiante.new(@ultimo_mensaje.usuario.id_telegram)
-        duda= Duda.new(@duda, estudiante)
+        usuario= UsuarioRegistrado.new(@ultimo_mensaje.usuario.id_telegram)
+        duda= Duda.new(@duda, usuario)
         @curso.nueva_duda(duda)
         @@bot.api.answer_callback_query(callback_query_id: @ultimo_mensaje.id_callback, text: "Creada")
         texto='Elija una opción del menú:'
@@ -80,5 +79,5 @@ class CrearDuda < Accion
 
 
   public_class_method :new
-
-end
+  private :solicitar_escribir_duda, :confirmar_denegar_duda, :crear_descartar_duda 
+end     

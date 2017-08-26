@@ -79,6 +79,7 @@ end
 
 
   public_class_method :new
-
+  protected :mostrar_dudas
+  private :respuesta_segun_accion_pulsada, :mostrar_acciones
 end
 require_relative 'listar_dudas'

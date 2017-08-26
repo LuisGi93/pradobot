@@ -9,13 +9,13 @@ class MenuDeMenus < Menu
 
 
   def recibir_mensaje(mensaje)
-    id_telegram=mensaje.usuario.id_telegram
+    @ultimo_mensaje=mensaje
     datos_mensaje=mensaje.datos_mensaje
     if cambiar_curso_pulsado(mensaje)
       siguiente_accion=self
     else
-      siguiente_accion=obtener_siguiente_opcion(id_telegram, datos_mensaje)
-      siguiente_accion.ejecutar(id_telegram)
+      siguiente_accion=obtener_siguiente_opcion
+      siguiente_accion.ejecutar(mensaje)
     end
 
     return siguiente_accion
@@ -23,40 +23,23 @@ class MenuDeMenus < Menu
 
 
   private
-  def cambiar_curso_parientes
-    @acciones.each{|key,value|
-      if value.curso!=@curso
-        value.cambiar_curso(@curso)
-      end
-    }
-    if @accion_padre.curso!=@curso
-      @accion_padre.cambiar_curso(@curso)
-    end
-  end
 
 
-  def opcion_pulsada id_telegram,datos_mensaje
-    accion=@acciones[datos_mensaje]
+  def opcion_pulsada 
+    accion=@acciones[@ultimo_mensaje.datos_mensaje]
     if accion
       @accion_pulsada=accion
-      @@bot.api.send_message(chat_id: id_telegram, text: datos_mensaje)
+      @@bot.api.send_message(chat_id: @ultimo_mensaje.usuario.id_telegram, text: @ultimo_mensaje.datos_mensaje)
     end
     return accion
 
   end
 
-  def obtener_siguiente_opcion(id_telegram, datos_mensaje)
-    siguiente_accion=nil
-puts datos_mensaje
-    if datos_mensaje== "Atras" && @accion_padre
-      siguiente_accion=@accion_padre
-    else
-      siguiente_accion=opcion_pulsada(id_telegram,datos_mensaje)
-      puts "Accion pulsada #{siguiente_accion}"
+  def obtener_siguiente_opcion
+      siguiente_accion=opcion_pulsada
       if siguiente_accion.nil?
         siguiente_accion=self
       end
-    end
 
     return siguiente_accion
   end

@@ -19,10 +19,6 @@ class ChatTelegram < ConexionBD
 
 
 
-  def establecer_entregas_curso entregas
-    @entregas=entregas
-  end
-
   def dar_de_alta
     @@db[:chat_telegram].where(:nombre_chat => @nombre).update(:id_chat => @id_chat)
   end

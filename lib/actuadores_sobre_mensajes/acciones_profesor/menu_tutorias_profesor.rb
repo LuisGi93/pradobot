@@ -10,7 +10,8 @@ class MenuTutoriasProfesor < MenuDeAcciones
     inicializar_acciones
   end
 
-  def ejecutar(id_telegram)
+  def ejecutar(mensaje)
+  @ultimo_mensaje=mensaje
   kb= Array.new
   fila_botones=Array.new
   array_botones=Array.new
@@ -28,7 +29,7 @@ class MenuTutoriasProfesor < MenuDeAcciones
   iniciar_acciones_defecto(fila_botones)
 
     markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: fila_botones)
-    @@bot.api.send_message( chat_id: id_telegram, text: "Elija entre las opciones del menu",  reply_markup: markup)
+    @@bot.api.send_message( chat_id: @ultimo_mensaje.usuario.id_telegram, text: "Elija entre las opciones del menu",  reply_markup: markup)
     if(@acciones[AccionEstablecerTutorias.nombre].teclado_menu_padre.nil?)
       @acciones[AccionEstablecerTutorias.nombre].teclado_menu_padre=markup
     end

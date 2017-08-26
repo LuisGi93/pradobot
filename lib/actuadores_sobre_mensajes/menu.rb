@@ -12,18 +12,7 @@ class Menu < Accion
   end
 
 
-  #
-  #
-  # Muestra al usuario identificado por +id_telegram+ un mensaje de ayuda o explicativo sobre que hace la acción.
-  # * *Args*    :
-  #   - +id_telegram+ -> identificador del usuario que ha iniciado la ejecución de la acción
-  # * *Returns* :
-  #   - Se devuelve a si misma.
-  #
-  def ejecutar(id_telegram)
-    raise NotImplementedError.new
-  end
-  
+
   #
   # Manda al usuario  identificado por +id_telegram+ un mensaje para que elija un curso entre los que cursa.
   # * *Args*    :
@@ -77,7 +66,7 @@ class Menu < Accion
       iniciar_cambio_curso(mensaje.usuario.id_telegram, id_curso)
       pulsado=true
       @@bot.api.answer_callback_query(:callback_query_id => mensaje.id_callback, text:"Cambiando de curso..")
-      ejecutar(mensaje.usuario.id_telegram)
+      ejecutar(mensaje)
 
     end
 
@@ -143,10 +132,16 @@ class Menu < Accion
 
 
   #
-  # Implementa el método con el mismo nombre de link:Accion.html
+  #
+  # Muestra al usuario identificado por +id_telegram+ un mensaje de ayuda o explicativo sobre que hace la acción.
+  # * *Args*    :
+  #   - +id_telegram+ -> identificador del usuario que ha iniciado la ejecución de la acción
+  # * *Returns* :
+  #   - Se devuelve a si misma.
   #
 
-  def ejecutar(id_telegram)
+  def ejecutar(mensaje)
+    @ultimo_mensaje=mensaje
     kb= Array.new
     fila_botones=Array.new
     array_botones=Array.new
@@ -164,7 +159,7 @@ class Menu < Accion
     iniciar_acciones_defecto(fila_botones)
 
     markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: fila_botones)
-    @@bot.api.send_message( chat_id: id_telegram, text: "Elija entre las opciones del menu",  reply_markup: markup)
+    @@bot.api.send_message( chat_id: @ultimo_mensaje.usuario.id_telegram, text: "Elija entre las opciones del menu",  reply_markup: markup)
     return self
   end
 

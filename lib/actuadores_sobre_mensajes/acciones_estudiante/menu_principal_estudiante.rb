@@ -10,13 +10,9 @@ class MenuPrincipalEstudiante < MenuDeMenus
   end
 
   def cambiar_curso_parientes
-    puts "Los cursos del usuario son #{@curso.to_s}"
-
     @acciones.each{|key,value|
       if value.curso!=@curso
-        puts "cambiando #{key} a #{value.curso}"
         value.cambiar_curso(@curso)
-        puts "cambiando #{key} a #{value.curso}"
       end
     }
   end
@@ -36,6 +32,7 @@ class MenuPrincipalEstudiante < MenuDeMenus
 
 
   public_class_method :new
+  private :inicializar_acciones
 
 
 end

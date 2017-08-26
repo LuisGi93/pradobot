@@ -88,11 +88,6 @@ class ListarDudas < Accion
   end
 
   def reiniciar
-   # @ultimo_mensaje=nil
-   # @dudas=Array.new
-   # @respuestas=Array.new
-   # @indice_duda_seleccionada=nil
-   # @fase=nil
   end
 
 
@@ -138,12 +133,12 @@ class ListarDudas < Accion
 
 
 
-  def generar_respuesta_mensaje(mensaje)
+  def generar_respuesta_mensaje()
 
-    datos_mensaje=mensaje.datos_mensaje
+    datos_mensaje=@ultimo_mensaje.datos_mensaje
 
     puts datos_mensaje
-    if mensaje.tipo== "callbackquery"
+    if @ultimo_mensaje.mensaje.tipo== "callbackquery"
       if datos_mensaje =~ /\#\#\$\$Volver/
         mostrar_menu_anterior
       else
@@ -179,17 +174,12 @@ class ListarDudas < Accion
 
 
   def mostrar_menu_anterior
-
-puts @dudas.to_s
-
-    puts @fase
     case @fase
       when "mostrar_dudas_pendientes"
         mostrar_dudas("editar_mensaje")
         @fase=""
       when "opciones_sobre_duda"
         mostrar_acciones(@indice_duda_seleccionada)
-#        mostrar_dudas_pendientes("editar_mensaje")
         @fase="mostrar_dudas_pendientes"
       when "mostrando_respuestas"
         mostrar_dudas("editar_mensaje")
@@ -210,8 +200,6 @@ puts @dudas.to_s
   end
 
   def mostrar_solucion_duda
-  puts @dudas.to_s
-  puts @indice_duda_seleccionada
     solucion_duda=@dudas.at(@indice_duda_seleccionada).solucion
     puts solucion_duda.to_s
     texto="Duda: *#{@dudas.at(@indice_duda_seleccionada).contenido}* \n Solución: *#{solucion_duda.contenido}*."
@@ -221,7 +209,7 @@ puts @dudas.to_s
   end
 
   public_class_method :new
-
+  private :crear_indice_respuestas_dudas, :mostrar_acciones, :crear_indice_respuestas, :mostrar_respuestas, :elegir_respuesta 
 end
 
 require_relative 'accion'

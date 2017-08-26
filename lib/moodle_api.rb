@@ -6,8 +6,8 @@ require 'json'
 
 class Moodle
 
-  attr_writer :user_token
-  attr_accessor :user_token
+  #attr_writer :user_token
+  #attr_accessor :user_token
   def initialize(user_token)
     @user_token = user_token
     @moodle_url="http://" + ENV['MOODLE_HOST'] + "/webservice/rest/server.php"

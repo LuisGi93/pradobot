@@ -12,10 +12,6 @@ class AccionAsociarChat< Accion
     @fase='inicio'
   end
 
-  def asociar_chat_curso nombre_chat_telegram
-    @curso.asociar_chat nombre_chat_telegram
-  end
-
   def recibir_mensaje(mensaje)
     case @fase
       when 'inicio'

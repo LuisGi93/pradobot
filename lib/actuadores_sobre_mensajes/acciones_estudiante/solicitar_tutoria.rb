@@ -80,5 +80,6 @@ class SolicitarTutoria < Accion
 
 
   public_class_method :new
+  private :solicitar_tutoria, :mostrar_tutorias, :obtener_tutorias_alumno
 
 end

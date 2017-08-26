@@ -53,5 +53,6 @@ def reiniciar
 end
 
   public_class_method :new
-
-end
+  private :generar_respuesta_mensaje
+  protected :mostrar_dudas
+end 

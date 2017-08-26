@@ -45,16 +45,13 @@ class EncargadoMensajesGrupales
 
   end
 
-  def obtener_proximas_entregas entregas
-      proximas_entregas=Array.new
-      fecha_actual=Date.new
-      puts fecha_actual
-        entregas.each{|entrega|
-        puts entrega.fecha_fin
-        puts entrega.fecha_fin.class
-        puts DateTime.strptime(entrega.fecha_fin,"%Y-%m-%d %H:%M:%S")
-        }
-  end
+#  def obtener_proximas_entregas entregas
+#      proximas_entregas=Array.new
+#      fecha_actual=Date.new
+#      puts fecha_actual
+#        entregas.each{|entrega|
+#        }
+#  end
 
   def realizar_accion(id_chat, datos_mensaje)
     puts "Los datos del mensaje son #{datos_mensaje}"

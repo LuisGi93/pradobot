@@ -15,10 +15,6 @@ class AccionMostrarEntregas < Accion
   end
 
 
-  def establecer_id_telegram(id_telegram)
-    @id_telegram=id_telegram
-  end
-
   def obtener_mensaje
 
     texto=""
@@ -90,5 +86,5 @@ class AccionMostrarEntregas < Accion
 
 
   public_class_method :new
-
+  private :mostrar_entregas, :mostrar_informacion_entrega
 end

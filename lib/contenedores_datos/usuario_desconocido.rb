@@ -11,14 +11,8 @@ class UsuarioDesconocido < ConexionBD
     @cursos=Array.new
   end
 
-  def anadir_curso id_curso, nombre_curso
-    @cursos << {:id_moodle => id_curso, :nombre_curso => nombre_curso }
-  end
 
   def anadir_cursos_moodle( cursos)
-   # cursos.each{|curso|
-   #   anadir_curso(curso['id'], curso['fullname'])
-   # }
       @cursos=cursos
   end
 

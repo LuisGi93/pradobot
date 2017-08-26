@@ -14,9 +14,6 @@ class AccionSobreTutoria < Accion
   def initialize
     @tutorias=Array.new
     @tutoria=nil
-    @dudas=Array.new
-    @indice_duda_seleccionada=nil
-    @fase=nil
     @ultimo_mensaje=nil
   end
 
@@ -29,7 +26,7 @@ class AccionSobreTutoria < Accion
       @accion=nil
       @tutoria=nil
       if @tutorias.empty?
-        @tutorias=@profesor.obtener_tutorias
+        @tutorias=Profesor.new(@ultimo_mensaje.usuario.id_telegram).obtener_tutorias
       end
 
       mensaje=""
@@ -59,26 +56,8 @@ class AccionSobreTutoria < Accion
 
 
 
- 
-  def dcomprobar_seleccion_tutoria mensaje
-
-      if mensaje.contenido =~ "\#\#\$\$tutoria.*"
-
-        indice_tutoria= datos_mensaje.slice! "#\#$$tutoria"
-        indice_tutoria=indice_tutoria.to_i
-        @menu_tutorias.cambiar_tutoria(@tutorias.at(indice_tutoria))
-        return true
-      end
-  end
-
   def recibir_mensaje(mensaje)
     @ultimo_mensaje=mensaje
-    puts "alalalal"
-puts mensaje.datos_mensaje.to_s
-puts "noinini"
-    if @profesor.nil?
-      @profesor=Profesor.new(@ultimo_mensaje.usuario.id_telegram)
-    end
         if @accion
           @accion.generar_respuesta_mensaje(mensaje)
         else

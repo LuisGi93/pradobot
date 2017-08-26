@@ -14,8 +14,6 @@ require_relative '../contenedores_datos/mensaje'
 #
 class Mensajero
 
-  attr_reader :token
-  attr_accessor :bot
   def initialize(token)
     @bot=Telegram::Bot::Client;
     @token_bot_telegram=token
@@ -49,6 +47,8 @@ class Mensajero
   #Recibe los mensajes de parte de Telegram destinados al bot
   #
   def empezar_recibir_mensajes
+puts @token_bot_telegram
+puts @token_bot_telegram
     @bot.run(@token_bot_telegram) do |botox|
       puts botox.class.to_s
       Accion.establecer_bot(botox)

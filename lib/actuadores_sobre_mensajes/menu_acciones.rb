@@ -13,14 +13,14 @@ class MenuDeAcciones < Menu
 
 
   def recibir_mensaje(mensaje)
-    id_telegram=mensaje.usuario.id_telegram
+    @ultimo_mensaje=mensaje
     datos_mensaje=mensaje.datos_mensaje
     quiere_cambiar_curso=cambiar_curso_pulsado(mensaje)
 
     unless quiere_cambiar_curso
       accion=obtener_accion_recibe_mensaje(datos_mensaje)
       if accion == self || accion==@accion_padre
-        accion.ejecutar(id_telegram)
+        accion.ejecutar(mensaje)
       else
         accion.recibir_mensaje(mensaje)
       end
