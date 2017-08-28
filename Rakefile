@@ -29,7 +29,9 @@ namespace :tasks do
 
       RSpec::Core::RakeTask.new(:tests_bd) do |t|
           t.pattern = Dir.glob('test/test_*.rb')
-        t.rspec_opts = '--format documentation'
+#          t.pattern = Dir.glob('test/test_informacion_tutoria.rb')
+
+          t.rspec_opts = '--format documentation'
       end
 
       desc "Borramos la base de datos"

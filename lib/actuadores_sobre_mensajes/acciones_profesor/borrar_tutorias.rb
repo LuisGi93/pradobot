@@ -6,12 +6,10 @@ class BorrarTutorias < Accion
   @nombre = 'Borrar tutoría.'
   def initialize(selector_tutorias, tutoria)
     @tutoria = tutoria
-    @profesor = nil
     @selector_tutorias = selector_tutorias
   end
 
   def reiniciar
-    @profesor = nil
     @ultimo_mensaje = nil
   end
 
@@ -30,11 +28,10 @@ class BorrarTutorias < Accion
   end
 
   def respuesta_segun_datos_mensaje(datos_mensaje)
-    puts datos_mensaje
     case datos_mensaje
     when /\#\#\$\$Si/
-
-      @profesor.borrar_tutoria(@tutoria)
+      profesor=Profesor.new(@ultimo_mensaje.usuario.id_telegram)
+      profesor.borrar_tutoria(@tutoria)
       menu = MenuInlineTelegram.crear([] << 'Volver')
       @@bot.api.answer_callback_query(callback_query_id: @ultimo_mensaje.id_callback, text: 'Borrada!')
       @@bot.api.edit_message_text(chat_id: @ultimo_mensaje.id_chat, message_id: @ultimo_mensaje.id_mensaje, text: "Tutoria #{@tutoria.fecha} borrada.", parse_mode: 'Markdown', reply_markup: menu)

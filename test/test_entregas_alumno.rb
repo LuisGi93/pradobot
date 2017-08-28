@@ -14,7 +14,6 @@ describe AccionMostrarEntregas do
     stub_padre = double('padre')
 
     Accion.establecer_bot(@stub_bot)
-    Accion.establecer_db(stub_db)
 
     allow(stub_padre).to receive(:cambiar_curso) { true }
     allow(stub_padre).to receive(:curso) { true }

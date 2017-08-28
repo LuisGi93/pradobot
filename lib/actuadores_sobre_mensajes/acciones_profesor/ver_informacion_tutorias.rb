@@ -54,6 +54,7 @@ class VerInformacionTutorias < Accion
         texto += "\t *#{contador}º* \tNombre telegram estudiante:\t *#{peticion.estudiante.nombre_usuario}\n*"
         contador += 1
       end
+      puts texto
       @@bot.api.edit_message_text(chat_id: @ultimo_mensaje.id_chat, message_id: @ultimo_mensaje.id_mensaje, text: texto, parse_mode: 'Markdown', reply_markup: menu)
     end
   end

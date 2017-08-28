@@ -38,7 +38,7 @@ class PeticionesPendientesTutoria < Accion
     when /\#\#\$\$Peticion /
       puts 'Entro en la peticion'
       datos_mensaje.slice! "\#\#\$\$Peticion"
-      id_estudiante_peticion = datos_mensaje[/[^_]*/]
+      id_estudiante_peticion = datos_mensaje[/[^_]*/].to_i
       solicitar_accion_sobre_peticion id_estudiante_peticion
       @fase = 'peticion_elegida'
     when /(\#\#\$\$Aceptar|\#\#\$\$Denegar)/
@@ -88,18 +88,10 @@ class PeticionesPendientesTutoria < Accion
   end
 
   # Envía un mensaje al profesor pidiendo que elija si quiere aceptar esta petición o no.
-  def solicitar_accion_sobre_peticion(id_estudiante_peticion)
-    @peticion_elegida = nil
-    cont = 0
-    while @peticion_elegida.nil? && cont < @peticiones_pendientes.size
-      if @peticiones_pendientes[cont].estudiante.id.to_i == id_estudiante_peticion.to_i
-        @peticion_elegida = @peticiones_pendientes[cont]
-
-    end
-      cont += 1
-    end
+  def solicitar_accion_sobre_peticion(pos_peticion)
+    @peticion_elegida = @peticiones_pendientes[pos_peticion]
     if @peticion_elegida.nil?
-      @@bot.api.send_message(chat_id: @profesor.id, text: 'Vuelva a intentarlo', parse_mode: 'Markdown')
+      @@bot.api.send_message(chat_id: @profesor.id_telegram, text: 'Vuelva a intentarlo', parse_mode: 'Markdown')
     else
       text = "Petición seleccionada:\n"
       text += "\t Hora petición: *#{@peticion_elegida.hora}*\n"
@@ -108,7 +100,7 @@ class PeticionesPendientesTutoria < Accion
       opciones << 'Aceptar'
       opciones << 'Denegar'
       menu = MenuInlineTelegram.crear(opciones)
-      @@bot.api.send_message(chat_id: @profesor.id, text: text, reply_markup: menu, parse_mode: 'Markdown')
+      @@bot.api.send_message(chat_id: @profesor.id_telegram, text: text, reply_markup: menu, parse_mode: 'Markdown')
     end
   end
 
@@ -120,14 +112,14 @@ class PeticionesPendientesTutoria < Accion
     if que_hacer =~ /\#\#\$\$Aceptar/
       @peticion_elegida.aceptar
       @@bot.api.answer_callback_query(callback_query_id: @ultimo_mensaje.id_callback, text: 'Aceptada!')
-      @@bot.api.send_message(chat_id: @profesor.id, text: 'Petición aceptada', parse_mode: 'Markdown')
+      @@bot.api.send_message(chat_id: @profesor.id_telegram, text: 'Petición aceptada', parse_mode: 'Markdown')
 
     elsif que_hacer =~ /\#\#\$\$Denegar/
       @@bot.api.answer_callback_query(callback_query_id: @ultimo_mensaje.id_callback, text: 'Denegada')
-      @@bot.api.send_message(chat_id: @profesor.id, text: 'Petición rechazada', parse_mode: 'Markdown')
+      @@bot.api.send_message(chat_id: @profesor.id_telegram, text: 'Petición rechazada', parse_mode: 'Markdown')
       @peticion_elegida.denegar
     else
-      @@bot.api.send_message(chat_id: @profesor.id, text: 'Error vuelva a intentarlo', reply_markup: markup, parse_mode: 'Markdown')
+      @@bot.api.send_message(chat_id: @profesor.id_telegram, text: 'Error vuelva a intentarlo', reply_markup: markup, parse_mode: 'Markdown')
     end
     reiniciar
   end #  Dependiendo de que se ha hecho la última vez muestra el paso previo.
