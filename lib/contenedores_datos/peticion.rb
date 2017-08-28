@@ -3,51 +3,48 @@ require_relative 'conexion_bd'
 class Peticion < ConexionBD
   attr_reader :tutoria, :estudiante
   attr_accessor :hora, :estado
-  def initialize tutoria, estudiante, hora=nil
-    @tutoria=tutoria
-    @estudiante=estudiante
-    @hora=hora
+  def initialize(tutoria, estudiante, hora = nil)
+    @tutoria = tutoria
+    @estudiante = estudiante
+    @hora = hora
   end
-
 
   def hora
     if @hora.nil?
-      datos_peticion=@@db[:peticion_tutoria].where(:id_profesor => @tutoria.profesor.id_telegram, :dia_semana_hora => @tutoria.fecha, :id_estudiante=>@estudiante.id_telegram).select(:hora_solicitud)
-      @hora=datos_peticion.to_a[0][:hora_solicitud].strftime("%Y-%m-%d %H:%M:%S")
+      datos_peticion = @@db[:peticion_tutoria].where(id_profesor: @tutoria.profesor.id_telegram, dia_semana_hora: @tutoria.fecha, id_estudiante: @estudiante.id_telegram).select(:hora_solicitud)
+      @hora = datos_peticion.to_a[0][:hora_solicitud].strftime('%Y-%m-%d %H:%M:%S')
     end
-    return @hora
+    @hora
   end
 
   def estado
     if @estado.nil?
-      datos_peticion=@@db[:peticion_tutoria].where(:id_profesor => @tutoria.profesor.id_telegram, :dia_semana_hora => @tutoria.fecha, :id_estudiante=>@estudiante.id_telegram).select(:estado)
+      datos_peticion = @@db[:peticion_tutoria].where(id_profesor: @tutoria.profesor.id_telegram, dia_semana_hora: @tutoria.fecha, id_estudiante: @estudiante.id_telegram).select(:estado)
       puts datos_peticion.to_a.to_s
-      @estado=datos_peticion.to_a[0][:estado]
+      @estado = datos_peticion.to_a[0][:estado]
     end
-    return @estado
+    @estado
   end
 
   def aceptar
-      @@db[:peticion_tutoria].where(:id_profesor => @tutoria.profesor.id_telegram, :dia_semana_hora => @tutoria.fecha, :id_estudiante=>@estudiante.id_telegram).update(:estado => "aceptada")
+    @@db[:peticion_tutoria].where(id_profesor: @tutoria.profesor.id_telegram, dia_semana_hora: @tutoria.fecha, id_estudiante: @estudiante.id_telegram).update(estado: 'aceptada')
   end
 
-
   def denegar
-    @@db[:peticion_tutoria].where(:id_profesor => @tutoria.profesor.id_telegram, :dia_semana_hora => @tutoria.fecha, :id_estudiante=>@estudiante.id_telegram).update(:estado => "rechazada")
+    @@db[:peticion_tutoria].where(id_profesor: @tutoria.profesor.id_telegram, dia_semana_hora: @tutoria.fecha, id_estudiante: @estudiante.id_telegram).update(estado: 'rechazada')
   end
 
   def <=>(y)
-    if  hora < y.hora
-        return -1
+    if hora < y.hora
+      -1
     elsif hora == y.hora
-        return 0
+      0
     else
-        return 1
+      1
     end
-
   end
 
-  def == (y)
-    return  @tutoria == y.tutoria && @estudiante == y.estudiante
+  def ==(y)
+    @tutoria == y.tutoria && @estudiante == y.estudiante
   end
 end

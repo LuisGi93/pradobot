@@ -2,56 +2,46 @@
 require_relative 'usuario_registrado'
 require 'time'
 class Estudiante < UsuarioRegistrado
-
-  def initialize id_estudiante
-    @id_telegram=id_estudiante
-    email=@@db[:usuarios_moodle].where(:id_telegram => @id_telegram).select(:email).first[:email]
-    token=@@db[:datos_moodle].where(:email => email).select(:token).first[:token]
-    @moodle=Moodle.new(token)
-  end
-
-
-
+  def initialize(id_estudiante)
+    @id_telegram = id_estudiante
+    email = @@db[:usuarios_moodle].where(id_telegram: @id_telegram).select(:email).first[:email]
+    token = @@db[:datos_moodle].where(email: email).select(:token).first[:token]
+    @moodle = Moodle.new(token)
+  end  
 
   def obtener_cursos_estudiante
-    consulta_cursos_alumno=@@db[:estudiante_curso].where(:id_estudiante => @id_telegram).select(:id_moodle_curso).to_a
-    cursos_alumno=Array.new
-    consulta_cursos_alumno.each{|curso|
-      cursos_alumno << Curso.new( curso[:id_moodle_curso])
+    consulta_cursos_alumno = @@db[:estudiante_curso].where(id_estudiante: @id_telegram).select(:id_moodle_curso).to_a
+    cursos_alumno = []
+    consulta_cursos_alumno.each { |curso|
+      cursos_alumno << Curso.new(curso[:id_moodle_curso])
     }
-    return cursos_alumno
-  end
-
-
+    cursos_alumno
+  end  
 
   def obtener_peticiones_tutorias
-    peticiones=Array.new
-    datos_peticiones=@@db[:peticion_tutoria].where(:id_estudiante => @id_telegram).to_a
-    datos_peticiones.each{|datos_peticion|
-      tutoria=Tutoria.new(Profesor.new(datos_peticion[:id_profesor]), datos_peticion[:dia_semana_hora].strftime("%Y-%m-%d %H:%M:%S"))
-        peticiones << Peticion.new(tutoria, Estudiante.new(datos_peticion[:id_estudiante]), datos_peticion[:hora_solicitud].strftime("%Y-%m-%d %H:%M:%S"))
+    peticiones = []
+    datos_peticiones = @@db[:peticion_tutoria].where(id_estudiante: @id_telegram).to_a
+    datos_peticiones.each { |datos_peticion|
+      tutoria = Tutoria.new(Profesor.new(datos_peticion[:id_profesor]), datos_peticion[:dia_semana_hora].strftime('%Y-%m-%d %H:%M:%S'))
+      peticiones << Peticion.new(tutoria, Estudiante.new(datos_peticion[:id_estudiante]), datos_peticion[:hora_solicitud].strftime('%Y-%m-%d %H:%M:%S'))
     }
     puts peticiones
-    return peticiones
+    peticiones
+  end  
+
+  def obtener_entregas_realizadas(curso)
+    entregas_curso = @moodle.obtener_entregas_curso(curso)
+    entregas_curso
   end
 
+  def consultar_nota_entrega(entrega)
+    estado_entrega = @moodle.api('mod_assign_get_submission_status', 'assignid' => entrega.id) # el que sabe y puede consultar que nota tiene es el alumno
 
-
-
-  def obtener_entregas_realizadas curso
-    entregas_curso=@moodle.obtener_entregas_curso(curso)
-    return entregas_curso
-  end
-
-  def consultar_nota_entrega entrega
-    estado_entrega=@moodle.api('mod_assign_get_submission_status',"assignid" => entrega.id)    #el que sabe y puede consultar que nota tiene es el alumno
-
-    if estado_entrega["feedback"] && estado_entrega["feedback"]["grade"]
-      return estado_entrega["feedback"]["grade"]["grade"]
+    if estado_entrega['feedback'] && estado_entrega['feedback']['grade']
+      return estado_entrega['feedback']['grade']['grade']
     else
-      return "Sin calificar"
+      return 'Sin calificar'
     end
   end
-
 
 end

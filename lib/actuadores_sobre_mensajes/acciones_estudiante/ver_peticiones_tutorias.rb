@@ -3,44 +3,35 @@ require_relative '../../contenedores_datos/curso'
 require_relative '../../contenedores_datos/estudiante'
 
 class VerPeticionesTutoria < Accion
-
-  @nombre='Ver solicitudes realizadas'
+  @nombre = 'Ver solicitudes realizadas'
   def initialize
-    @ultimo_mensaje=nil
-  end
-
-
+    @ultimo_mensaje = nil
+  end  
 
   def reiniciar
-    @ultimo_mensaje=nil
-  end
-
-
+    @ultimo_mensaje = nil
+  end 
 
   def recibir_mensaje(mensaje)
-    @ultimo_mensaje=mensaje
-    estudiante=Estudiante.new(@ultimo_mensaje.usuario.id_telegram)
-    peticiones=estudiante.obtener_peticiones_tutorias
+    @ultimo_mensaje = mensaje
+    estudiante = Estudiante.new(@ultimo_mensaje.usuario.id_telegram)
+    peticiones = estudiante.obtener_peticiones_tutorias
 
     puts peticiones.empty?
     puts peticiones.to_s
     if peticiones.empty?
-      @@bot.api.send_message( chat_id: @ultimo_mensaje.usuario.id_telegram, text: "No ha realizado ninguna petición", parse_mode: "Markdown" )
+      @@bot.api.send_message(chat_id: @ultimo_mensaje.usuario.id_telegram, text: 'No ha realizado ninguna petición', parse_mode: 'Markdown')
     else
-      profesor_curso=@curso.obtener_profesor_curso
-      text="Ha realizado las siguientes peticiones para las tutorias de *#{profesor_curso.nombre_usuario}:*\n"
-      peticiones.each_with_index { |peticion, index|
-        text+="\t *#{index})*:  Hora realizacion: *#{peticion.hora}*\n"
-        text+="         Lugar en la cola: *#{peticion.tutoria.posicion_peticion(peticion)}*"
-        text+="         Estado: *#{peticion.estado}*\n"
-      }
-      @@bot.api.send_message( chat_id: @ultimo_mensaje.usuario.id_telegram, text: text, parse_mode: "Markdown"  )
+      profesor_curso = @curso.obtener_profesor_curso
+      text = "Ha realizado las siguientes peticiones para las tutorias de *#{profesor_curso.nombre_usuario}:*\n"
+      peticiones.each_with_index do |peticion, index|
+        text += "\t *#{index})*:  Hora realizacion: *#{peticion.hora}*\n"
+        text += "         Lugar en la cola: *#{peticion.tutoria.posicion_peticion(peticion)}*"
+        text += "         Estado: *#{peticion.estado}*\n"
+      end
+      @@bot.api.send_message(chat_id: @ultimo_mensaje.usuario.id_telegram, text: text, parse_mode: 'Markdown')
     end
-
   end
 
-
-
   public_class_method :new
-
 end
