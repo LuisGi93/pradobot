@@ -41,7 +41,7 @@ namespace :tasks do
       end
 
       RSpec::Core::RakeTask.new(:tests_nobd) do |t|
-          t.pattern = Dir.glob('test/test_crear_duda.rb')
+          t.pattern = Dir.glob('test/test_establecer_tutoria.rb')
         t.rspec_opts = '--format documentation'
       end
     end

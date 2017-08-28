@@ -1,46 +1,51 @@
-require 'net/http'
-require 'open-uri'
 require 'json'
-
+require 'typhoeus'
 
 
 class Moodle
 
-  #attr_writer :user_token
-  #attr_accessor :user_token
   def initialize(user_token)
     @user_token = user_token
-    @moodle_url="http://" + ENV['MOODLE_HOST'] + "/webservice/rest/server.php"
+    @moodle_url="https://" + ENV['MOODLE_HOST'] + "/webservice/rest/server.php"
   end
 
 
 
   def api (function, params=nil)
-    uri = URI(@moodle_url)
+
     if params
-      arguments= { :wstoken  => @user_token , :moodlewsrestformat => 'json', :wsfunction  => function}.merge(params)
+    request=Typhoeus::Request.new(
+    @moodle_url,
+    params: { :wstoken  => @user_token, :moodlewsrestformat => 'json', :wsfunction  => function}.merge(params),
+    ssl_verifypeer: false,
+     ssl_verifyhost: 0)
     else
-      arguments= { :wstoken  => @user_token , :moodlewsrestformat => 'json', :wsfunction  => function}
-    end
-    uri.query = URI.encode_www_form(arguments)
-   # puts uri.query
-    page = Net::HTTP.get(uri)
-    JSON.parse(page)
+    request=Typhoeus::Request.new(
+    @moodle_url,
+    params: { :wstoken  => @user_token, :moodlewsrestformat => 'json', :wsfunction  => function},
+    ssl_verifypeer: false,
+     ssl_verifyhost: 0)
+   end
+    salida=request.run
+
+JSON.parse(salida.body)
   end
 
   def self.obtener_token (username, password, service)
-    uri = URI("http://" + ENV['MOODLE_HOST'] + "/login/token.php")
-    arguments= { :username  => username , :password => password, :service  => service}
-    uri.query = URI.encode_www_form(arguments)
-    page = Net::HTTP.get(uri)
-    JSON.parse(page)
+    
+    request=Typhoeus::Request.new(
+     "http://" + ENV['MOODLE_HOST'] + "/login/token.php"   ,
+    params: { :wstoken  => @user_token, :moodlewsrestformat => 'json', :wsfunction  => function},
+    ssl_verifypeer: false,
+     ssl_verifyhost: 0)
+    salida=request.run
+
+JSON.parse(salida.body)
   end
 
   def obtener_entregas_curso curso
 #Daria la fecha incorrecta si el servidor de moodle y el local tienen una hora diferentes
     datos_curso=api('mod_assign_get_assignments',"courseids[0]" => curso.id_curso)
-    #puts curso.id_curso
-    #puts datos_curso.to_s
     id_curso=datos_curso['courses'][0]['id']
     nombre_curso=datos_curso['courses'][0]['fullname']
     entregas=datos_curso['courses'][0]['assignments']
@@ -75,10 +80,8 @@ class Moodle
     params={'field' => 'email', 'values[0]'  => email}
     usuario=api('core_user_get_users_by_field ', params)
 
-#puts usuario.to_s
     if usuario.size > 0
-      id_usuario_moodle=usuario[0]['id'] #presupongo que el email de moodle es único
-    end
+      id_usuario_moodle=usuario[0]['id']     end
 
     return id_usuario_moodle
   end

@@ -8,6 +8,7 @@ gem 'json'
 gem 'rufus-scheduler'
 gem 'activesupport'
 gem 'daemons'
+gem 'typhoeus'
 group :test do
   gem 'rake'
 end

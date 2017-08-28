@@ -43,11 +43,11 @@ end
 
   end
 
-  def generar_respuesta_mensaje(mensaje)
+  def generar_respuesta_mensaje()
 
-    datos_mensaje=mensaje.datos_mensaje
+    datos_mensaje=@ultimo_mensaje.datos_mensaje
 
-    if mensaje.tipo== "callbackquery"
+    if @ultimo_mensaje.tipo== "callbackquery"
       if datos_mensaje =~ /\#\#\$\$Volver/
         mostrar_menu_anterior
       else

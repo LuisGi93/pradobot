@@ -83,7 +83,7 @@ class ListarDudas < Accion
     @ultimo_mensaje=mensaje
     #Responder duda, borrar duda, marca respuesta duda, ver respuestas.
     #Y en el menu crear nueva duda, listar dudas pendientes, listar mis dudas.
-    generar_respuesta_mensaje(mensaje)
+    generar_respuesta_mensaje()
 
   end
 
@@ -138,7 +138,7 @@ class ListarDudas < Accion
     datos_mensaje=@ultimo_mensaje.datos_mensaje
 
     puts datos_mensaje
-    if @ultimo_mensaje.mensaje.tipo== "callbackquery"
+    if @ultimo_mensaje.tipo== "callbackquery"
       if datos_mensaje =~ /\#\#\$\$Volver/
         mostrar_menu_anterior
       else
@@ -165,8 +165,6 @@ class ListarDudas < Accion
   end
 
   def resolver_duda indice_respuesta
-    puts "resolvermos la jodida "
-	puts "Insertarndo solucion #{@respuestas.at(indice_respuesta).contenido}"
     @dudas.at(@indice_duda_seleccionada).insertar_solucion(@respuestas.at(indice_respuesta))
    @id_ultimo_mensaje_respuesta= @@bot.api.send_message( chat_id: @ultimo_mensaje.usuario.id_telegram, text:  "Duda *#{@dudas.at(@indice_duda_seleccionada).contenido}* resuelta por *#{@respuestas.at(indice_respuesta).contenido}*", parse_mode: "Markdown"  )["result"]["message_id"]
     @fase=nil

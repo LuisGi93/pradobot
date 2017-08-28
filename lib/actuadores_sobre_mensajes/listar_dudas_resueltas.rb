@@ -1,3 +1,4 @@
+require_relative 'listar_dudas'
 class ListarDudasResueltas < ListarDudas
 
   @nombre= 'Resueltas'
@@ -36,7 +37,6 @@ class ListarDudasResueltas < ListarDudas
       @acciones=["Todas respuestas", "Volver"]
     end
     menu=MenuInlineTelegram.crear(@acciones)
-    puts "@l indice de la duda es #{@indice_duda_seleccionada}"
     texto="Duda elegida *#{@dudas.at(@indice_duda_seleccionada).contenido}*. Elija que desea hacer:"
     @@bot.api.edit_message_text(:chat_id => @ultimo_mensaje.id_chat ,:message_id => @ultimo_mensaje.id_mensaje, text: texto,reply_markup: menu, parse_mode: "Markdown" )
   end

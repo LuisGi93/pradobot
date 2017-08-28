@@ -4,7 +4,7 @@ require 'active_support/inflector'
 class AccionEstablecerTutorias < Accion
 
   attr_accessor :teclado_menu_padre
-  @nombre='Establecer nueva tutoria.'
+  @nombre='Nueva tutoría'
   def initialize
     @fase='inicio'
     @datos=Hash.new
@@ -17,7 +17,7 @@ class AccionEstablecerTutorias < Accion
     markup=Telegram::Bot::Types::ReplyKeyboardMarkup
         .new(keyboard: [%w(Lunes Martes), %w(Miércoles Jueves), %w(Viernes), "Volver al menú de tutorias"], one_time_keyboard: true)
 
-        @@bot.api.send_message( chat_id: @ultimo_mensaje.usuario.id_telegram, text: "Elija el dia de la semana en el que desea establecer la tutoria",  reply_markup: markup, resize_keyboard: true )
+        @@bot.api.send_message( chat_id: @ultimo_mensaje.usuario.id_telegram, text: "Elija el día de la semana en el que desea establecer la tutoría",  reply_markup: markup, resize_keyboard: true )
     @fase='elegir_dia_semana'
   end
 
