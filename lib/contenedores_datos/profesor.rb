@@ -1,12 +1,15 @@
 
 require_relative 'usuario_registrado'
-
+#Clase que simboliza a un profesor de un curso
 class Profesor < UsuarioRegistrado
   def initialize(id_telegram = nil)
     @id_telegram = id_telegram
     @nombre_usuario = nil
   end
 
+  #Añade una nueva petición a una tutoría del profesor
+  #  *Returns* :
+  #   - True si el estudiante que la ha realizado no ha realizado una petición anterior, False en caso contrario
   def solicitar_tutoria(peticion)
     aceptada = true
     begin
@@ -18,6 +21,9 @@ class Profesor < UsuarioRegistrado
     aceptada
   end
 
+  # Devuelve las tutorías que ha creado el profesor
+  #  *Returns* :
+  #   - Array de objetos Tutoria
   def obtener_tutorias
     tutorias = []
       datos_tutorias = @@db[:tutoria].where(id_profesor: @id_telegram).to_a
@@ -27,6 +33,7 @@ class Profesor < UsuarioRegistrado
       tutorias
   end  
 
+  # Crea una nueva tutoría para el profesor 
   def establecer_nueva_tutoria tutoria
     existe_tutoria = @@db[:tutoria].where(id_profesor: @id_telegram, dia_semana_hora: tutoria.fecha)
     if existe_tutoria.empty?

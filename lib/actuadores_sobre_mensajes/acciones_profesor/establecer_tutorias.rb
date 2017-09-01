@@ -1,6 +1,10 @@
 require_relative '../accion'
 require_relative '../../contenedores_datos/tutoria'
 require 'active_support/inflector'
+
+#
+# Permite a un profesor la creación de una nueva tutoría 
+#
 class AccionEstablecerTutorias < Accion
   attr_accessor :teclado_menu_padre
   @nombre = 'Nueva tutoría'
@@ -11,6 +15,9 @@ class AccionEstablecerTutorias < Accion
     @teclado_menu_padre = nil
   end
 
+#
+  # Envía un mensaje al profesor solicitandole que elija un día. 
+#
   def solicitar_seleccion_dia
     markup = Telegram::Bot::Types::ReplyKeyboardMarkup
              .new(keyboard: [%w[Lunes Martes], %w[Miércoles Jueves], %w[Viernes], 'Volver al menú de tutorias'], one_time_keyboard: true)
@@ -19,6 +26,9 @@ class AccionEstablecerTutorias < Accion
     @fase = 'elegir_dia_semana'
   end
 
+  #
+  #   Implementa el método con el mismo nombre de link:Accion.html
+  #    
   def recibir_mensaje(mensaje)
     @ultimo_mensaje = mensaje
     case @fase
@@ -47,6 +57,9 @@ class AccionEstablecerTutorias < Accion
     end
   end
 
+  #
+  #  Reinicia el estado interno de la acción 
+  #    
   def reiniciar
     @fase = 'inicio'
     @datos.clear

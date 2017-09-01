@@ -2,6 +2,7 @@ require_relative 'conexion_bd'
 require 'active_support/inflector'
 require_relative '../moodle_api'
 
+# Clase que simboliza un curso 
 class Curso < ConexionBD
   attr_reader :id_curso, :nombre, :entregas
 
@@ -14,6 +15,9 @@ class Curso < ConexionBD
     @entregas = nil
   end
 
+  #Obtiene al profesor responsable del curso
+  # * *Returns* :
+  #   - Devuelve Profesor responsable del curso
   def obtener_profesor_curso
     if @profesor.nil?
       consulta_db = @@db[:profesor_curso].where(id_moodle_curso: @id_curso).select(:id_profesor)
@@ -26,6 +30,10 @@ class Curso < ConexionBD
     @profesor
   end
 
+  
+  # Obtiene el nombre del curso 
+  # * *Returns* :
+  #   - Devuelve String con el nombre del curso 
   def nombre
     if @nombre.nil?
       dataset = @@db[:curso].where(:id_moodle => @id_curso).select(:nombre_curso)
@@ -34,10 +42,15 @@ class Curso < ConexionBD
     @nombre
   end  
 
+  #  Establece las entregas del curso 
   def establecer_entregas_curso(entregas)
     @entregas = entregas
   end
 
+  # Asocia un chat de Teleggram al curso 
+  #
+  #   # * *Args*    :
+  #   - +nombre_chat_telegram+ -> nombre del chat de telegram al cual se va a asociar al curso 
   def asociar_chat(nombre_chat_telegram)
     chat = @@db[:chat_curso].where(id_moodle_curso: @id_curso)
     if chat.empty?
@@ -48,6 +61,11 @@ class Curso < ConexionBD
     end
   end  
 
+  # Devuelve las entregas abiertas para el curso 
+  #
+  # * *Returns* :
+  #   - Devuelve un array con las entregas del curso 
+  
   def entregas
       # Se refreca cada vez que se consultan las entregas consultando moodle para evitar almacenar para siempre jamas las entregas que se consultaron por primera vez
     @entregas = []
@@ -67,12 +85,20 @@ class Curso < ConexionBD
 
       @entregas
   end
+ # Añade una duda al curso 
+  #
+  #   # * *Args*    :
+  #   - +duda+ -> nueva duda a añadir al curso 
 
   def nueva_duda(duda)
     @@db[:dudas].insert(id_usuario_duda: duda.usuario.id_telegram, contenido_duda: duda.contenido)
     @@db[:dudas_curso].insert(id_usuario_duda: duda.usuario.id_telegram, id_moodle_curso: @id_curso, contenido_duda: duda.contenido)
   end
 
+  #Obtiene las dudas sin resolver que tiene el curso 
+  #
+  # * *Returns* :
+  #   - Devuelve un array con las dudas sin resolver del curso 
   def obtener_dudas_sin_resolver
     dudas_sin_resolver_curso = []
       datos_dudas_curso = @@db[:dudas_curso].where(id_moodle_curso: @id_curso).select(:id_usuario_duda, :contenido_duda).except(@@db[:dudas_resueltas]).to_a
@@ -83,6 +109,10 @@ class Curso < ConexionBD
       dudas_sin_resolver_curso
   end
 
+  #Obtiene las dudas que tienen solución que tiene el curso 
+  #
+  # * *Returns* :
+  #   - Devuelve un array con las dudas obtenidas 
   def obtener_dudas_resueltas
     dudas_curso = @@db[:dudas_curso].where(id_moodle_curso: @id_curso).select(:id_usuario_duda, :contenido_duda)
     dudas_resueltas = @@db[:dudas_resueltas]
@@ -94,7 +124,13 @@ class Curso < ConexionBD
 
     dudas_resueltas_curso
   end
-  def dudas
+
+  # Obtiene  todas las dudas del curso 
+  #
+  # * *Returns* :
+  #   - Devuelve un array con todas las dudas 
+  #
+     def dudas
     dudas_curso = []
     datos_dudas_curso = @@db[:dudas_curso].where(id_moodle_curso: @id_curso).select(:id_usuario_duda, :contenido_duda).to_a
     datos_dudas_curso.each { |datos_duda|
@@ -104,7 +140,12 @@ class Curso < ConexionBD
     dudas_curso
   end
 
-  def eliminar_duda(duda)
+ # Elimina una duda del curso 
+  #
+  #   # * *Args*    :
+  #   - +duda+ -> duda a eliminar del curso
+
+   def eliminar_duda(duda)
     @@db[:dudas].where(id_usuario_duda: duda.usuario.id_telegram, contenido_duda: duda.contenido).delete
   end
 

@@ -2,6 +2,9 @@ require_relative '../accion'
 require_relative '../../contenedores_datos/curso'
 require_relative '../../contenedores_datos/estudiante'
 
+#
+#Clase que muestra al usuario las peticiones que ha realizado a las tutoras
+##
 class VerPeticionesTutoria < Accion
   @nombre = 'Ver solicitudes realizadas'
   def initialize
@@ -12,6 +15,9 @@ class VerPeticionesTutoria < Accion
     @ultimo_mensaje = nil
   end 
 
+  #
+  #   Implementa el método con el mismo nombre de link:Accion.html
+  #    
   def recibir_mensaje(mensaje)
     @ultimo_mensaje = mensaje
     estudiante = Estudiante.new(@ultimo_mensaje.usuario.id_telegram)

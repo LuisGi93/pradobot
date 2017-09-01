@@ -1,7 +1,14 @@
 require_relative 'listar_dudas'
+#
+# Clase encargada de mostrar dudas sin resolver de un curso. 
 class ListarDudasPendientes < ListarDudas
   @nombre = 'Sin resolver'
 
+  #
+  # Muestra al usuario un mensaje solicitando que introduzca el texto de la duda.
+  #   # * *Args*    :
+  #   - +opcion+ -> determina si se manda un nuevo mensaje al chat del usuario o se edita el último mensaje enviado. 
+  #
   def mostrar_dudas(opcion)
     @dudas = @curso.obtener_dudas_sin_resolver
     if @dudas.empty?
@@ -22,6 +29,10 @@ class ListarDudasPendientes < ListarDudas
     end
   end
 
+  #  
+  #  *Args*    :
+  #   - +opcion+ -> determina si se manda un nuevo mensaje al chat del usuario o se edita el último mensaje enviado. 
+  #
   def generar_respuesta_mensaje
     datos_mensaje = @ultimo_mensaje.datos_mensaje
 

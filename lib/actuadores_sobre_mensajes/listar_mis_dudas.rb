@@ -8,6 +8,11 @@ class ListarMisDudas < ListarDudas
     end
   end
 
+  #
+  #  Envía al usuario un mensaje en el que se muestran las dudas sin resolver del curos
+     # * *Args*    :
+  #   - +opcion+ -> determina si se manda un nuevo mensaje al chat del usuario o se edita el último mensaje enviado. 
+  #
   def mostrar_dudas(opcion)
     dudas_usuario = UsuarioRegistrado.new(@ultimo_mensaje.usuario.id_telegram).dudas
     dudas_curso = @curso.dudas
@@ -35,24 +40,11 @@ class ListarMisDudas < ListarDudas
     end
   end
 
-  def generar_respuesta_mensaje
-    datos_mensaje = @ultimo_mensaje.datos_mensaje
-
-    if @ultimo_mensaje.tipo == 'callbackquery'
-      if datos_mensaje =~ /\#\#\$\$Volver/
-        mostrar_menu_anterior
-      else
-        respuesta_segun_accion_pulsada datos_mensaje
-      end
-    else
-      if @fase == 'responder_duda'
-        nueva_respuesta_duda(datos_mensaje)
-      else
-        mostrar_dudas('nuevo_mensaje')
-      end
-    end
-  end
-
+  #  Elije que hace en función del botón pulsado por el usuario 
+  #    *Args*    :
+  #   - +datos_mensaje+ -> datos del último mensaje recibido 
+  #   
+  #
   def respuesta_segun_accion_pulsada(datos_mensaje)
     puts "Datos del mensaje es #{datos_mensaje}"
     case datos_mensaje

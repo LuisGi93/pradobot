@@ -1,4 +1,20 @@
+
+
+#
+# Librería utilizada para crear menús inline de Telegram genéricos.
+# #
 module MenuInlineTelegram
+
+  #    
+    # Genera un menú Inline con cadenas de texto en sus botonos
+    #    *Args*    :
+    #   - +acciones+ -> Array que contiene las Strings que se van a mostrar en los botones
+    #
+  #* *Returns* :
+  #   - Menu tipo Inline de Telegram  #
+  #   
+  #
+
   def self.crear(acciones)
     fila_botones = []
     array_botones = []
@@ -14,6 +30,16 @@ module MenuInlineTelegram
     markup
   end
 
+  #    
+    # Genera un menú Inline con botones numéricos 
+    #    *Args*    :
+    #   - +acciones+ -> Array de enteros utilizados para mostrar en los botones 
+    #   - +prefijo+ -> Prefijo utilizado para distinguir que simbolizan los botones 
+  # #   - +tipo+ -> indica si el menú tiene un menú anterior o no. 
+  #* *Returns* :
+  #   - Menu tipo Inline de Telegram  #
+  #   
+  #
   def self.crear_menu_indice(acciones, prefijo, tipo)
     fila_botones = []
     array_botones = []

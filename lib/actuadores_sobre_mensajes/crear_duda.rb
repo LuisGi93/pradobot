@@ -2,23 +2,46 @@ require_relative 'accion'
 require_relative '../contenedores_datos/curso'
 require_relative '../contenedores_datos/estudiante'
 require_relative '../contenedores_datos/duda'
+
+
+#
+# Clase que recibe mensajes desde un menú cuyo cometido consiste en que el usaurio cree una nueva duda
+#
 class CrearDuda < Accion
   @nombre = 'Nueva duda'
   def initialize
     @fase = 'inicio'
     @ultimo_mensaje = nil
   end
+  
+  #
+  # Muestra al usuario un mensaje solicitando que introduzca el texto de la duda.
+  #   # * *Args*    :
+  #   - +id_telegram+ -> identificador del usuario que ha iniciado la ejecución de la acción
+  # * *Returns* :
+  #   - Se devuelve a si misma.
+  #
+
   def solicitar_escribir_duda
     text = "Escriba a continuación la duda que desea crear relacionada con *#{@curso.nombre}*:\n"
     @@bot.api.send_message(chat_id: @ultimo_mensaje.usuario.id_telegram, text: text, parse_mode: 'Markdown')
     @fase = 'escribiendo_duda'
   end
+
+  #
+  #  Reinicia el estado de la acción al punto inicial
+  #
+  
+
   def reiniciar
     @duda = nil
     @fase = 'inicio'
     @ultimo_mensaje = nil
   end
 
+  #
+  #  Muestra al usuario las opciones para que confirme la creación de la duda
+  #
   def confirmar_denegar_duda
     fila_botones = []
       array_botones = []
@@ -32,6 +55,9 @@ class CrearDuda < Accion
       @@bot.api.send_message(chat_id: @ultimo_mensaje.usuario.id_telegram, text: text, reply_markup: markup, parse_mode: 'Markdown')
   end  
 
+  #
+  # Muestra al usuario un mensaje solicitando que introduzca el texto de la duda.
+  #
   def crear_descartar_duda
     if @ultimo_mensaje.datos_mensaje =~ /crear_duda_/
       usuario = UsuarioRegistrado.new(@ultimo_mensaje.usuario.id_telegram)
@@ -42,15 +68,16 @@ class CrearDuda < Accion
       @@bot.api.edit_message_text(chat_id: @ultimo_mensaje.id_chat, message_id: @ultimo_mensaje.id_mensaje, text: "Se ha creado una nueva duda con el contenido: *#{@duda}*", parse_mode: 'Markdown')
     else
       @@bot.api.answer_callback_query(callback_query_id: @ultimo_mensaje.id_callback, text: 'Descartada')
-      # @@bot.api.delete_message( chat_id: @id_chat, message_id: @id_mensaje)
       texto = 'Elija una opción del menú:'
       @@bot.api.edit_message_text(chat_id: @ultimo_mensaje.id_chat, message_id: @ultimo_mensaje.id_mensaje, text: texto, parse_mode: 'Markdown')
       reiniciar
-      # @@bot.api.send_message( chat_id: @id_telegram, text:   "Se ha creado una nueva duda con el contenido: *#{@duda}*", parse_mode: "Markdown")
     end
 
   end
 
+  #
+  #   Implementa el método con el mismo nombre de link:Accion.html
+  #    
   def recibir_mensaje(mensaje)
     @ultimo_mensaje = mensaje
 

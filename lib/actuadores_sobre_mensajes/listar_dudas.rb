@@ -1,3 +1,7 @@
+
+#
+# Clase que controla las acciones comunes que se pueden realizar sobre una duda. 
+
 class ListarDudas < Accion
   @nombre = 'Listar dudas pendientes.'
   def initialize
@@ -6,6 +10,13 @@ class ListarDudas < Accion
     @fase = nil
     @ultimo_mensaje = nil
   end
+  #  Pasa una lista de respuetas o dudas a string
+  #   * *Args*    :
+  #   - +respuestas_dudas+ -> lista de respuestas o dudas
+  #   
+  #* *Returns* :
+  #   - String con texto que contiene la lista de respuestas y dudas.
+  #
   def crear_indice_respuestas_dudas respuestas_dudas
     texto = ''
     respuestas_dudas.each_with_index do |respuesta_duda, indice|
@@ -13,6 +24,12 @@ class ListarDudas < Accion
     end
     texto
   end
+
+  #  Muestra las acciones que puede realizar un usuario sobre una duda. 
+  #  *Args*    :
+  #   - +datos_mensaje+ -> datos del último mensaje recibido 
+  #   
+  #
   def mostrar_acciones(_datos_mensaje)
     solucion_duda = @dudas[@indice_duda_seleccionada].solucion
     creador_o_profesor = @curso.obtener_profesor_curso.id_telegram == @ultimo_mensaje.usuario.id_telegram || @dudas[@indice_duda_seleccionada].usuario.id_telegram == @ultimo_mensaje.usuario.id_telegram
@@ -30,14 +47,10 @@ class ListarDudas < Accion
     @@bot.api.edit_message_text(chat_id: @ultimo_mensaje.id_chat, message_id: @ultimo_mensaje.id_mensaje, text: texto, reply_markup: menu, parse_mode: 'Markdown')
   end
 
-  def crear_indice_respuestas respuestas
-    texto = ''
-    respuestas.each_with_index do |respuesta, indice|
-      texto += "    (*#{indice}*) (#{respuesta.usuario.nombre_usuario}): \t #{respuesta.contenido}\n"
-    end
-    texto
-  end  
 
+  #   Muestra las respuetas que ha tenido una duda  
+  #       *Args*    :
+  #   
   def mostrar_respuestas
     texto = "Duda elegida *#{@dudas.at(@indice_duda_seleccionada).contenido}*. Ha tenido las siguientes respuestas:\n"
     solucion_duda = @dudas[@indice_duda_seleccionada].solucion
@@ -56,29 +69,42 @@ class ListarDudas < Accion
         acciones = ['Volver']
     else
       texto = "Duda elegida *#{@dudas.at(@indice_duda_seleccionada).contenido}*. Ha tenido las siguientes respuestas:\n"
-        texto += crear_indice_respuestas(@respuestas)
+        texto += crear_indice_respuestas_dudas(@respuestas)
     end
     menu = MenuInlineTelegram.crear(acciones)
     @@bot.api.edit_message_text(chat_id: @ultimo_mensaje.id_chat, message_id: @ultimo_mensaje.id_mensaje, text: texto, reply_markup: menu, parse_mode: 'Markdown')
   end
 
+
+  #   Muestra las respuestas que ha tenido una duda y le pide al usuario que elija una.V
+  #    *Args*    :
+  #   - +datos_mensaje+ -> datos del último mensaje recibido 
+  #   
+  #
   def elegir_respuesta
     texto = "Elija respuesta que resuelve *#{@dudas.at(@indice_duda_seleccionada).contenido}*.\n"
     @respuestas = @dudas.at(@indice_duda_seleccionada).respuestas
-    texto += crear_indice_respuestas(@respuestas)
+    texto += crear_indice_respuestas_dudas(@respuestas)
     indices_respuestas = [*0..@respuestas.size - 1]
     menu = MenuInlineTelegram.crear_menu_indice(indices_respuestas, 'Respuesta', 'no_final')
     @@bot.api.edit_message_text(chat_id: @ultimo_mensaje.id_chat, message_id: @ultimo_mensaje.id_mensaje, text: texto, reply_markup: menu, parse_mode: 'Markdown')
   end
 
+  #
+  #   Implementa el método con el mismo nombre de link:Accion.html
+  #    
   def recibir_mensaje(mensaje)
     @ultimo_mensaje = mensaje
-    # Responder duda, borrar duda, marca respuesta duda, ver respuestas.
-    # Y en el menu crear nueva duda, listar dudas pendientes, listar mis dudas.
     generar_respuesta_mensaje
   end
 
   def reiniciar; end
+
+  #  Elije que hace en función del botón pulsado por el usuario 
+  #    *Args*    :
+  #   - +datos_mensaje+ -> datos del último mensaje recibido 
+  #   
+  #
   def respuesta_segun_accion_pulsada(datos_mensaje)
     case datos_mensaje
     when /\#\#\$\$Duda.+/
@@ -88,7 +114,6 @@ class ListarDudas < Accion
         @fase = 'mostrar_dudas_pendientes'
     when /\#\#\$\$Responder duda/
         @@bot.api.answer_callback_query(callback_query_id: @ultimo_mensaje.id_callback, text: 'Recibido!')
-        # @@bot.api.delete_message(chat_id: @ultimo_mensaje.usuario.id_telegram, message_id: @ultimo_mensaje.id_mensaje2["result"]["message_id"])
         @@bot.api.edit_message_text(chat_id: @ultimo_mensaje.id_chat, message_id: @ultimo_mensaje.id_mensaje, text: "Introduzca respuesta a *#{@dudas.at(@indice_duda_seleccionada).contenido}*:", parse_mode: 'Markdown')
         @fase = 'responder_duda'
     when /\#\#\$\$Borrar duda/
@@ -118,6 +143,9 @@ class ListarDudas < Accion
     end
   end 
 
+  #  Elije que haces en función de los datos del mensaje
+  #   
+  #
   def generar_respuesta_mensaje
     datos_mensaje = @ultimo_mensaje.datos_mensaje
 
@@ -137,6 +165,11 @@ class ListarDudas < Accion
     end
   end
 
+  #  
+  #  Crea una nueva respuesta para la duda que seleccionó el usuario.
+  #  #    *Args*    :
+  #   - +contenido_respuesta+ -> contenido de la respuesta  #   
+  #
   def nueva_respuesta_duda(contenido_respuesta)
     usuario = UsuarioRegistrado.new(@ultimo_mensaje.usuario.id_telegram)
     respuesta = Respuesta.new(contenido_respuesta, usuario, @dudas.at(@indice_duda_seleccionada))
@@ -147,12 +180,20 @@ class ListarDudas < Accion
     @id_ultimo_mensaje_respuesta = @@bot.api.send_message(chat_id: @ultimo_mensaje.usuario.id_telegram, text: "Respuesta *#{contenido_respuesta}* guardada correctamente.", reply_markup: menu, parse_mode: 'Markdown')['result']['message_id']
   end
 
+  #  
+  #  Resuelve la duda que seleccionó el usuario 
+  #  #    *Args*    :
+  #   - +indice_respuesta+ -> indice de la respuesta que resuelve la duda#   
+  #
   def resolver_duda(indice_respuesta)
     @dudas.at(@indice_duda_seleccionada).insertar_solucion(@respuestas.at(indice_respuesta))
     @id_ultimo_mensaje_respuesta = @@bot.api.send_message(chat_id: @ultimo_mensaje.usuario.id_telegram, text: "Duda *#{@dudas.at(@indice_duda_seleccionada).contenido}* resuelta por *#{@respuestas.at(indice_respuesta).contenido}*", parse_mode: 'Markdown')['result']['message_id']
     @fase = nil
   end
 
+  #  
+  # Muestra el anterior menú tipo Inline al mostrado por última vez al usuario. 
+  #
   def mostrar_menu_anterior
     case @fase
     when 'mostrar_dudas_pendientes'
@@ -179,6 +220,9 @@ class ListarDudas < Accion
     end
   end
 
+  #  
+  # Muestra la solución de una duda
+  # #
   def mostrar_solucion_duda
     solucion_duda = @dudas.at(@indice_duda_seleccionada).solucion
     puts solucion_duda.to_s
@@ -189,7 +233,7 @@ class ListarDudas < Accion
   end
 
   public_class_method :new
-  private :crear_indice_respuestas_dudas, :mostrar_acciones, :crear_indice_respuestas, :mostrar_respuestas, :elegir_respuesta
+  private :crear_indice_respuestas_dudas, :mostrar_acciones,  :mostrar_respuestas, :elegir_respuesta
 end
 
 require_relative 'accion'

@@ -32,7 +32,7 @@ class Moodle
 
     request = Typhoeus::Request.new(
       'http://' + ENV['MOODLE_HOST'] + '/login/token.php',
-     params: { :wstoken => @user_token, moodlewsrestformat: 'json', :wsfunction => function },
+     params: { :wstoken => @user_token, moodlewsrestformat: 'json' },
      ssl_verifypeer: false,
      ssl_verifyhost: 0
 )

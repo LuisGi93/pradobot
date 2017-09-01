@@ -1,3 +1,5 @@
+
+  #Contiene los datos de una entrega de un curso
 class Entrega
   attr_accessor :fecha_fin, :id, :nombre, :descripcion
 
@@ -13,6 +15,10 @@ class Entrega
     dias_faltan = fecha_fin - DateTime.now
   end
 
+  # Devuelve si su fecha de finalización es mejor que la de otra entrega 
+  #
+  # * *Returns* :
+  #   - True si es verdad, False en caso contratio 
   def <=>(y)
     @fecha_fin < y.fecha_fin
   end

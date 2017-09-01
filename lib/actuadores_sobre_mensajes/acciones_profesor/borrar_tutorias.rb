@@ -2,6 +2,8 @@ require_relative '../accion'
 require_relative '../../contenedores_datos/tutoria'
 require_relative '../menu_inline_telegram'
 require 'active_support/inflector'
+
+# Clase que engloba la accion borrar una tutoria. 
 class BorrarTutorias < Accion
   @nombre = 'Borrar tutoría.'
   def initialize(selector_tutorias, tutoria)
@@ -17,6 +19,7 @@ class BorrarTutorias < Accion
     @ultimo_mensaje = mensaje
     respuesta_segun_datos_mensaje(@ultimo_mensaje.datos_mensaje)
   end
+  # Envía un mensaje al profesor pidiendo que confirme el borrado de la duda seleccionada 
 
   def confirmar_borrado
     array_opciones = []
@@ -27,6 +30,7 @@ class BorrarTutorias < Accion
     @@bot.api.edit_message_text(chat_id: @ultimo_mensaje.id_chat, message_id: @ultimo_mensaje.id_mensaje, text: texto, parse_mode: 'Markdown', reply_markup: menu)
   end
 
+  # Realiza una acción según el botón pulsado por el profesor 
   def respuesta_segun_datos_mensaje(datos_mensaje)
     case datos_mensaje
     when /\#\#\$\$Si/

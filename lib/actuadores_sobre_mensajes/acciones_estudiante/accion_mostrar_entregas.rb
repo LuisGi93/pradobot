@@ -5,6 +5,9 @@ require_relative '../../moodle_api'
 require_relative '../../contenedores_datos/estudiante'
 require_relative '../menu_inline_telegram.rb'
 
+#
+# Clase que contiene los pasos necesarios para que el usuario pueda obtener información general de las entregas de un curso
+#
 class AccionMostrarEntregas < Accion
   attr_reader :moodle
   @nombre = 'Ver proximas entregas'
@@ -12,7 +15,11 @@ class AccionMostrarEntregas < Accion
     @fase = ''
     @ultimo_mensaje = nil
   end
-
+# 
+  #
+  # Crea un mensaje a partir de las entregas del curso 
+  # * *Returns* :
+  #   - String con que contiene la fecha de las proximas entregas  #
   def obtener_mensaje
     texto = ''
     contador = 0
@@ -26,6 +33,11 @@ class AccionMostrarEntregas < Accion
     texto
   end
 
+# 
+  #
+  # Envía un mensaje al usuario con un menú tipo Inline que muestra información de las próximas entregas.
+  #  *Args* :
+  #  - +opcion+ -> Determina si se envía un nuevo mensaje o se edita el último enviado+
   def mostrar_entregas(opcion)
     indices = [*0..@entregas.size - 1]
 
@@ -42,6 +54,9 @@ class AccionMostrarEntregas < Accion
     @entregas.clear
   end
 
+  # Envía al usuario un mensaje en el que se muestra la información de una entrega.
+  #   # * *Args*    :
+  #   - +entrega+ -> entrega sobre la cual se muestra información
   def mostrar_informacion_entrega(entrega)
     texto = if entrega.descripcion
               "*Nombre:* #{entrega.nombre}
@@ -55,6 +70,9 @@ class AccionMostrarEntregas < Accion
     @@bot.api.edit_message_text(chat_id: @ultimo_mensaje.id_chat, message_id: @ultimo_mensaje.id_mensaje, text: texto, reply_markup: menu, parse_mode: 'Markdown')
   end
 
+  #
+  #   Implementa el método con el mismo nombre de link:Accion.html
+  #    
   def recibir_mensaje(mensaje)
     @ultimo_mensaje = mensaje
     datos_mensaje = @ultimo_mensaje.datos_mensaje

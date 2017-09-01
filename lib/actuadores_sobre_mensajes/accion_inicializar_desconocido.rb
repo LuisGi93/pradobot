@@ -1,4 +1,6 @@
 
+#
+# Clase que identifica y da de alta con los datos necesarios al usuario del que recibe mensajes
 
 class AccionInicializarDesconocido < Accion
   def initialize
@@ -12,6 +14,14 @@ class AccionInicializarDesconocido < Accion
     @fase = 'inicio'
   end
 
+  #
+  #
+  # Muestra al usuario que le manda +manseje+ un texto explicativo sobre que hace la acción.
+  # * *Args*    :
+  #   - +mensaje+ -> 
+  #   # * *Returns* :
+  #   - Se devuelve a si misma.
+  #
   def ejecutar(mensaje)
     @ultimo_mensaje = mensaje
     @@bot.api.send_message(chat_id: @ultimo_mensaje.usuario.id_telegram, text: 'Para empezar a utilizar el bot es necesario identificarse. Introduzca su email:', parse_mode: 'Markdown')
@@ -19,6 +29,9 @@ class AccionInicializarDesconocido < Accion
     self
   end
 
+  #
+  #   Implementa el método con el mismo nombre de link:Accion.html
+  #    
   def recibir_mensaje(mensaje)
     if @usuario_desconocido.nil?
       @usuario_desconocido = UsuarioDesconocido.new(mensaje.usuario.id_telegram, mensaje.usuario.nombre_usuario)

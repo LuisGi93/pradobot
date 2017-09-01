@@ -1,5 +1,6 @@
 require_relative 'conexion_bd'
 
+#Contiene los datos de una petición a tutoría
 class Peticion < ConexionBD
   attr_reader :tutoria, :estudiante
   attr_accessor :hora, :estado
@@ -9,6 +10,10 @@ class Peticion < ConexionBD
     @hora = hora
   end
 
+  # 
+  # Devuelve la hora a la que se realizó la petición 
+  #  *Returns* :
+  #   - String  
   def hora
     if @hora.nil?
       datos_peticion = @@db[:peticion_tutoria].where(id_profesor: @tutoria.profesor.id_telegram, dia_semana_hora: @tutoria.fecha, id_estudiante: @estudiante.id_telegram).select(:hora_solicitud)
@@ -17,6 +22,10 @@ class Peticion < ConexionBD
     @hora
   end
 
+  # 
+  # Devuelve el estado de la petición
+  #  *Returns* :
+  #   - String puede ser aceptada, rechaza, sin responder 
   def estado
     if @estado.nil?
       datos_peticion = @@db[:peticion_tutoria].where(id_profesor: @tutoria.profesor.id_telegram, dia_semana_hora: @tutoria.fecha, id_estudiante: @estudiante.id_telegram).select(:estado)
@@ -26,10 +35,13 @@ class Peticion < ConexionBD
     @estado
   end
 
+  # 
+  #Cambia el estado de una petición a aceptada
   def aceptar
     @@db[:peticion_tutoria].where(id_profesor: @tutoria.profesor.id_telegram, dia_semana_hora: @tutoria.fecha, id_estudiante: @estudiante.id_telegram).update(estado: 'aceptada')
   end
 
+  #Cambia el estado de una petición a denegada 
   def denegar
     @@db[:peticion_tutoria].where(id_profesor: @tutoria.profesor.id_telegram, dia_semana_hora: @tutoria.fecha, id_estudiante: @estudiante.id_telegram).update(estado: 'rechazada')
   end
@@ -44,6 +56,10 @@ class Peticion < ConexionBD
     end
   end
 
+  # 
+  # Compara si sus datos son iguales a los de otra Peticion
+  #  *Returns* :
+  #   - True si es verdad, False en caso contrario
   def ==(y)
     @tutoria == y.tutoria && @estudiante == y.estudiante
   end

@@ -4,6 +4,9 @@ require_relative '../../contenedores_datos/curso'
 require_relative '../../moodle_api'
 require_relative '../../contenedores_datos/estudiante'
 
+  #
+# Clase que engloba la acción de mostrar las calificaciones de las entregas a  un estudiante  
+#  #
 class VerCalificacionEntregas < Accion
   attr_reader :moodle
   @nombre = 'Ver calificacion entrega'
@@ -13,6 +16,13 @@ class VerCalificacionEntregas < Accion
 
   def reiniciar; end
 
+  #
+  # Obtiene las entregas cuya fecha de finalización  ya ha pasado  
+  #
+  #    * *Args*    :
+  #   - +entregas+ -> todas las entregas del curso 
+  # * *Returns* :
+  #   - Devuelve array de entregas cuya fecha de finalización ya ha pasado 
   def obtener_entregas_finalizadas(entregas)
     entregas_finalizadas = []
     entregas.each { |entrega|
@@ -23,6 +33,8 @@ class VerCalificacionEntregas < Accion
     entregas_finalizadas
   end  
 
+  #
+  # Muestra las calificaciones de las entregas que tiene en un curso 
   def mostrar_calificaciones(entregas)
     text = "Las entregas para *#{@curso.nombre}* actualmente se encuentran en el siguiente estado:\n"
      entregas.each_with_index { |entrega, index|

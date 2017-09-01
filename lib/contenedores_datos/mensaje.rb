@@ -1,5 +1,6 @@
 require 'active_support/inflector'
 require_relative 'usuario'
+#Clase utilizada para hacer más facil el acceso a los datos de un mensaje de Telegram
 class Mensaje
   attr_reader :datos_mensaje, :tipo_chat, :id_chat, :nombre_chat, :tipo, :id_mensaje, :id_callback, :usuario
   def initialize(mensaje)

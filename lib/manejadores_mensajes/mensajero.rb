@@ -3,7 +3,7 @@
 # !/usr/bin/env ruby
 require 'telegram/bot'
 require 'sequel'
-
+require 'benchmark'
 require_relative 'encargado_mensajes_privados'
 require_relative 'encargado_mensajes_grupales'
 require_relative '../contenedores_datos/mensaje'
@@ -48,8 +48,14 @@ class Mensajero
       @encargado_mensajes_grupales.establecer_bot(botox)
       botox.listen do |message|
         begin
-          mensaje = Mensaje.new(message)
-          clasificar_mensaje(mensaje)
+          time=Benchmark.measure do
+
+            mensaje = Mensaje.new(message)
+
+            puts "Comienzo procesar mensaje de #{mensaje.id_chat}"
+            clasificar_mensaje(mensaje)
+            puts "Finalizo procesamiento mensaje de #{mensaje.id_chat}"
+          end
         end
       end
     end

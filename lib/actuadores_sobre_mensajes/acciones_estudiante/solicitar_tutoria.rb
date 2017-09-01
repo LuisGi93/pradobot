@@ -4,6 +4,9 @@ require_relative '../../contenedores_datos/estudiante'
 require_relative '../../../lib/contenedores_datos/peticion'
 require_relative '../menu_inline_telegram.rb'
 
+  #
+#  Clase que guía al usuario para que realiza la asistencia a una tutoría de un profesor 
+  #    
 class SolicitarTutoria < Accion
   @nombre = 'Realizar/Borrar petición tutoría'
   def initialize
@@ -13,6 +16,12 @@ class SolicitarTutoria < Accion
     @ultimo_mensaje
   end
 
+  #
+#  Obtiene las tutorías que tiene disponible un estudiante 
+  #    
+  # * *Returns* :
+  #   - Array de tutorías 
+  #
   def obtener_tutorias_alumno
     profesor_curso = @curso.obtener_profesor_curso
     tutorias = profesor_curso.obtener_tutorias
@@ -20,6 +29,9 @@ class SolicitarTutoria < Accion
     tutorias
   end
 
+  # Muestra al usuario que le ha mando el mensaje las tutorías que tiene disponibles 
+  #   # * *Args*    :
+  #   - +opcion+ -> determina si se manda un nuevo mensaje o se edita el último enviado 
   def mostrar_tutorias(opcion)
     texto = "Seleccione la tutoria desea de #{@profesor_curso.nombre_usuario} son:\n"
     @tutorias.each_with_index do |tutoria, index|
@@ -39,12 +51,18 @@ class SolicitarTutoria < Accion
     @profesor_curso = nil
   end
 
+  #  Realiza una petición de asistencia a una tutoría 
+  #   # * *Args*    :
+  #   - +tutoria+ -> tutoria a la cual se realiza la petición de asistencia 
   def solicitar_tutoria(tutoria)
     peticion = Peticion.new(tutoria, Estudiante.new(@ultimo_mensaje.usuario.id_telegram))
       solicitud_aceptada = @profesor_curso.solicitar_tutoria(peticion)
       solicitud_aceptada
   end  
 
+  #
+  #   Implementa el método con el mismo nombre de link:Accion.html
+  #    
   def recibir_mensaje(mensaje)
     @ultimo_mensaje = mensaje
     datos_mensaje = @ultimo_mensaje.datos_mensaje

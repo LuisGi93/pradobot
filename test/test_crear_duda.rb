@@ -64,22 +64,6 @@ describe CrearDuda do
     @accion.recibir_mensaje(@stub_mensaje)
   end
 
-  it 'Debe mandar mensaje que incluya el texto de la duda y el curso con opciones para confirmar la creación de la duda' do
-    allow(@stub_mensaje).to receive(:datos_mensaje) { 'Nueva duda' }
-
-    allow(@stub_bot).to receive_message_chain(:api, :send_message)
-    @accion.recibir_mensaje(@stub_mensaje)
-
-    allow(@stub_mensaje).to receive(:datos_mensaje) { 'Contenido nueva duda' }
-
-    expect(@stub_bot).to receive_message_chain(:api, :send_message) { |arg1|
-      arg1.keys.should include(:chat_id, :text, :reply_markup)
-      arg1[:text].should include('nombre del curso')
-      arg1[:text].should include('Contenido nueva duda')
-      arg1[:reply_markup].should be_instance_of(Telegram::Bot::Types::InlineKeyboardMarkup)
-    }
-    @accion.recibir_mensaje(@stub_mensaje)
-  end
 
   it 'Si el mensaje indica crear la duda debe crearla duda en el curso activo' do
     allow(@stub_mensaje).to receive(:datos_mensaje) { 'Nueva duda' }
