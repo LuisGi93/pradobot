@@ -28,8 +28,10 @@ namespace :tasks do
       end
 
       RSpec::Core::RakeTask.new(:tests_bd) do |t|
-        t.pattern = Dir.glob('test/test_bd_*.rb')
-        t.rspec_opts = '--format documentation'
+          t.pattern = Dir.glob('test/test_*.rb')
+#          t.pattern = Dir.glob('test/test_informacion_tutoria.rb')
+
+          t.rspec_opts = '--format documentation'
       end
 
       desc "Borramos la base de datos"
@@ -40,6 +42,10 @@ namespace :tasks do
         db.disconnect
       end
 
+      RSpec::Core::RakeTask.new(:tests_nobd) do |t|
+          t.pattern = Dir.glob('test/test_establecer_tutoria.rb')
+        t.rspec_opts = '--format documentation'
+      end
     end
 
   end
@@ -60,7 +66,7 @@ end
 
 desc "Ejecutamos los test sobre la base de datos"
 task :testbd => ['tasks:db:test:crear', 'tasks:db:test:tests_bd', 'tasks:db:test:destruir' ]
+task :testnobd => ['tasks:db:test:tests_nobd' ]
 
-task :test => ['tasks:tests:spec' ]
+task :default => ['tasks:db:test:crear', 'tasks:db:test:tests_bd', 'tasks:db:test:destruir' ]
 
-task :default => :testbd
