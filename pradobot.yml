@@ -1,0 +1,59 @@
+---
+- hosts: all
+  user: ubuntu
+  sudo: yes    
+  roles:
+    - { role: rvm_io.ruby,
+        tags: ruby,
+        rvm1_rubies: ['ruby-2.3.1'],
+        rvm1_user: 'ubuntu',
+        become: true
+      }
+      
+  tasks:       
+
+
+#Por alguna razon instala todos los paquetes menos libpq-dev
+
+  -  name: Instalamos  paquetes necesarios
+     become: true
+     action: >
+      {{ ansible_pkg_mgr }} name= {{ item }}  state=installed update_cache=yes
+     with_items:
+      - build-essential
+      - ruby-dev
+      - libpq-dev
+      - ruby
+      - git
+      - libgdbm-dev
+      - libncurses5-dev
+      - automake
+      - libtool
+      - bison
+      - libffi-dev
+      
+  -  name: clonamos repo de la web
+     become: true  
+     become_user: ubuntu
+     shell: git clone -b desarrollo https://github.com/LuisGi93/pradobot.git
+     args:
+       creates: pradobot
+       executable: /bin/bash
+
+  -  name: Instalamos el proyecto
+     become: true  
+     become_user: ubuntu 
+     shell: source ~/.rvm/scripts/rvm && bundle install 
+     args:
+       chdir: pradobot
+       executable: /bin/bash
+         
+  
+  -  name: Lo arrancamos
+     become: true  
+     become_user: ubuntu
+     shell:source ~/.rvm/scripts/rvm && export TOKEN_BOT_MOODLE='067748af2f4d5c563fe2e6eb3181b7a9' && export MOODLE_HOST="127.0.0.1/moodle" && export TOKEN_BOT='271421756:AAEDHtRoJ1m4iPuQfYyiZTs5icUirYAgBRA' && export URL_DATABASE="postgres://jthwcmvkqqfzuf:H1OOcXUEeed-zefbA7oGs8AlCk@ec2-54-247-98-197.eu-west-1.compute.amazonaws.com:5432/dll72kg28o596" && export WEBSERVICE_PROFESOR_MOODLE='webservice_profesor' && export WEBSERVICE_ESTUDIANTES_MOODLE='webservice_estudiantes' && ruby bin/run.rb start
+     args:
+       chdir: pradobot
+       executable: /bin/bash
+
