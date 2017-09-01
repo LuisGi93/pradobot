@@ -46,7 +46,7 @@ class ListarMisDudas < ListarDudas
   #   
   #
   def respuesta_segun_accion_pulsada(datos_mensaje)
-    puts "Datos del mensaje es #{datos_mensaje}"
+
     case datos_mensaje
     when /\#\#\$\$Solución duda/
       #        @curso.eliminar_duda(@dudas.at(@indice_duda_seleccionada))

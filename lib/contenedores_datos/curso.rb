@@ -22,10 +22,10 @@ class Curso < ConexionBD
     if @profesor.nil?
       consulta_db = @@db[:profesor_curso].where(id_moodle_curso: @id_curso).select(:id_profesor)
       id_profesor = consulta_db.first[:id_profesor]
-      puts "El puneitero id del profesor es #{id_profesor}"
+
       @profesor = Profesor.new(id_profesor)
     end
-    puts "El puneitero id del profesor es #{@profesor.id_telegram}"
+
 
     @profesor
   end

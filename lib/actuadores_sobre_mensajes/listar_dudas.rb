@@ -149,7 +149,7 @@ class ListarDudas < Accion
   def generar_respuesta_mensaje
     datos_mensaje = @ultimo_mensaje.datos_mensaje
 
-    puts datos_mensaje
+
     if @ultimo_mensaje.tipo == 'callbackquery'
       if datos_mensaje =~ /\#\#\$\$Volver/
         mostrar_menu_anterior
@@ -225,7 +225,6 @@ class ListarDudas < Accion
   # #
   def mostrar_solucion_duda
     solucion_duda = @dudas.at(@indice_duda_seleccionada).solucion
-    puts solucion_duda.to_s
     texto = "Duda: *#{@dudas.at(@indice_duda_seleccionada).contenido}* \n Solución: *#{solucion_duda.contenido}*."
     acciones = ['Volver']
     menu = MenuInlineTelegram.crear(acciones)
