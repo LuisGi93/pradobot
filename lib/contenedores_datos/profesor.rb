@@ -1,52 +1,49 @@
 
-require_relative 'usuario'
-
-class Profesor < Usuario
-  attr_reader :id
-  def initialize id_telegram=nil
-    @id_telegram=id_telegram
-    @nombre_usuario=nil
+require_relative 'usuario_registrado'
+#Clase que simboliza a un profesor de un curso
+class Profesor < UsuarioRegistrado
+  def initialize(id_telegram = nil)
+    @id_telegram = id_telegram
+    @nombre_usuario = nil
   end
 
-  def solicitar_tutoria peticion
-
-    aceptada=true
+  #Añade una nueva petición a una tutoría del profesor
+  #  *Returns* :
+  #   - True si el estudiante que la ha realizado no ha realizado una petición anterior, False en caso contrario
+  def solicitar_tutoria(peticion)
+    aceptada = true
     begin
-      puts Time.new.strftime("%Y-%m-%d %H:%M:%S")
-      @@db[:peticion_tutoria].where(:id_profesor => @id_telegram, :dia_semana_hora => peticion.tutoria.fecha)
-        .insert(:id_profesor => @id_telegram, :dia_semana_hora => peticion.tutoria.fecha, :id_estudiante => peticion.estudiante.id, :hora_solicitud => Time.new.strftime("%Y-%m-%d %H:%M:%S"), :estado => "por aprobar")
-    rescue  Sequel::ForeignKeyConstraintViolation, Sequel::UniqueConstraintViolation => boom
-      aceptada=false
-
+      @@db[:peticion_tutoria].where(id_profesor: @id_telegram, dia_semana_hora: peticion.tutoria.fecha)
+                             .insert(id_profesor: @id_telegram, dia_semana_hora: peticion.tutoria.fecha, id_estudiante: peticion.estudiante.id_telegram, hora_solicitud: Time.new.strftime('%Y-%m-%d %H:%M:%S'), estado: 'por aprobar')
+    rescue Sequel::ForeignKeyConstraintViolation, Sequel::UniqueConstraintViolation => boom
+      aceptada = false
     end
-    return aceptada
+    aceptada
   end
 
+  # Devuelve las tutorías que ha creado el profesor
+  #  *Returns* :
+  #   - Array de objetos Tutoria
   def obtener_tutorias
-      tutorias=Array.new
-      datos_tutorias=@@db[:tutoria].where(:id_profesor => @id_telegram).to_a
-      datos_tutorias.each{ |tutoria|
-        tutorias << Tutoria.new(self, tutoria[:dia_semana_hora])
+    tutorias = []
+      datos_tutorias = @@db[:tutoria].where(id_profesor: @id_telegram).to_a
+      datos_tutorias.each { |tutoria|
+        tutorias << Tutoria.new(self, tutoria[:dia_semana_hora].strftime('%Y-%m-%d %H:%M:%S'))
       }
-    return tutorias
-  end
+      tutorias
+  end  
 
-
-
-
-  def establecer_nueva_tutoria  tutoria
-    puts tutoria.fecha
-    puts tutoria.fecha
-    existe_tutoria=@@db[:tutoria].where(:id_profesor => @id_telegram, :dia_semana_hora => tutoria.fecha)
+  # Crea una nueva tutoría para el profesor 
+  def establecer_nueva_tutoria tutoria
+    existe_tutoria = @@db[:tutoria].where(id_profesor: @id_telegram, dia_semana_hora: tutoria.fecha)
     if existe_tutoria.empty?
-      @@db[:tutoria].insert(:id_profesor => @id_telegram, :dia_semana_hora => tutoria.fecha)
+      @@db[:tutoria].insert(id_profesor: @id_telegram, dia_semana_hora: tutoria.fecha)
     end
   end
 
-  def borrar_tutoria tutoria
-    @@db[:tutoria].where(:id_profesor => @id_telegram, :dia_semana_hora => tutoria.fecha).delete
+  def borrar_tutoria(tutoria)
+    @@db[:tutoria].where(id_profesor: @id_telegram, dia_semana_hora: tutoria.fecha).delete
   end
-
 end
 
 require_relative 'tutoria'

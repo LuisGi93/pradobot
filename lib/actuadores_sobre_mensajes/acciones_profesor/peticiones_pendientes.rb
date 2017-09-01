@@ -1,170 +1,141 @@
 require_relative '../accion'
 require_relative '../../contenedores_datos/tutoria'
+require_relative '../menu_inline_telegram'
 require 'active_support/inflector'
 class PeticionesPendientesTutoria < Accion
-
   attr_accessor :teclado_menu_padre
-  @nombre='Aprobar/Denegar peticiones.'
-  def initialize
-    @profesor=nil
-    @tutoria=nil
-    @peticiones=nil
-    @peticion_elegida=nil
+  @nombre = 'Aprobar/Denegar peticiones.'
+  def initialize(selector_tutorias, tutoria)
+    @profesor = nil
+    @selector_tutorias = selector_tutorias
+    @tutoria = tutoria
+    @peticiones = nil
+    @peticion_elegida = nil
+    @ultimo_mensaje = nil
   end
 
-  def ejecutar(id_telegram)
-
+  #
+  #  Dependiendo del contenido del mensaje manda un mensaje solicitando que se elija una tutoría o un menú para que apruebe o deniegue las peticiones de asistencia que ha recibido la tutoría activa.
+  #     * *Args*    :
+  #   - +mensaje+ -> mensaje recibido por el bot procedente de un usuario de Telegram  #
+  #
+  def generar_respuesta_mensaje(mensaje)
+    @ultimo_mensaje = mensaje
+    datos_mensaje = @ultimo_mensaje.datos_mensaje
     if @profesor.nil?
-      @profesor=Profesor.new(id_telegram)
+      @profesor = Profesor.new(@ultimo_mensaje.usuario.id_telegram)
     end
-    tutorias=@profesor.obtener_tutorias
-    puts tutorias.to_s
-    if tutorias.empty?
-      @@bot.api.send_message( chat_id: id_telegram, text: "No tiene ninguna tutoria creada.", parse_mode: "Markdown" )
-    else
-      text="Seleccione la tutoria de la cual  desea aprobar/denegar peticiones:\n"
-      fila_botones=Array.new
-      array_botones=Array.new
-      tutorias.each_with_index { |tutoria, index|
-        text+= "\t (*#{index}*) \t#{tutoria.fecha.strftime('%a, %d %b %Y %H:%M:%S')}\n"
-        array_botones << Telegram::Bot::Types::InlineKeyboardButton.new(text: index, callback_data: "tutoria_#{tutoria.fecha}")
-        if array_botones.size == 3
-          fila_botones << array_botones.dup
-          array_botones.clear
-        end
-      }
-      fila_botones << array_botones
-      markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: fila_botones)
-      @@bot.api.send_message( chat_id: @profesor.id, text: text,reply_markup: markup, parse_mode: "Markdown"  )
-    end
-
-    @fase="seleccion_tutoria"
+    respuesta_segun_datos_mensaje(datos_mensaje)
   end
 
-  def recibir_mensaje(mensaje)
-    id_telegram=mensaje.obtener_identificador_telegram
-    datos_mensaje=mensaje.obtener_datos_mensaje
-    if @profesor.nil?
-      @profesor=Profesor.new(id_telegram)
-    end
+  #       Segun el contenido del mensaje envía un nuevo mensaje al usuario con información acerca de las peticiones que ha recibido la tutoría activa o con la opción de aceptar una petición a una tutoría o denegarla
+  #         * *Args*    :
+  #   - +datos_mensaje+ -> Contido del último mensaje recibido por el bot de Telegram.
 
-    if datos_mensaje =~ /tutoria_/
-      @@bot.api.answer_callback_query(callback_query_id: mensaje.obtener_identificador_mensaje, text: "Recibido!")
-      datos_mensaje.slice! "tutoria_"
-      tutoria=datos_mensaje[/[^_]*/]
-      mostrar_peticiones_pendientes tutoria
-    elsif datos_mensaje =~ /peticion_/
-      datos_mensaje.slice! "peticion_"
-      id_estudiante_peticion=datos_mensaje[/[^_]*/]
+  def respuesta_segun_datos_mensaje(datos_mensaje)
+    puts "Los pu;eteros datos son #{datos_mensaje}"
+    case datos_mensaje
+    when /\#\#\$\$Peticion /
+      puts 'Entro en la peticion'
+      datos_mensaje.slice! "\#\#\$\$Peticion"
+      id_estudiante_peticion = datos_mensaje[/[^_]*/].to_i
       solicitar_accion_sobre_peticion id_estudiante_peticion
-    elsif datos_mensaje =~ /(aceptar_peticion##|denegar_peticion##)/
-      aceptar_denegar_peticion(mensaje.obtener_identificador_mensaje, datos_mensaje)
+      @fase = 'peticion_elegida'
+    when /(\#\#\$\$Aceptar|\#\#\$\$Denegar)/
+      aceptar_denegar_peticion(datos_mensaje)
+    when /\#\#\$\$Volver/
+      mostrar_menu_anterior
     else
-      ejecutar(id_telegram)
-    end
-
-
+      puts 'Entro en el else'
+      mostrar_peticiones_pendientes
+      fase = 'mostrando_peticiones'
+      end
   end
 
   def reiniciar
-    @profesor=nil
-    @tutoria=nil
-    @peticiones=nil
-    @peticion_elegida=nil
+    @profesor = nil
+    @tutoria = nil
+    @peticiones = nil
+    @peticion_elegida = nil
   end
 
   private
 
-  def mostrar_peticiones_pendientes fecha_tutoria
+  #    Envía un mensaje al usuario para que elija entre  todas aquellas peticiones que ha recibido la tutoría activa y que el profesor no ha dicho si las acepta
 
-    @tutoria=Tutoria.new(@profesor, fecha_tutoria)
-    @peticiones=@tutoria.peticiones
-    peticiones_pendientes=Array.new
-    @peticiones.each{ |peticion|
-      if(peticion.estado=="por aprobar")
-      peticiones_pendientes << peticion
-      end
-    }
-      if peticiones_pendientes.empty?
-        @@bot.api.send_message( chat_id: @profesor.id, text: "No tiene peticiones para la tutoría elegida.", parse_mode: "Markdown" )
-      else
-        text="Seleccione la petición la cual  desea aprobar/denegar:\n"
-        fila_botones=Array.new
-        array_botones=Array.new
-        contador=0
-        peticiones_pendientes.each{ |peticion|
-            text+= "\t (*#{contador}*) \tNombre telegram estudiante:\t *#{peticion.estudiante.nombre_usuario}*\n"
-            text+= "    Fecha realización petición: *\t#{peticion.hora.strftime('%d %b %Y %H:%M:%S')}* \n"
-            array_botones << Telegram::Bot::Types::InlineKeyboardButton.new(text: contador, callback_data: "peticion_#{peticion.estudiante.id}")
-            if array_botones.size == 3
-              fila_botones << array_botones.dup
-              array_botones.clear
-            end
-            contador+=1
-        }
-        fila_botones << array_botones
-        markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: fila_botones)
-        @@bot.api.send_message( chat_id: @profesor.id, text: text,reply_markup: markup, parse_mode: "Markdown"  )
-      end
-
-  end
-
-
-  def solicitar_accion_sobre_peticion id_estudiante_peticion
-
-    #Nose si buscarlo en @peticiones o en donde @peticion=Peticion.new(@tutoria,Estudiante.new(id),  fecha_tutoria)
-    @peticion_elegida=nil
-    cont=0
-    while(@peticion_elegida.nil? && cont < @peticiones.size)
-      if @peticiones[cont].estudiante.id.to_i== id_estudiante_peticion.to_i
-        @peticion_elegida=@peticiones[cont]
-
-      end
-      cont+=1
+  def mostrar_peticiones_pendientes
+    @peticiones = @tutoria.peticiones
+    @peticiones_pendientes = []
+    @peticiones.each do |peticion|
+      @peticiones_pendientes << peticion if peticion.estado == 'por aprobar'
     end
-    if @peticion_elegida.nil?
-      @@bot.api.send_message( chat_id: @profesor.id, text: "Vuelva a intentarlo", parse_mode: "Markdown" )
+    if @peticiones_pendientes.empty?
+      menu = MenuInlineTelegram.crear([] << 'Volver')
+      @@bot.api.edit_message_text(chat_id: @ultimo_mensaje.id_chat, message_id: @ultimo_mensaje.id_mensaje, text: 'No tiene peticiones para la tutoría elegida.', parse_mode: 'Markdown', reply_markup: menu)
     else
-      text="Petición seleccionada:\n"
-      text+="\t Hora petición: *#{@peticion_elegida.hora}*\n"
-      text+="\t Nombre usuario estudiante: #{@peticion_elegida.estudiante.nombre_usuario}"
-      fila_botones=Array.new
-      array_botones=Array.new
-      array_botones << Telegram::Bot::Types::InlineKeyboardButton.new(text: "Aceptar", callback_data: "aceptar_peticion###{@peticion_elegida.estudiante.id}")
-      array_botones << Telegram::Bot::Types::InlineKeyboardButton.new(text: "Denegar", callback_data: "denegar_peticion###{@peticion_elegida.estudiante.id}")
 
-      fila_botones << array_botones
-      markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: fila_botones)
-      @@bot.api.send_message( chat_id: @profesor.id, text: text,reply_markup: markup, parse_mode: "Markdown"  )
+      texto = "Seleccione la petición la cual  desea aprobar/denegar:\n"
+      contador = 0
+      indices_peticiones = [*0..@peticiones_pendientes.size - 1]
+      menu = MenuInlineTelegram.crear_menu_indice(indices_peticiones, 'Peticion', 'no_final')
+      @peticiones_pendientes.each do |peticion|
+        texto += "\t (*#{contador}*) \tNombre telegram estudiante:\t *#{peticion.estudiante.nombre_usuario}*\n"
+        texto += "    Fecha realización petición: *\t#{peticion.hora.strftime('%d %b %Y %H:%M:%S')}* \n"
+        contador += 1
+      end
+      @@bot.api.edit_message_text(chat_id: @ultimo_mensaje.id_chat, message_id: @ultimo_mensaje.id_mensaje, text: texto, parse_mode: 'Markdown', reply_markup: menu)
     end
-
   end
 
+  # Envía un mensaje al profesor pidiendo que elija si quiere aceptar esta petición o no.
+  def solicitar_accion_sobre_peticion(pos_peticion)
+    @peticion_elegida = @peticiones_pendientes[pos_peticion]
+    if @peticion_elegida.nil?
+      @@bot.api.send_message(chat_id: @profesor.id_telegram, text: 'Vuelva a intentarlo', parse_mode: 'Markdown')
+    else
+      text = "Petición seleccionada:\n"
+      text += "\t Hora petición: *#{@peticion_elegida.hora}*\n"
+      text += "\t Nombre usuario estudiante: #{@peticion_elegida.estudiante.nombre_usuario}"
+      opciones = []
+      opciones << 'Aceptar'
+      opciones << 'Denegar'
+      menu = MenuInlineTelegram.crear(opciones)
+      @@bot.api.send_message(chat_id: @profesor.id_telegram, text: text, reply_markup: menu, parse_mode: 'Markdown')
+    end
+  end
 
-  def aceptar_denegar_peticion  id_mensaje, que_hacer
+  # Acepta o deniega la petición elegida por el usuario para la tutoría activa.
+  #   * *Args*    :
+  #   - +que_hacer+ -> Información contenida en el mensaje que se utiliza para saber si se acepta o deniega la petición.
 
-    if que_hacer =~ /aceptar_peticion##/
+  def aceptar_denegar_peticion(que_hacer)
+    if que_hacer =~ /\#\#\$\$Aceptar/
       @peticion_elegida.aceptar
-      @@bot.api.answer_callback_query(callback_query_id: id_mensaje, text: "Aceptada!")
-      @@bot.api.send_message( chat_id: @profesor.id, text: "Petición aceptada", parse_mode: "Markdown"  )
+      @@bot.api.answer_callback_query(callback_query_id: @ultimo_mensaje.id_callback, text: 'Aceptada!')
+      @@bot.api.send_message(chat_id: @profesor.id_telegram, text: 'Petición aceptada', parse_mode: 'Markdown')
 
-    elsif que_hacer =~ /denegar_peticion##/
-      @@bot.api.answer_callback_query(callback_query_id: id_mensaje, text: "Denegada")
-      @@bot.api.send_message( chat_id: @profesor.id, text: "Petición rechazada", parse_mode: "Markdown"  )
+    elsif que_hacer =~ /\#\#\$\$Denegar/
+      @@bot.api.answer_callback_query(callback_query_id: @ultimo_mensaje.id_callback, text: 'Denegada')
+      @@bot.api.send_message(chat_id: @profesor.id_telegram, text: 'Petición rechazada', parse_mode: 'Markdown')
       @peticion_elegida.denegar
     else
-      @@bot.api.send_message( chat_id: @profesor.id, text: "Error vuelva a intentarlo",reply_markup: markup, parse_mode: "Markdown"  )
+      @@bot.api.send_message(chat_id: @profesor.id_telegram, text: 'Error vuelva a intentarlo', reply_markup: markup, parse_mode: 'Markdown')
     end
     reiniciar
+  end #  Dependiendo de que se ha hecho la última vez muestra el paso previo.
+
+  #
+  def mostrar_menu_anterior
+    case @fase
+    when 'peticion_elegida'
+      mostrar_peticiones_pendientes
+      @fase = 'mostrando_peticiones'
+    else
+      @selector_tutorias.reiniciar
+      @selector_tutorias.solicitar_seleccion_tutoria 'editar'
+      @fase = ''
+    end
   end
 
-
-
-
-
-
-
-
   public_class_method :new
-
 end

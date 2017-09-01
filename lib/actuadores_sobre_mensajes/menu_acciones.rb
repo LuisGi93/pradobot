@@ -4,24 +4,19 @@ require_relative 'menu'
 # Simboliza un menú en el que la mayoría de opciones dan lugar al inicio de una acción por parte del bot.
 #
 class MenuDeAcciones < Menu
-
-
-
   #
   # Implementa el método con el mismo nombre de link:Accion.html
   #
 
-
   def recibir_mensaje(mensaje)
-    id_telegram=mensaje.obtener_identificador_telegram
-    datos_mensaje=mensaje.obtener_datos_mensaje
-
-    quiere_cambiar_curso=cambiar_curso_pulsado(mensaje)
+    @ultimo_mensaje = mensaje
+    datos_mensaje = mensaje.datos_mensaje
+    quiere_cambiar_curso = cambiar_curso_pulsado(mensaje)
 
     unless quiere_cambiar_curso
-      accion=obtener_accion_recibe_mensaje(datos_mensaje)
-      if accion == self || accion==@accion_padre
-        accion.ejecutar(id_telegram)
+      accion = obtener_accion_recibe_mensaje(datos_mensaje)
+      if accion == self || accion == @accion_padre
+        accion.ejecutar(mensaje)
       else
         accion.recibir_mensaje(mensaje)
       end
@@ -32,30 +27,20 @@ class MenuDeAcciones < Menu
     else
       return self
     end
-
   end
 
   private
-
 
   #
   # Implementa el método con el mismo nombre de link:Menu.html
   #
 
   def cambiar_curso_parientes
-    @acciones.each{|key,value|
-      if value.curso!=@curso
-        puts "cambiando #{key} a #{value.curso}"
-        value.curso=curso
-        puts "cambiando #{key} a #{value.curso}"
-      end
-    }
-    if @accion_padre.curso!=@curso
-      @accion_padre.cambiar_curso(@curso)
+    @acciones.each do |_key, value|
+      value.curso = curso if value.curso != @curso
     end
+    @accion_padre.cambiar_curso(@curso) if @accion_padre.curso != @curso
   end
-
-
 
   #
   # Si el usuario pulsa una acción del menú la establece como nueva acción activa
@@ -65,16 +50,13 @@ class MenuDeAcciones < Menu
   #   - Devuelve la nueva acción pulsada en caso de que la haya pulsado el usuario o nil si no es asi.
   #
 
-  def ha_pulsado_accion datos_mensaje
-    accion_pulsada=@acciones[datos_mensaje]
+  def ha_pulsado_accion(datos_mensaje)
+    accion_pulsada = @acciones[datos_mensaje]
     if accion_pulsada
-      if @accion_pulsada
-        @accion_pulsada.reiniciar
-      end
-      @accion_pulsada=accion_pulsada
+      @accion_pulsada.reiniciar if @accion_pulsada
+      @accion_pulsada = accion_pulsada
     end
   end
-
 
   #
   # Devuelve la acción que recibirá el mensaje del usuario
@@ -85,44 +67,19 @@ class MenuDeAcciones < Menu
   #
 
   def obtener_accion_recibe_mensaje(datos_mensaje)
-    siguiente_accion=nil
+    siguiente_accion = nil
 
-    if datos_mensaje== "Atras" && @accion_padre
-      siguiente_accion=@accion_padre
-      @accion_pulsada=nil
+    if datos_mensaje == 'Atras' && @accion_padre
+      siguiente_accion = @accion_padre
+      @accion_pulsada = nil
     else
       ha_pulsado_accion(datos_mensaje)
-      if siguiente_accion.nil? && @accion_pulsada.nil?
-        siguiente_accion=self
-      else
-        siguiente_accion=@accion_pulsada
-      end
+      siguiente_accion = if siguiente_accion.nil? && @accion_pulsada.nil?
+                           self
+                         else
+                           @accion_pulsada
+                         end
     end
-    return siguiente_accion
+    siguiente_accion
   end
-
-  def crear_menu_indice (acciones, prefijo)
-    fila_botones=Array.new
-    array_botones=Array.new
-    acciones.each{|accion|
-      array_botones << Telegram::Bot::Types::InlineKeyboardButton.new(text: accion, callback_data: "#\#$$#{prefijo} #{accion}")
-      if array_botones.size == 4
-        fila_botones << array_botones.dup
-        array_botones.clear
-      end
-    }
-
-    if(prefijo =="duda_")
-      fila_botones << array_botones
-    else
-      fila_botones << array_botones << Telegram::Bot::Types::InlineKeyboardButton.new(text: "Volver", callback_data: "#\#$$Volver")
-    end
-
-    markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: fila_botones)
-    return markup
-  end
-
-
-
-
 end

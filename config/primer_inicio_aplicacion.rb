@@ -1,7 +1,7 @@
 require 'sequel'
-require_relative '../lib/moodle_api'
 require_relative 'crear_tablas_bd'
 
+puts ENV['URL_DATABASE']
 db=Sequel.connect(ENV['URL_DATABASE'])
 =begin
 params={'field' => 'email', 'values[0]'  => 'bot_telegram@bot_telegram.com'} #necesario que el bot este creado en moodle con este email
