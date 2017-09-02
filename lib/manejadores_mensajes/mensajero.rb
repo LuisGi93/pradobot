@@ -48,14 +48,8 @@ class Mensajero
       @encargado_mensajes_grupales.establecer_bot(botox)
       botox.listen do |message|
         begin
-          time=Benchmark.measure do
-
             mensaje = Mensaje.new(message)
-
-            puts "Comienzo procesar mensaje de #{mensaje.id_chat}"
             clasificar_mensaje(mensaje)
-            puts "Finalizo procesamiento mensaje de #{mensaje.id_chat}"
-          end
         end
       end
     end

@@ -26,8 +26,8 @@ describe CrearDuda do
   it 'Cuando recibe el primer mensaje muestra mensaje explicativo de que realiza' do
     allow(@stub_mensaje).to receive(:datos_mensaje) { 'Nueva duda' }
     expect(@stub_bot).to receive_message_chain(:api, :send_message) { |arg1|
-      arg1.keys.should_not include(:reply_markup)
-      arg1[:text].should eq("Escriba a continuación la duda que desea crear relacionada con *nombre del curso*:\n")
+      expect(arg1.keys).to_not include(:reply_markup)
+      expect(arg1[:text]).to eq("Escriba a continuación la duda que desea crear relacionada con *nombre del curso*:\n")
     }
     @accion.recibir_mensaje(@stub_mensaje)
   end
@@ -42,7 +42,7 @@ describe CrearDuda do
     expect(@stub_mensaje).to receive(:datos_mensaje)
 
     expect(@stub_bot).to receive_message_chain(:api, :send_message) { |arg1|
-      arg1[:text].should include('Contenido nueva duda')
+      expect(arg1[:text]).to include('Contenido nueva duda')
     }
     @accion.recibir_mensaje(@stub_mensaje)
   end
