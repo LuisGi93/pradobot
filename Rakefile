@@ -15,9 +15,9 @@ namespace :tasks do
       task :crear  do
         db=Sequel.connect(ENV['URL_DATABASE_TRAVIS'])
         begin
-            crear_tablas(db)
+          db.drop_table?(:respuesta_resuelve_duda, :respuesta_duda, :respuestas,:dudas_curso, :dudas_resueltas, :dudas_curso, :dudas,:peticion_tutoria, :tutoria, :datos_moodle, :usuarios_moodle, :profesor_curso, :profesor, :estudiante_curso,:estudiante, :chat_curso, :chat_telegram, :curso,:usuario_telegram )
+          crear_tablas(db)
         rescue Sequel::Error
-            db.drop_table?(:respuesta_resuelve_duda, :respuesta_duda, :respuestas,:dudas_curso, :dudas_resueltas, :dudas_curso, :dudas,:peticion_tutoria, :tutoria, :datos_moodle, :usuarios_moodle, :profesor_curso, :profesor, :estudiante_curso,:estudiante, :chat_curso, :chat_telegram, :curso,:usuario_telegram )
             crear_tablas(db)
         end
       end
