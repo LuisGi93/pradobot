@@ -1,0 +1,386 @@
+\documentclass[a4paper,11pt]{book}
+%\documentclass[a4paper,twoside,11pt,titlepage]{book}
+\usepackage{listings}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+
+% \usepackage[style=list, number=none]{glossary} %
+%\usepackage{titlesec}
+%\usepackage{pailatino}
+
+\decimalpoint
+\usepackage{dcolumn}
+\newcolumntype{.}{D{.}{\esperiod}{-1}}
+\makeatletter
+\addto\shorthandsspanish{\let\esperiod\es@period@code}
+\makeatother
+
+
+%\usepackage[chapter]{algorithm}
+\RequirePackage{verbatim}
+%\RequirePackage[Glenn]{fncychap}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{afterpage}
+
+
+\usepackage[export]{adjustbox}
+
+\usepackage{longtable}
+
+\usepackage[pdfborder={000}]{hyperref} %referencia
+
+% ********************************************************************
+% Re-usable information
+% ********************************************************************
+\newcommand{\myTitle}{Título del proyecto\xspace}
+\newcommand{\myDegree}{Grado en ...\xspace}
+\newcommand{\myName}{Nombre Apllido1 Apellido2 (alumno)\xspace}
+\newcommand{\myProf}{Nombre Apllido1 Apellido2 (tutor1)\xspace}
+\newcommand{\myOtherProf}{Nombre Apllido1 Apellido2 (tutor2)\xspace}
+%\newcommand{\mySupervisor}{Put name here\xspace}
+\newcommand{\myFaculty}{Escuela Técnica Superior de Ingenierías Informática y de
+Telecomunicación\xspace}
+\newcommand{\myFacultyShort}{E.T.S. de Ingenierías Informática y de
+Telecomunicación\xspace}
+\newcommand{\myDepartment}{Departamento de ...\xspace}
+\newcommand{\myUni}{\protect{Universidad de Granada}\xspace}
+\newcommand{\myLocation}{Granada\xspace}
+\newcommand{\myTime}{\today\xspace}
+\newcommand{\myVersion}{Version 0.1\xspace}
+
+
+\hypersetup{
+pdfauthor = {\myName (email (en) ugr (punto) es)},
+pdftitle = {\myTitle},
+pdfsubject = {},
+pdfkeywords = {palabra_clave1, palabra_clave2, palabra_clave3, ...},
+pdfcreator = {LaTeX con el paquete ....},
+pdfproducer = {pdflatex}
+}
+
+%\hyphenation{}
+
+
+%\usepackage{doxygen/doxygen}
+%\usepackage{pdfpages}
+\usepackage{url}
+\usepackage{colortbl,longtable}
+\usepackage[stable]{footmisc}
+%\usepackage{index}
+
+%\makeindex
+%\usepackage[style=long, cols=2,border=plain,toc=true,number=none]{glossary}
+% \makeglossary
+
+% Definición de comandos que me son tiles:
+%\renewcommand{\indexname}{Índice alfabético}
+%\renewcommand{\glossaryname}{Glosario}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LO]{\leftmark}
+\fancyhead[RE]{\rightmark}
+\fancyhead[RO,LE]{\textbf{\thepage}}
+\renewcommand{\chaptermark}[1]{\markboth{\textbf{#1}}{}}
+\renewcommand{\sectionmark}[1]{\markright{\textbf{\thesection. #1}}}
+
+\setlength{\headheight}{1.5\headheight}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+%Definimos los tipos teorema, ejemplo y definición podremos usar estos tipos
+%simplemente poniendo \begin{teorema} \end{teorema} ...
+\newtheorem{teorema}{Teorema}[chapter]
+\newtheorem{ejemplo}{Ejemplo}[chapter]
+\newtheorem{definicion}{Definición}[chapter]
+
+\definecolor{gray97}{gray}{.97}
+\definecolor{gray75}{gray}{.75}
+\definecolor{gray45}{gray}{.45}
+\definecolor{gray30}{gray}{.94}
+
+\lstset{ frame=Ltb,
+     framerule=0.5pt,
+     aboveskip=0.5cm,
+     framextopmargin=3pt,
+     framexbottommargin=3pt,
+     framexleftmargin=0.1cm,
+     framesep=0pt,
+     rulesep=.4pt,
+     backgroundcolor=\color{gray97},
+     rulesepcolor=\color{black},
+     %
+     stringstyle=\ttfamily,
+     showstringspaces = false,
+     basicstyle=\scriptsize\ttfamily,
+     commentstyle=\color{gray45},
+     keywordstyle=\bfseries,
+     %
+     numbers=left,
+     numbersep=6pt,
+     numberstyle=\tiny,
+     numberfirstline = false,
+     breaklines=true,
+   }
+ 
+% minimizar fragmentado de listados
+\lstnewenvironment{listing}[1][]
+   {\lstset{#1}\pagebreak[0]}{\pagebreak[0]}
+
+\lstdefinestyle{CodigoC}
+   {
+	basicstyle=\scriptsize,
+	frame=single,
+	language=C,
+	numbers=left
+   }
+\lstdefinestyle{CodigoC++}
+   {
+	basicstyle=\small,
+	frame=single,
+	backgroundcolor=\color{gray30},
+	language=C++,
+	numbers=left
+   }
+
+ 
+\lstdefinestyle{Consola}
+   {basicstyle=\scriptsize\bf\ttfamily,
+    backgroundcolor=\color{gray30},
+    frame=single,
+    numbers=none
+   }
+
+
+\newcommand{\bigrule}{\titlerule[0.5mm]}
+
+
+%Para conseguir que en las páginas en blanco no ponga cabecerass
+\makeatletter
+\def\clearpage{%
+  \ifvmode
+    \ifnum \@dbltopnum =\m@ne
+      \ifdim \pagetotal <\topskip
+        \hbox{}
+      \fi
+    \fi
+  \fi
+  \newpage
+  \thispagestyle{empty}
+  \write\m@ne{}
+  \vbox{}
+  \penalty -\@Mi
+}
+\makeatother
+
+\usepackage{pdfpages}
+
+
+%Paquetes añadidos por mi
+\newcommand{\tabitem}{~~\llap{\textbullet}~~}
+
+\setcounter{secnumdepth}{5} %subsections number deep 5
+
+\usepackage{lipsum} % dummy text for the MWE
+
+% Put % before of what you want disabled
+
+% Select what to do with todonotes: 
+% \usepackage[disable]{todonotes} % notes not showed
+\usepackage[draft]{todonotes}   % notes showed
+
+%para que no floten las tablas
+\usepackage{float}
+\restylefloat{table}
+
+\usepackage[square,numbers,sectionbib]{natbib}
+\usepackage{chapterbib}
+
+\usepackage{csquotes}
+
+%%Colores tablas
+\usepackage{color, colortbl}
+\definecolor{LightCyan}{rgb}{0.88,1,1}
+\definecolor{Gray}{gray}{0.9}
+
+
+
+%mostrar codigo
+
+
+
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Java,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+
+%% ajustar figura planificacion
+\usepackage[export]{adjustbox}
+
+\usepackage{eurosym}
+
+
+
+%%%%
+
+
+\lstloadlanguages{Ruby}
+\lstset{%
+basicstyle=\ttfamily\color{black},
+commentstyle = \ttfamily\color{red},
+keywordstyle=\ttfamily\color{blue},
+stringstyle=\color{orange}}
+
+
+%fin paquetes añadidos por mi
+
+
+\begin{document}
+\input{portada/portada}
+\input{prefacios/prefacio}
+\frontmatter
+\tableofcontents
+\listoffigures
+\listoftables
+%
+\mainmatter
+\setlength{\parskip}{5pt}
+
+\input{capitulos/01_Introduccion}
+%
+\input{capitulos/02_Planificacion}
+%
+\input{capitulos/03_EspecificacionRequisitos}
+%
+\input{capitulos/04_Analisis}
+%
+\input{capitulos/05_Diseno}
+%
+\input{capitulos/06_Implementacion}
+%
+\input{capitulos/07_Pruebas}
+%
+\input{capitulos/08_Conclusiones}
+%
+%\input{capitulos/A0_er_normalizacion_bd}
+%
+\chapter{}
+%
+%
+\section{Glosario de términos}
+
+\textbf{Bot}: Programa informático que efectua tareas repetitivas a través de internet\cite{wikibot}\cite{wikibot2}.\par
+\textbf{Telegram}: Servicio de mensajería instantanea por internet.\par
+\textbf{Moodle}: Plataforma educativa diseñada para la gestión de cursos online.\par
+\textbf{Interfaz}:Capa intermedia entre dos sistemas que utilizan para comunicarse.\par
+\textbf{Desarrollo iterativo}: Metodología de desarrollo de software que implica agrupar el desarrollo del sofware en un conjunto de etapas repetitivas.\cite{wikiiterativo}, \cite{wikiiterativo2} \par
+\textbf{SSH}: Protocolo para la comunicación segura entre computadores\cite{ssh}\par
+\textbf{SSL}:Protocolo para la transmisión de manera segura de información entre dos aplicaciones\par
+\textbf{Token}: Identificador que se le da a un usuario para facilitar el proceso de autenticación.\par
+\textbf{API}:  interfaz de programación de aplicaciones, conjunto de funciones que ofrece una biblioteca o aplicación con el fin de que sea usado por otro software como una capa de abstracción.\par
+\textbf{REST}:  Transferencia de Estado Representacional, estilo de arquitectura de software para sistemas distribuidos. Actualmente el término se usa para describir cualquier interfaz  que permita la modificación de la forma textual de recursos web a través de un conjunto de operaciones predefinidas y sin estado.\par\cite{rest}\cite{rest2}
+\textbf{pradobot}:  Nombre del programa que estamos desarrollando.\par
+\textbf{Polimorfismo}: Capacidad de enviar el mismo tipo de mensajes a objetos de diferente clase. \par
+\textbf{ORM}:  
+\\
+\textbf{Stub}: Emulan\cite{CC} una clase simulando algundo alguno de sus métodos que devuelven datos predefinidos.\par
+\textbf{Mock}: Igual que los stubs solo que sus métodos no tiene un comportamiento preprogramado. Tienen programados una serie de expectativas como que se llame x veces a este método con tales parámetros y se suelen utilizar para si el uso de la clase que simulan es el esperado en los tests.\par
+%\begin{thebibliography}{999}
+
+
+%\bibliographystylePS{plain}
+%\bibliographyPS{/bibliografia/moodle}
+
+\begin{thebibliography}{99}
+
+	
+\subsubsection*{Moodle}
+
+\bibitem{mood1} ``Get users token''. 05/03/2017.\url{https://moodle.org/mod/forum/discuss.php?d=193857}
+\bibitem{mood2} ``How to get a user token from a external aplciation''.05/03/2017. \url{https://docs.moodle.org/31/en/Web_services_FAQ#How_to_get_a_user_token_from_an_external_application.3F
+}
+\bibitem{mood3} ``Creating a web service client''. 05/03/2017.\url{https://docs.moodle.org/dev/Creating_a_web_service_client#How_to_get_a_user_token}
+\bibitem{mood4} ``Add new user''. \url{https://docs.moodle.org/32/en/Add_a_new_user}
+\bibitem{mood5} ``Step by step installation guide moodle ubuntu''. 05/03/2017.\url{https://docs.moodle.org/26/en/Step-by-step_Installation_Guide_for_Ubuntu
+}
+\bibitem{mood6} ``Step by step installation guide moodle ubuntu''. 05/03/2017.\url{https://docs.moodle.org/19/en/Roles_and_capabilities}
+
+\bibitem{mood7} ``Webservice API functions''. 05/03/2017. \url{https://docs.moodle.org/dev/Web_service_API_functions}
+\bibitem{mood8} ``Webservices''. 05/03/2017. \url{https://docs.moodle.org/dev/Web_services}
+
+\subsubsection*{UML}
+\bibitem{uml1} ``UML basics: The sequence diagram''. 05/03/2017. \url{https://www.ibm.com/developerworks/rational/library/3101.html}
+\bibitem{uml2} ``Differences between sequence diagrams and collaboration diagrams''. 05/03/2017. \url{https://www-01.ibm.com/support/docview.wss?uid=swg21123475
+}
+\bibitem{uml2} ``UML 2 Sequence Diagrams: An Agile Introduction''. 05/03/2017. \url{http://www.agilemodeling.com/artifacts/sequenceDiagram.htm
+}
+\subsubsection*{Lecturas sobre bots}
+\bibitem{abo1} ``Server-side architecture when bots invade''. 05/03/2017. \url{https://medium.com/@JonathanZWhite/server-side-infrastructure-when-bots-invade-a2252e9d4bc9}
+\bibitem{abo2} ``Server-side architecture when bots invade''. 05/03/2017. \url{https://medium.com/@surmenok/chatbot-architecture-496f5bf820ed
+}
+
+
+\subsubsection*{Sequel}
+
+\bibitem{sequel1} ``Dataset filtering''.05/03/2017. \url{http://sequel.jeremyevans.net/rdoc/files/doc/dataset_filtering_rdoc.html}
+\bibitem{sequel2} ``ConnectionPool''.05/03/2017. \url{http://www.rubydoc.info/github/evanfarrar/opensprints/Sequel/ConnectionPool}
+\bibitem{sequel3} ``ThreadedConnectionPool''. 05/03/2017.\url{http://sequel.jeremyevans.net/rdoc/classes/Sequel/ThreadedConnectionPool.html#attribute-i-available_connections
+}
+\subsubsection*{Tests}
+
+\bibitem{rspec} `` RSpec Expectations 3.6''.05/03/2017. \url{https://relishapp.com/rspec/rspec-expectations/docs/built-in-matchers}
+\bibitem{rspec} `` RSpec Expectations 3.6''.05/03/2017. \url{https://dzone.com/articles/why-shouldnt-i-test-privates}
+
+\subsubsection*{Telegram}
+\bibitem{bot1} ``Telegram''. \url{https://core.telegram.org/bots}
+
+\bibitem{bot2} ``Telegram bot API''. \url{https://core.telegram.org/bots/api#message}
+
+
+
+\bigskip
+\subsubsection*{Otro material}
+\begin{itemize}
+	\item Consultas {\tt Stack OverFlow}.
+	\item Alguna cosilla latex {\tt https://github.com/germaaan/TFG}.
+	\item Material de las asignaturas \textbf{Fundamentos de Ingeniería del Software}, \textbf{Programación Orientada a Objetos}, \textbf{Diseño de Interfaces de Usuario  }, \textbf{Diseño de Interfaces de Usuario  }, \textbf{Diseño y Desarrollo de Sistemas de Información}, \textbf{Diseño y Desarrollo de Sistemas de Información}, \textbf{Seguridad en Sistemas Operativos}, \textbf{Derecho Informático},  ( \textbf{Ingeniería de Servidores} e \textbf{Infraestructura Virtual} impartidas en \textbf{Grado en Ingeniería Informática} en la \textbf{Universidad de Granada}.
+\end{itemize}
+\end{thebibliography}
+\addcontentsline{toc}{chapter}{Bibliografía}
+
+
+%\bibliography{bibliografia/bibliografia}
+%\bibliographystyle{plain}
+%\bibliographystyle{miunsrturl}
+%
+%\appendix
+%\input{apendices/manual_usuario/manual_usuario}
+%%\input{apendices/paper/paper}
+%\input{glosario/entradas_glosario}
+% \addcontentsline{toc}{chapter}{Glosario}
+% \printglossary
+\chapter*{}
+
+\thispagestyle{empty}
+
+\end{document}

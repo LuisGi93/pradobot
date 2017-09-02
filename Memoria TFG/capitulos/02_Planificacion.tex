@@ -1,0 +1,126 @@
+\chapter{}
+
+\section{Planificación}
+
+En este apartado se muestra la planificación diseñada para el desarrollo del proyecto.
+ 
+ Como este es un proyecto fácilmente subdivisible en diferentes partes y al que  se le pueden ir añadiendo nuevas funciones conforme se completa una, se ha decicido emplear el desarollo iterativo para su realización.
+
+
+\subsection{Lista actividades y sus fases}
+
+\begin{itemize}
+\item \textbf{Estudio bots Telegram.}
+\begin{itemize}
+\item Contenido: se analiza la capacidad de la API de Telegram, se ve el funcionamietno de los bots creados hasta la fecha.
+\item Estimacición: 10h.
+\end{itemize}
+\item \textbf{Estudio Moodle}. 
+\begin{itemize}
+\item Contenido: se estudia el funcionamiento interno de Moodle y el funcionamiento de su API.
+\item Tiempo empleado: 15h.
+\end{itemize}
+\item \textbf{Configuración Moodle}. 
+\begin{itemize}
+\item Contenido: se prueban diferentes formas de configurar una instancia de Moodle.
+\item Tiempo empleado: 20h.
+\end{itemize}
+\item \textbf{Prototipo pruebas Moodle}. 
+\begin{itemize}
+\item Contenido: se comprueba el funcionamiento de la API de Moodle conforme se prueban diferentes configuraciones.
+\item Tiempo empleado: 8h.
+\end{itemize}
+\item \textbf{Entregas chat privado}. 
+\begin{itemize}
+\item Contenido: primera iteración se busca que el bot pueda acceder a la API de Moodle y mostrar información sobre las entregas a usuarios.
+\item Fases.
+\begin{itemize}
+\item Especificación:15h.
+\item Analisis:20h.
+\item Diseño:25h
+\item Implementación: 35h.
+\item Pruebas:10h.
+\end{itemize}
+\end{itemize}
+\item \textbf{Entregas chat grupal}. 
+\begin{itemize}
+\item Contenido: segunda iteración se distingue entre chat grupal y privado, se permite mostrar datos de entregas a través de un chat grupal.
+\item Fases.
+\begin{itemize}
+\item Especificación:5h.
+\item Analisis:7h.
+\item Diseño:15h
+\item Implementación: 15h.
+\item Pruebas:4h.
+\end{itemize}
+\end{itemize}
+\item \textbf{Tutorías}. 
+\begin{itemize}
+\item Contenido: tercera iteración se añade la posibilidad de que los estudiantes puedan solicitar tutorías y los profesores gestionarlas.
+\item Fases.
+\begin{itemize}
+\item Especificación:10h.
+\item Analisis:10h.
+\item Diseño:15h
+\item Implementación: 25h.
+\item Pruebas:5h.
+\end{itemize}
+\end{itemize}
+\item \textbf{Dudas}. 
+\begin{itemize}
+\item Contenido: cuarta iteración se permite la gestión de dudas de un curso.
+\item Fases.
+\begin{itemize}
+\item Especificación: 15h.
+\item Analisis:15h.
+\item Diseño:20h
+\item Implementación: 40h.
+\item Pruebas:10h.
+\end{itemize}
+\end{itemize}
+\item \textbf{Ajustes finales}.
+\begin{itemize}
+\item Contenido: se ordena la documentación generada, se liman las posibles asperezas surgidas en el desarollo con el fin de tener la aplicación lista.
+\item Duración:30h.
+\end{itemize}
+\end{itemize} 
+ 
+ La planificación temporal seguida para deasarrollar las siguientes actividades podemos apreciarla de manera visual en el siguiente diagrama de Gantt:
+
+\begin{figure}[H] %con el [H] le obligamos a situar aquí la figura
+\centering
+\adjincludegraphics[height=9
+cm,trim={0 0 {.5\width} 0},clip]{imagenes/diagramas/diagrama_gant_pradobot.png}  %el parámetro scale permite agrandar o achicar la imagen. En el nombre de archivo puede especificar directorios
+
+\caption{Planificación temporal actividades y sus fases }\label{figura666}
+\end{figure}
+
+
+
+La memoria que compone este TFG la  he ido realizando incrementalmente conforme desarrollaba el programa. Las etapas (especificación, analisis, diseño..) que componen las diferentes actividades mostradas,  estan en su respectiva sección del documento.
+
+\subsection{Presupuesto}
+
+Todos los programas utilizados para el desarrollo y funcionamiento del proyecto son software libre por lo que no hay  gastos generados por la comprar licencias.
+Para el desarrollo del presente proyecto sería necesario un equipo informático estandar y para su funcionamiento podemos alojarlo en un servicio de cloud hosting:
+
+\begin{itemize}
+\item \href{http://vcloud.vmware.com/service-offering/pricing-calculator/on-demand}{Cloud hosting VMware}
+\begin{itemize}
+\item Uso: 20\%.
+\item Sistema operativo:CentOS.
+\item Una IP pública.
+\item 1GB RAM
+\item Precio: \textbf{25\euro/mes}
+\end{itemize}
+\item Ordenador portatil para desarrollo
+\begin{itemize}
+\item Modelo: ASUSK-541
+\item Procesador: Intel i5. 2.5GHz.
+\item RAM: 12GB
+\item Almacenamiento: 1TB
+\item Precio \textbf{700\euro}
+\end{itemize}
+\end{itemize}
+
+Además se incluye en el zip del trabajo un pdf llamado \enquote*{Derecho Informatico: Ejemplo contrato desarrollo software pradobot} que aplica el derecho al desarrollo de pradobot.

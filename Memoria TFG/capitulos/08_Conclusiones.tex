@@ -1,0 +1,21 @@
+\section{Conclusiones}
+
+Tras realizar el proyecto y revisar los objetivos, la impresión que me queda es que Moodle y Telegram pueden llegar a ser muy útiles trabajando juntos. Si bien con algún matiz, ya que Moodle me parece muy rígido en cuanto al modo de configurarlo para poder usar su API.
+\par
+El uso de Telegram facilita el contacto entre los estudiantes y los profesores de un curso, pudiendo llegar a ser el bot una herramienta que ayude, en gran medida, en todas aquellas tareas que se deriven de esta comunicación. Debido a la falta de tiempo hay muchas funcionalidades interesantes pensadas que no se han podido implementar como por ejemplo:
+\begin{itemize}
+\item Permitir imágenes en las dudas y las respuestas. 
+\item Permitir a un profesor configurar funciones en el bot como:
+\begin{itemize}
+\item Mensaje bienvenida cuando un estudiante entra al chat del curso. 
+\item Mostrar avisos cuanto falten x horas para que finalice la entrega de algún hito del curso.
+\item Permitir programar que muestre un mensaje a las x horas del día y.
+\end{itemize}
+\item El bot notifique al estudiante cuando se ha aprobado/denegado su petición.
+\item Permitir al bot \enquote*{grabar} la duda directamente del chat grupal, es decir, con un mecanismo tipo \texttt{\\duda ¿Cursiva o entrecomillado para los extranjerismos?} y grabar todas las respuestas que se dieran en el chat hasta pararlo con un \\fin\_duda.
+\item El bot pudiera guardar recursos de interés compartidos por los estudiantes/profesores dentro del chat grupal.
+\end{itemize}
+
+
+Como última reflexión decir que Moodle no es imprescindible. La mayoría de las funcionalidades descritas más arriba no necesitan necesariamente a Moodle. 
+Moodle aporta \textbf{control} e \textbf{información}, es el que aporta al bot quién es el responsable de qué curso y, por tanto, el responsable de indicarle al bot cuál es el chat en el que está \textbf{autorizado} a compartir la información del curso. Sin una fuente, el bot no sabe discernir dónde puede revelar esta o aquella información. Resulta muy interesante explorar otras posibles fuentes de información, como por ejemplo Google spreadsheets, Github o similares. 

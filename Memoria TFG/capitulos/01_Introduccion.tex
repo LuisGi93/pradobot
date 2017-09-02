@@ -1,0 +1,52 @@
+\chapter{}
+
+
+
+\section{Introducción}
+
+Hoy en día aplicaciones como Whatssap o Telegram son usadas de manera habitual por cualquier persona no siendo la excepción los estudiantes y profesores de la universidad.
+
+\par
+Habiendo lanzado hace poco más de un año Telegram el soporte para utilizar \textit{bots} ( del ingles robot ) y conociendose el uso que se da hoy en día a los \textit{bots} para la asistencia a distintas tareas,  resulta interesente crear uno diseñado explícitamente para asistir en la gestión docente de una asignatura, de tal forma, que tareas básicas como la solicitud de tutorías, entregas de asignaturas, notas sea algo sencillo de hacer con este bot.
+
+\subsection{Analisis preliminar. Estudio viabilidad del proyecto.}
+
+Ante todo, lo primero es analizar si es posible, la realización de este proyecto o, en todo caso, ver si es necesario introducir algún matiz. Primero vamos a analizar la parte técnica, es decir, si es realizable un bot de Telegram y que este interactúe con una instancia de Moodle. Voy a listar los puntos que permiten afirmar, bajo mi punto de vista, que se trata de algo perfectamente realizable:
+
+\begin{itemize}
+\item Telegram cuenta con una API\cite{telegram1} que da amplias funcionalidades a un programa para comunicarse con un usuario que contacte con él, bien sea a través de mensajes de texto, imagenes, iconos, teclados gráficos... todo esto proporciona un entorno rico para crear una interacción  sencilla y fluida entre un usuario y el programa, permitiendo al bot asistir al usuario en alguna tarea. En nuestro caso concreto esta tarea consistiría en permitir  realizar labores típicas relacionadas con la docencia tales como crear/solicitar tutorías, consultar notas, resolver dudas... 
+\item Moodle desde la versión 2.0 permite el acceso a datos de una instancia de Moodle utilizando una interfaz tipo REST, el acceso a estos datos se realiza a través de una serie de funciones llamadas \textit{webservice functions}. \cite{moodle0} Es más, Moodle permite filtrar qué usuarios pueden acceder a qué funciones y por tanto a qué datos de una instancia de Moodle \cite{moodle1} teniendo así un control sobre qué usuarios pueden utilizar la API REST y para qué datos.
+\end{itemize}
+
+Con estos dos puntos ya se puede afirmar que es posible construir un programa que utilize Telegram como \textit{bot} y a su vez, tenga acceso a datos de una instancia de Moodle de manera controlada. Ahora bien tiene: ¿Tiene sentido?
+
+Utilizar un chat de Telegram para un curso permite a los estudiantes y al profesor compartir cualquier información relacionada con el curso de forma rápida y sencilla: cambios de aula, recursos de interés, preguntar dudas... el \textit{bot} aporta riqueza a esta comunicación  almacenando, por ejemplo, todos aquellos recursos de interés y que no se pierdan en el flujo de una conversación en un chat grupal. También  permitiría guardar todas aquellas dudas que generan los alumnos a lo largo del curso junto con sus respuestas, o incluso, un alumno podría ver cuanta gente tiene por delante para asistir a una tutoría y así solicitar la tutoría para el día que mejor le convenga.
+
+Viendo que tiene viabilidad técnica y habiendo enumerado alguna de las cualidades prácticas que puede aportar, paso a perfilar el proyecto en las siguientes secciones.
+
+
+\subsection{Descripción general del sistema y objetivos}
+
+El sistema hará uso, por una parte, de la plataforma  Moodle para obtener datos relacionados con una asignatura (nº de alumnos apuntados, entregas abiertas, notas, plazos... ) y, por otro lado, de Telegram para asistir a un usuario en tareas vinculadas con la docencia (petición de tutorias, gestión de  dudas...) 
+
+Además se utilizarán los chats grupales de Telegram relacionados  con una asignatura para dar información de interés general para todos los integrantes de esa asignatura.
+
+A modo de resumen, los principales objetivos que se pretenden alcanzar son:
+
+\begin{description}
+\item[OBJ-1] Uso de Telegram y Moodle para asistir en la tareas relacionadas con la docencia a profesores tales como: tutorías, gestión de dudas.. \newline
+
+\item[OBJ-2] Uso de Telegram y Moodle para facilitar a los alumnos las actividades relacionadas con su participación en una asignatura: entregas abiertas, plazos, notas.. \newline
+
+\item[OBJ-3] Asistencia en chats grupales de Telegram relacionados con una asignatura mediante el aporte de información relevante para el conjunto del alumnado.
+\end{description}
+
+
+Como objetivo secundario destacaríamos:
+
+
+\begin{description}
+\item[OBJ-4] Correcta configuración Moodle para el uso de la aplicación. \newline
+\end{description}
+
+
