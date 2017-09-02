@@ -8,13 +8,12 @@ require 'sequel'
 namespace :tasks do
   namespace :db do
 
-    namespace :test do
-
 
     namespace :test_travis do
 
       desc "Creamos base de datos test"
       task :crear  do
+puts ENV['URL_DATABASE_TRAVIS']
         db=Sequel.connect(ENV['URL_DATABASE_TRAVIS'])
         begin
             crear_tablas(db)
@@ -36,9 +35,10 @@ namespace :tasks do
         db=Sequel.connect(ENV['URL_DATABASE_TRAVIS'])
             db.drop_table?(:respuesta_resuelve_duda, :respuesta_duda, :respuestas,:dudas_curso, :dudas_resueltas, :dudas_curso, :dudas,:peticion_tutoria, :tutoria, :datos_moodle, :usuarios_moodle, :profesor_curso, :profesor, :estudiante_curso,:estudiante, :chat_curso, :chat_telegram, :curso, :usuario_telegram )
       end
-    end
+      
   end
 
+  end
 
 
 end
