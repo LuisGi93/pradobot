@@ -46,13 +46,6 @@ def crear_tablas db
   end
 
 
-  db.create_table! :admin do
-    foreign_key :id_telegram, :usuario_telegram, :on_delete => :cascade, :on_update => :cascade, :primary_key => true
-    String      :nombre_usuario
-
-  end
-
-
   db.create_table! :usuarios_moodle do
     Column     :email, :type => 'varchar(100)', :unique  => true
     foreign_key :id_telegram, :usuario_telegram, :on_delete => :cascade, :on_update => :cascade, :primary_key => true

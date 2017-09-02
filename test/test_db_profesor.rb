@@ -4,7 +4,7 @@ require_relative '../lib/contenedores_datos/estudiante'
 
 describe Profesor do
   before(:all) do
-    @db = Sequel.connect(ENV['URL_DATABASE_PRUEBA'])
+    @db = Sequel.connect(ENV['URL_DATABASE_TRAVIS'])
     @db[:usuario_telegram].insert(id_telegram: 1111, nombre_usuario: 'nombreusuario1')
     @db[:usuarios_moodle].insert(id_telegram: 1111, email: 'usuario1@usuario1.com')
     @db[:datos_moodle].insert(email: 'usuario1@usuario1.com', token: '1111', id_moodle: 1111)
@@ -28,7 +28,7 @@ describe Profesor do
   end
 
   after(:all) do
-    @db = Sequel.connect(ENV['URL_DATABASE_PRUEBA'])
+    @db = Sequel.connect(ENV['URL_DATABASE_TRAVIS'])
     @db[:usuario_telegram].delete
     @db[:usuarios_moodle].delete
     @db[:dudas].delete

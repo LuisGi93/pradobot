@@ -6,7 +6,7 @@ require 'telegram/bot'
 require 'sequel'
 describe VerInformacionTutorias do
   before(:all) do
-    @db = Sequel.connect(ENV['URL_DATABASE_PRUEBA'])
+    @db = Sequel.connect(ENV['URL_DATABASE_TRAVIS'])
     @db[:usuario_telegram].insert(id_telegram: 1111, nombre_usuario: 'nombreusuario1')
     @db[:usuarios_moodle].insert(id_telegram: 1111, email: 'usuario1@usuario1.com')
     @db[:datos_moodle].insert(email: 'usuario1@usuario1.com', token: '1111', id_moodle: 1111)
@@ -23,7 +23,6 @@ describe VerInformacionTutorias do
     @db[:profesor].insert(id_telegram: 2222)
 
     @profesor = Profesor.new(2222)
-    @db.disconnect
   end
   before(:each) do
     @stub_bot = double('bot')

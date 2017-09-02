@@ -85,6 +85,9 @@ class AccionSobreTutoria < Accion
       when /\#\#\$\$tutoria/
              datos_mensaje.slice! "#\#$$tutoria"
              indice_tutoria = datos_mensaje.to_i
+             puts datos_mensaje
+             puts indice_tutoria
+             puts @tutorias.to_s
              @tutoria = @tutorias.at(indice_tutoria)
              mostrar_opciones_tutoria
       when /\#\#\$\$Borrar tutoría/

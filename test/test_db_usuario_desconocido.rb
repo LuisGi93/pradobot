@@ -5,7 +5,7 @@ require_relative '../lib/contenedores_datos/curso'
 
 describe UsuarioDesconocido do
   before(:all) do
-    @db = Sequel.connect(ENV['URL_DATABASE_PRUEBA'])
+    @db = Sequel.connect(ENV['URL_DATABASE_TRAVIS'])
     @profesor_desconocido = UsuarioDesconocido.new(1111, 'pepito grillo')
     #    @db[:curso].insert(:id_moodle => 5, :nombre_curso => "curso 5")
     #    @db[:curso].insert(:id_moodle => 6, :nombre_curso => "curso 6")
@@ -30,7 +30,7 @@ describe UsuarioDesconocido do
   end
 
   after(:all) do
-    @db = Sequel.connect(ENV['URL_DATABASE_PRUEBA'])
+    @db = Sequel.connect(ENV['URL_DATABASE_TRAVIS'])
     @db[:usuario_telegram].delete
     @db[:usuarios_moodle].delete
     @db[:tutoria].delete

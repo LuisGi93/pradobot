@@ -4,7 +4,7 @@ require_relative '../lib/contenedores_datos/curso'
 
 describe Curso do
   before(:all) do
-    @db = Sequel.connect(ENV['URL_DATABASE_PRUEBA'])
+    @db = Sequel.connect(ENV['URL_DATABASE_TRAVIS'])
 
     @db[:usuario_telegram].insert(id_telegram: 1111, nombre_usuario: 'nombre cualquiera1')
     @db[:usuarios_moodle].insert(id_telegram: 1111, email: 'usuario1@usuario1.com')
