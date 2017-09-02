@@ -3,4 +3,4 @@ rvm:
   - "2.4.0"
   - "2.3.1"
 environment:
-  RUBYOPT: W0
+  RUBYOPT: W0 rspec
