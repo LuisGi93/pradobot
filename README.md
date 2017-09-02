@@ -1,5 +1,7 @@
-# pradobot
+# Pradobot
 [![Build Status](https://travis-ci.org/LuisGi93/pradobot.svg?branch=desarrollo)](https://travis-ci.org/LuisGi93/pradobot)
+
+##Proyecto fin de carrera del Grado en Ingeniería Informática de la Universidad de Granada
 
 Bot de Telegram para asistir en la gestión académica mediante el uso de chats de Telegram,
 actualmente la única plataforma docente que soporta es Moodle.
