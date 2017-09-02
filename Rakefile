@@ -13,7 +13,6 @@ namespace :tasks do
 
       desc "Creamos base de datos test"
       task :crear  do
-puts ENV['URL_DATABASE_TRAVIS']
         db=Sequel.connect(ENV['URL_DATABASE_TRAVIS'])
         begin
             crear_tablas(db)
