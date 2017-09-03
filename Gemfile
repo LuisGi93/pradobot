@@ -11,4 +11,7 @@ gem 'daemons'
 gem 'typhoeus'
 group :test do
   gem 'rake'
+
 end
+gem 'rspec', :require => false, :group => :test
+gem 'simplecov', :require => false, :group => :test

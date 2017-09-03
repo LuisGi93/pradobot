@@ -1,6 +1,8 @@
 
 require 'telegram/bot'
 require 'rspec'
+require_relative 'spec_helper'
+
 require_relative '../lib/actuadores_sobre_mensajes/crear_duda.rb'
 require_relative '../lib/contenedores_datos/duda.rb'
 require_relative '../lib/actuadores_sobre_mensajes/menu_dudas.rb'

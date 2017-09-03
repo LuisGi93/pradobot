@@ -1,9 +1,5 @@
+require_relative 'spec_helper'
 
-require_relative '../lib/actuadores_sobre_mensajes/acciones_profesor/accion_sobre_tutoria.rb'
-require_relative '../lib/actuadores_sobre_mensajes/acciones_profesor/menu_tutorias_profesor.rb'
-require 'rspec'
-require 'telegram/bot'
-require 'sequel'
 describe VerInformacionTutorias do
   before(:all) do
     @db = Sequel.connect(ENV['URL_DATABASE_TRAVIS'])

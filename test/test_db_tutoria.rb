@@ -1,6 +1,7 @@
 require 'rspec'
 require 'sequel'
 require_relative '../lib/contenedores_datos/tutoria'
+require_relative 'spec_helper'
 
 describe Tutoria do
   before(:all) do

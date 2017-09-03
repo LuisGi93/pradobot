@@ -52,6 +52,7 @@ class Menu < Accion
   def cambiar_curso_pulsado(mensaje)
     pulsado = false
     datos_mensaje = mensaje.datos_mensaje
+    puts datos_mensaje
     if datos_mensaje =~ /Cambiar de curso.+/
       solicitar_introducir_nuevo_curso mensaje.usuario.id_telegram
       pulsado = true
@@ -59,7 +60,9 @@ class Menu < Accion
       datos_mensaje.slice! 'cambiando_a_curso_id_curso#'
       id_curso = datos_mensaje[/^[0-9]{1,2}/]
       id_curso = id_curso.to_i
+
       iniciar_cambio_curso(mensaje.usuario.id_telegram, id_curso)
+      puts @curso.id_curso
       pulsado = true
       @@bot.api.answer_callback_query(callback_query_id: mensaje.id_callback, text: 'Cambiando de curso..')
       ejecutar(mensaje)

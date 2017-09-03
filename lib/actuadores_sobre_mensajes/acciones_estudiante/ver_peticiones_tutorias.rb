@@ -23,17 +23,17 @@ class VerPeticionesTutoria < Accion
     estudiante = Estudiante.new(@ultimo_mensaje.usuario.id_telegram)
     peticiones = estudiante.obtener_peticiones_tutorias
 
-    puts peticiones.empty?
-    puts peticiones.to_s
     if peticiones.empty?
       @@bot.api.send_message(chat_id: @ultimo_mensaje.usuario.id_telegram, text: 'No ha realizado ninguna petición', parse_mode: 'Markdown')
     else
       profesor_curso = @curso.obtener_profesor_curso
       text = "Ha realizado las siguientes peticiones para las tutorias de *#{profesor_curso.nombre_usuario}:*\n"
       peticiones.each_with_index do |peticion, index|
-        text += "\t *#{index})*:  Hora realizacion: *#{peticion.hora}*\n"
-        text += "         Lugar en la cola: *#{peticion.tutoria.posicion_peticion(peticion)}*"
-        text += "         Estado: *#{peticion.estado}*\n"
+        if peticion.tutoria.profesor.id_telegram == profesor_curso.id_telegram
+          text += "\t *#{index})*:  Hora realizacion: *#{peticion.hora}*\n"
+          text += "         Lugar en la cola: *#{peticion.tutoria.posicion_peticion(peticion)}*"
+          text += "         Estado: *#{peticion.estado}*\n"
+        end
       end
       @@bot.api.send_message(chat_id: @ultimo_mensaje.usuario.id_telegram, text: text, parse_mode: 'Markdown')
     end

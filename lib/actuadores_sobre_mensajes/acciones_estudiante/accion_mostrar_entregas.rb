@@ -60,7 +60,7 @@ class AccionMostrarEntregas < Accion
   def proximas_entregas(entregas)
     entregas_finalizadas = []
     entregas.each { |entrega|
-      if Time.parse(entrega.fecha_fin) < Time.now
+      if Time.parse(entrega.fecha_fin) > Time.now
         entregas_finalizadas << entrega
       end
     }

@@ -1,11 +1,5 @@
+require_relative 'spec_helper'
 
-require 'telegram/bot'
-require 'rspec'
-require_relative '../lib/contenedores_datos/duda'
-require_relative '../lib/actuadores_sobre_mensajes/accion.rb'
-require_relative '../lib/actuadores_sobre_mensajes/listar_dudas_resueltas.rb'
-require_relative '../lib/actuadores_sobre_mensajes/listar_dudas.rb'
-require_relative '../lib/actuadores_sobre_mensajes/menu_dudas.rb'
 describe ListarDudasResueltas do
   before(:each) do
     @stub_bot = double('bot')
