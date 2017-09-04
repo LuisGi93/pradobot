@@ -58,10 +58,10 @@ describe CrearDuda do
     allow(@stub_mensaje).to receive(:datos_mensaje) { 'Contenido nueva duda' }
 
     expect(@stub_bot).to receive_message_chain(:api, :send_message) { |arg1|
-      arg1.keys.should include(:chat_id, :text, :reply_markup)
-      arg1[:text].should include('nombre del curso')
-      arg1[:text].should include('Contenido nueva duda')
-      arg1[:reply_markup].should be_instance_of(Telegram::Bot::Types::InlineKeyboardMarkup)
+      expect(arg1.keys).to include(:chat_id, :text, :reply_markup)
+      expect(arg1[:text]).to include('nombre del curso')
+      expect(arg1[:text]).to include('Contenido nueva duda')
+      expect(arg1[:reply_markup]).to be_instance_of(Telegram::Bot::Types::InlineKeyboardMarkup)
     }
     @accion.recibir_mensaje(@stub_mensaje)
   end

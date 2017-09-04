@@ -41,15 +41,12 @@ describe ListarDudasResueltas do
 
 
 
-    array_dudas_curso = []
     @stub_duda = double('duda2')
     allow(@stub_duda).to receive(:contenido) { 'contenido duda 2' }
     allow(@stub_duda).to receive(:usuario) { @stub_usuario2 }
-    array_dudas_curso << Duda.new('contenido duda 1', @stub_usuario1)
     @stub_respuesta = double('respuesta')
     allow(@stub_respuesta).to receive(:contenido) { 'Contenido de la solución de la duda' }
     allow(@stub_duda).to receive(:solucion) { @stub_respuesta }
-    array_dudas_curso << @stub_duda
     allow(@stub_curso).to receive(:obtener_dudas_resueltas) { array_dudas_curso }
 
 
@@ -130,6 +127,7 @@ describe ListarDudasResueltas do
 
     @accion.recibir_mensaje(@stub_mensaje)
   end
+
   it 'Debe poderse ver la solución de una duda resuelta' do
     @accion.recibir_mensaje(@stub_mensaje)
 

@@ -123,4 +123,11 @@ describe SolicitarTutoria do
     @accion.recibir_mensaje(@stub_mensaje)
   end
 
+  after(:all){
+    @db = Sequel.connect(ENV['URL_DATABASE_TRAVIS'])
+
+    @db[:usuario_telegram].delete
+    @db.disconnect
+
+  }
 end

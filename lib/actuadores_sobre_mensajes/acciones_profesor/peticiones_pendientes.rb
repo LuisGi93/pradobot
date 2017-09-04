@@ -33,7 +33,6 @@ class PeticionesPendientesTutoria < Accion
   #   - +datos_mensaje+ -> Contido del último mensaje recibido por el bot de Telegram.
 
   def respuesta_segun_datos_mensaje(datos_mensaje)
-    puts "Los pu;eteros datos son #{datos_mensaje}"
     case datos_mensaje
     when /\#\#\$\$Peticion /
       puts 'Entro en la peticion'

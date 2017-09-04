@@ -40,7 +40,7 @@ namespace :tasks do
 
   desc "Test sin bds"
   RSpec::Core::RakeTask.new(:tests_no_bd) do |t|
-    t.pattern = Dir.glob('test/test_mostrar_entregas.rb')
+    t.pattern = Dir.glob('test/test_mensaje_mensaje.rb')
 #          t.pattern = Dir.glob('test/test_informacion_tutoria.rb')
 
     t.rspec_opts = '--format documentation'

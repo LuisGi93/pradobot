@@ -62,11 +62,12 @@ describe MenuTutorias do
     allow(@stub_curso).to receive(:id_moodle) { 5 }
     allow(@stub_curso).to receive(:obtener_profesor_curso) { @stub_profesor }
 
-    stub_padre = double('accion_padre')
-    allow(stub_padre).to receive(:cambiar_curso)
-    allow(stub_padre).to receive(:cambiar_curso_parientes)
-    allow(stub_padre).to receive(:curso) { @stub_curso }
-    @accion = MenuTutorias.new(stub_padre)
+    @stub_padre = double('accion_padre')
+    allow(@stub_padre).to receive(:ejecutar)
+    allow(@stub_padre).to receive(:cambiar_curso)
+    allow(@stub_padre).to receive(:cambiar_curso_parientes)
+    allow(@stub_padre).to receive(:curso) { @stub_curso }
+    @accion = MenuTutorias.new(@stub_padre)
     @accion.cambiar_curso(@stub_curso)
 
     allow(@stub_bot).to receive_message_chain(:api, :send_message)
@@ -122,5 +123,36 @@ describe MenuTutorias do
     }
 
     @accion.recibir_mensaje(@stub_mensaje)
+  end
+
+  it 'Debe dejar retroceder al menú anterior' do
+
+    allow(@stub_mensaje).to receive(:datos_mensaje) { 'Atras' }
+
+    expect(@stub_padre).to receive(:ejecutar)
+
+    @accion.recibir_mensaje(@stub_mensaje)
+  end
+
+  it 'Debe dejar retroceder al menú anterior incluso si hay una opción pulsada' do
+    allow(@stub_mensaje).to receive(:datos_mensaje) { 'Realizar petición tutoría' }
+
+    expect(@stub_bot).to receive_message_chain(:api, :send_message) { |arg1|
+      expect(arg1[:text]).to include('Seleccione la tutoría', 'nombre profesor','Fecha tutoría', '2017-11-05', '2017-11-06')
+    }
+
+    @accion.recibir_mensaje(@stub_mensaje)
+
+    allow(@stub_mensaje).to receive(:datos_mensaje) { 'Atras' }
+
+    expect(@stub_padre).to receive(:ejecutar)
+
+    @accion.recibir_mensaje(@stub_mensaje)
+  end
+
+  after(:all) do
+    @db = Sequel.connect(ENV['URL_DATABASE_TRAVIS'])
+    @db[:usuario_telegram].delete
+    @db.disconnect
   end
 end

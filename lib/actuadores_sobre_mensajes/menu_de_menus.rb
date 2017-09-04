@@ -7,7 +7,6 @@ require_relative 'menu'
 class MenuDeMenus < Menu
   def recibir_mensaje(mensaje)
     @ultimo_mensaje = mensaje
-    datos_mensaje = mensaje.datos_mensaje
     if cambiar_curso_pulsado(mensaje)
       siguiente_accion = self
     else

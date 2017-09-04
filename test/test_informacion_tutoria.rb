@@ -56,13 +56,7 @@ describe VerInformacionTutorias do
     @db[:peticion_tutoria].insert(id_profesor: 2222, id_estudiante: 1111, hora_solicitud: '2020-07-02 13:39:08', dia_semana_hora: '2020-07-05 18:39:08', estado: 'por aprobar')
   end
 
-  it 'Mostrar tutorías ha elegir al ser elegida en el menú' do
-    allow(@stub_mensaje).to receive(:datos_mensaje) { 'Gestionar tutorías' }
-    expect(@stub_bot).to receive_message_chain(:api, :send_message) { |mensaje|
-                           expect(mensaje[:text]).to include('tutoría', '2020-07-02 18:39:08', '2020-07-05 18:39:08', '1', '2')
-                         }
-    @accion.recibir_mensaje(@stub_mensaje)
-  end
+
   it 'Si el profesor que le manda el mensaje no tiene ninguna tutoría mandar mensaje error' do
     allow(@stub_mensaje).to receive_message_chain(:usuario, :id_telegram) { 342_342 }
     expect(@stub_bot).to receive_message_chain(:api, :send_message) { |mensaje|

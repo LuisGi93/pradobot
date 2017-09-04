@@ -37,32 +37,47 @@ describe ListarDudas do
     @stub_duda = double('duda2')
     allow(@stub_duda).to receive(:contenido) { 'contenido duda 2' }
     allow(@stub_duda).to receive(:usuario) { @stub_usuario2 }
-    stub_respuesta = double('respuesta')
-    allow(stub_respuesta).to receive(:contenido) { 'Contenido de la solución de la duda' }
-    allow(@stub_duda).to receive(:solucion) { stub_respuesta }
-    @array_dudas_curso = []
-    @array_dudas_curso << Duda.new('contenido duda 1', @stub_usuario1)
-    @array_dudas_curso << @stub_duda
-    allow(@stub_curso).to receive(:obtener_dudas_sin_resolver) { @array_dudas_curso }
+    @stub_respuesta = double('respuesta')
+    allow(@stub_respuesta).to receive(:contenido) { 'Contenido de la solución de la duda' }
+    allow(@stub_duda).to receive(:solucion) { @stub_respuesta }
+
+    array_dudas_sin_curso = []
+
+    array_respuestas = []
+    array_respuestas << Respuesta.new('contenido respuesta 1', @stub_usuario2, @stub_duda)
+    array_respuestas << Respuesta.new('contenido respuesta 2', @stub_usuario2, @stub_duda)
+    array_respuestas << Respuesta.new('contenido respuesta 3', @stub_usuario3, @stub_duda)
+    allow(@stub_duda).to receive(:respuestas){array_respuestas}
+
+    array_dudas_sin_curso << Duda.new('contenido duda 1', @stub_usuario1)
+    array_dudas_sin_curso << @stub_duda
+
+
+
+    allow(@stub_curso).to receive(:obtener_dudas_sin_resolver) { array_dudas_sin_curso }
 
     allow(@stub_bot).to receive_message_chain(:api, :send_message, :[], :[])
     allow(@stub_bot).to receive_message_chain(:api, :answer_callback_query, :[], :[])
     allow(@stub_bot).to receive_message_chain(:api, :edit_message_text)
     allow(@stub_bot).to receive_message_chain(:api, :delete_message)
+
+
+
+
+
   end
 
   it 'Debe poder mostrar dudas sin solución del curso' do
-    allow(@stub_mensaje).to receive(:tipo) { '' }
-    allow(@stub_mensaje).to receive(:datos_mensaje) { 'Sin resolver' }
-
-    expect(@stub_curso).to receive(:obtener_dudas_sin_resolver) { @array_dudas_curso }
-    expect(@stub_bot).to receive_message_chain(:api, :send_message, :[], :[])
+    double_id_ultimo_mensaje=double('double_aux')
+    allow(double_id_ultimo_mensaje).to receive_message_chain(:[], :[])
+    expect(@stub_bot).to receive_message_chain(:api, :send_message){|arg1|
+      expect(arg1[:text]).to include('Dudas sin solución para nombre del curso', 'contenido duda 1', 'contenido duda 2')
+    }.and_return(double_id_ultimo_mensaje)
 
     @accion.recibir_mensaje(@stub_mensaje)
   end
 
   it 'Debe poder ver las acciones que se pueden hacer sobre una duda' do
-    allow(@stub_mensaje).to receive(:datos_mensaje) { 'Sin resolver' }
     @accion.recibir_mensaje(@stub_mensaje)
 
     allow(@stub_mensaje).to receive(:tipo) { 'callbackquery' }
@@ -77,8 +92,6 @@ describe ListarDudas do
   end
 
   it 'Debe poder borrar una duda elegida' do
-    allow(@stub_mensaje).to receive(:datos_mensaje) { 'Sin resolver' }
-
     @accion.recibir_mensaje(@stub_mensaje)
 
     allow(@stub_mensaje).to receive(:tipo) { 'callbackquery' }
@@ -109,11 +122,7 @@ describe ListarDudas do
     @accion.recibir_mensaje(@stub_mensaje)
 
     allow(@stub_mensaje).to receive(:datos_mensaje) { '##$$Ver respuestas' }
-    array_respuestas = []
-    array_respuestas << Respuesta.new('contenido respuesta 1', @stub_usuario1, @stub_duda)
-    array_respuestas << Respuesta.new('contenido respuesta 2', @stub_usuario2, @stub_duda)
-    array_respuestas << Respuesta.new('contenido respuesta 3', @stub_usuario3, @stub_duda)
-    allow(@stub_duda).to receive(:respuestas) { array_respuestas }
+
 
     expect(@stub_duda).to receive(:respuestas)
 
@@ -121,7 +130,6 @@ describe ListarDudas do
   end
 
   it 'Debe poder solicitar elegir solucion a duda' do
-    allow(@stub_mensaje).to receive(:datos_mensaje) { 'Sin resolver' }
 
     @accion.recibir_mensaje(@stub_mensaje)
 
@@ -131,16 +139,11 @@ describe ListarDudas do
     @accion.recibir_mensaje(@stub_mensaje)
 
     allow(@stub_mensaje).to receive(:datos_mensaje) { '##$$Elegir solución' }
-    array_respuestas = []
-    array_respuestas << Respuesta.new('contenido respuesta 1', @stub_usuario1, @stub_duda)
-    array_respuestas << Respuesta.new('contenido respuesta 2', @stub_usuario2, @stub_duda)
-    array_respuestas << Respuesta.new('contenido respuesta 3', @stub_usuario3, @stub_duda)
-    allow(@stub_duda).to receive(:respuestas) { array_respuestas }
 
     expect(@stub_duda).to receive(:respuestas)
     expect(@stub_bot).to receive_message_chain(:api, :edit_message_text) { |arg1|
                            expect(arg1.keys).to include(:reply_markup)
-                           expect(arg1[:text]).to include('Elija', 'respuesta', 'contenido respuesta 2')
+                           expect(arg1[:text]).to include('Elija', 'respuesta', 'contenido duda 2')
                          }
 
     @accion.recibir_mensaje(@stub_mensaje)
@@ -151,16 +154,13 @@ describe ListarDudas do
     @accion.recibir_mensaje(@stub_mensaje)
 
     allow(@stub_mensaje).to receive(:tipo) { 'callbackquery' }
+
     allow(@stub_mensaje).to receive(:datos_mensaje) { '##$$Duda 1' }
 
     @accion.recibir_mensaje(@stub_mensaje)
 
     allow(@stub_mensaje).to receive(:datos_mensaje) { '##$$Elegir solución' }
-    array_respuestas = []
-    array_respuestas << Respuesta.new('contenido respuesta 1', @stub_usuario1, @stub_duda)
-    array_respuestas << Respuesta.new('contenido respuesta 2', @stub_usuario2, @stub_duda)
-    array_respuestas << Respuesta.new('contenido respuesta 3', @stub_usuario3, @stub_duda)
-    allow(@stub_duda).to receive(:respuestas) { array_respuestas }
+
 
     @accion.recibir_mensaje(@stub_mensaje)
 

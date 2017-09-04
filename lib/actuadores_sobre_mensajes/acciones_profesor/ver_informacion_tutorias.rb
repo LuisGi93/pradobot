@@ -3,7 +3,7 @@ require_relative '../../contenedores_datos/tutoria'
 require_relative '../menu_inline_telegram'
 require 'active_support/inflector'
 class VerInformacionTutorias < Accion
-  @nombre = 'Ver información/cola solicitudes.'
+  @nombre = 'Ver información/cola solicitudes'
   def initialize(selector_tutorias, tutoria)
     @ultimo_mensaje = nil
     @tutoria = tutoria

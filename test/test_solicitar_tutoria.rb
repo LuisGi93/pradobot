@@ -181,7 +181,6 @@ describe SolicitarTutoria do
       expect(arg1[:reply_markup]).to be_instance_of(Telegram::Bot::Types::InlineKeyboardMarkup)
     }
     @accion.recibir_mensaje(@stub_mensaje)
-
   end
 
 end
