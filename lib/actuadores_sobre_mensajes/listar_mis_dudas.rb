@@ -22,9 +22,7 @@ class ListarMisDudas < ListarDudas
         @dudas << duda_curso if duda_curso == duda_usuario
       end
     end
-    puts @dudas.to_s
-    puts dudas_usuario.to_s
-    puts dudas_curso.to_s
+
     if @dudas.empty?
       texto = "No ha creado ninguna duda para el curso #{@curso.nombre}."
       @@bot.api.send_message(chat_id: @ultimo_mensaje.usuario.id_telegram, text: texto)
