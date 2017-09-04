@@ -8,7 +8,7 @@ require_relative '../menu_inline_telegram.rb'
 #  Clase que guía al usuario para que realiza la asistencia a una tutoría de un profesor 
   #    
 class SolicitarTutoria < Accion
-  @nombre = 'Realizar/Borrar petición tutoría'
+  @nombre = 'Realizar petición tutoría'
   def initialize
     @fase = 'inicio'
     @tutorias = []
@@ -33,9 +33,9 @@ class SolicitarTutoria < Accion
   #   # * *Args*    :
   #   - +opcion+ -> determina si se manda un nuevo mensaje o se edita el último enviado 
   def mostrar_tutorias(opcion)
-    texto = "Seleccione la tutoria desea de #{@profesor_curso.nombre_usuario} son:\n"
+    texto = "Seleccione la tutoría desea de #{@profesor_curso.nombre_usuario} son:\n"
     @tutorias.each_with_index do |tutoria, index|
-      texto += "\t *#{index}*) \t Fecha tutoria: *#{tutoria.fecha}*, alumnos en cola: *#{tutoria.numero_peticiones}*\n"
+      texto += "\t *#{index}*) \t Fecha tutoría: *#{tutoria.fecha}*, alumnos en cola: *#{tutoria.numero_peticiones}*\n"
     end
     array_tutorias = [*0..@tutorias.size - 1]
     menu = MenuInlineTelegram.crear_menu_indice(array_tutorias, 'Tutoria', 'final')
@@ -69,7 +69,6 @@ class SolicitarTutoria < Accion
     case datos_mensaje
     when /\#\#\$\$Tutoria/
         datos_mensaje.slice! "#\#$$Tutoria"
-        # fecha_tutoria=datos_mensaje[/[^_]*/].to_i
         acciones = ['Volver']
         menu = MenuInlineTelegram.crear(acciones)
         if solicitar_tutoria @tutorias.at(datos_mensaje.to_i)

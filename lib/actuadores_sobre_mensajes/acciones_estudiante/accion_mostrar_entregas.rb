@@ -10,7 +10,7 @@ require_relative '../menu_inline_telegram.rb'
 #
 class AccionMostrarEntregas < Accion
   attr_reader :moodle
-  @nombre = 'Ver proximas entregas'
+  @nombre = 'Ver próximas entregas'
   def initialize
     @fase = ''
     @ultimo_mensaje = nil
@@ -48,6 +48,23 @@ class AccionMostrarEntregas < Accion
     else
       @@bot.api.send_message(chat_id: @ultimo_mensaje.usuario.id_telegram, text: texto, reply_markup: menu, parse_mode: 'Markdown')
     end
+  end
+
+#
+# Devuelve las entregas cuya fecha es proximamente
+#
+#    * *Args*    :
+#   - +entregas+ -> Array de entregas cuya fecha se va a comprobar
+# * *Returns* :
+#   - Array de Entregas
+  def proximas_entregas(entregas)
+    entregas_finalizadas = []
+    entregas.each { |entrega|
+      if Time.parse(entrega.fecha_fin) > Time.now
+        entregas_finalizadas << entrega
+      end
+    }
+    entregas_finalizadas
   end
 
   def reiniciar
@@ -89,7 +106,7 @@ class AccionMostrarEntregas < Accion
       @fase = ''
     else
       @fase = ''
-      @entregas = @curso.entregas
+      @entregas = proximas_entregas(@curso.entregas)
       mostrar_entregas('nuevo_mensaje')
     end
   end

@@ -1,7 +1,4 @@
-require_relative '../lib/actuadores_sobre_mensajes/acciones_profesor/establecer_tutorias.rb'
-require_relative '../lib/actuadores_sobre_mensajes/acciones_profesor/menu_tutorias_profesor.rb'
-require 'rspec'
-require 'telegram/bot'
+require_relative 'spec_helper'
 
 describe AccionEstablecerTutorias do
   before(:each) do

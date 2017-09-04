@@ -1,6 +1,4 @@
-require 'rspec'
-require 'sequel'
-require_relative '../lib/contenedores_datos/usuario'
+require_relative 'spec_helper'
 
 describe Usuario do
   before(:all) do

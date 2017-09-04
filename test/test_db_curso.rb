@@ -1,5 +1,7 @@
 require 'rspec'
 require 'sequel'
+require_relative 'spec_helper'
+
 require_relative '../lib/contenedores_datos/curso'
 
 describe Curso do

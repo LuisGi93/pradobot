@@ -1,6 +1,8 @@
 
 require 'telegram/bot'
 require 'rspec'
+require_relative 'spec_helper'
+
 require_relative '../lib/actuadores_sobre_mensajes/crear_duda.rb'
 require_relative '../lib/contenedores_datos/duda.rb'
 require_relative '../lib/actuadores_sobre_mensajes/menu_dudas.rb'
@@ -26,8 +28,8 @@ describe CrearDuda do
   it 'Cuando recibe el primer mensaje muestra mensaje explicativo de que realiza' do
     allow(@stub_mensaje).to receive(:datos_mensaje) { 'Nueva duda' }
     expect(@stub_bot).to receive_message_chain(:api, :send_message) { |arg1|
-      arg1.keys.should_not include(:reply_markup)
-      arg1[:text].should eq("Escriba a continuación la duda que desea crear relacionada con *nombre del curso*:\n")
+      expect(arg1.keys).to_not include(:reply_markup)
+      expect(arg1[:text]).to eq("Escriba a continuación la duda que desea crear relacionada con *nombre del curso*:\n")
     }
     @accion.recibir_mensaje(@stub_mensaje)
   end
@@ -42,7 +44,7 @@ describe CrearDuda do
     expect(@stub_mensaje).to receive(:datos_mensaje)
 
     expect(@stub_bot).to receive_message_chain(:api, :send_message) { |arg1|
-      arg1[:text].should include('Contenido nueva duda')
+      expect(arg1[:text]).to include('Contenido nueva duda')
     }
     @accion.recibir_mensaje(@stub_mensaje)
   end
@@ -56,10 +58,10 @@ describe CrearDuda do
     allow(@stub_mensaje).to receive(:datos_mensaje) { 'Contenido nueva duda' }
 
     expect(@stub_bot).to receive_message_chain(:api, :send_message) { |arg1|
-      arg1.keys.should include(:chat_id, :text, :reply_markup)
-      arg1[:text].should include('nombre del curso')
-      arg1[:text].should include('Contenido nueva duda')
-      arg1[:reply_markup].should be_instance_of(Telegram::Bot::Types::InlineKeyboardMarkup)
+      expect(arg1.keys).to include(:chat_id, :text, :reply_markup)
+      expect(arg1[:text]).to include('nombre del curso')
+      expect(arg1[:text]).to include('Contenido nueva duda')
+      expect(arg1[:reply_markup]).to be_instance_of(Telegram::Bot::Types::InlineKeyboardMarkup)
     }
     @accion.recibir_mensaje(@stub_mensaje)
   end

@@ -3,6 +3,7 @@ require 'sequel'
 require_relative '../lib/contenedores_datos/estudiante'
 require_relative '../lib/contenedores_datos/duda'
 require_relative '../lib/contenedores_datos/respuesta'
+require_relative 'spec_helper'
 
 describe Duda do
   before(:all) do

@@ -11,7 +11,7 @@ class ListarMisDudas < ListarDudas
   #
   #  Envía al usuario un mensaje en el que se muestran las dudas sin resolver del curos
      # * *Args*    :
-  #   - +opcion+ -> determina si se manda un nuevo mensaje al chat del usuario o se edita el último mensaje enviado. 
+  #   - +opcion+ -> determina si se manda un nuevo mensaje al chat del usuario o se edita el último mensaje enviado.
   #
   def mostrar_dudas(opcion)
     dudas_usuario = UsuarioRegistrado.new(@ultimo_mensaje.usuario.id_telegram).dudas
@@ -22,6 +22,7 @@ class ListarMisDudas < ListarDudas
         @dudas << duda_curso if duda_curso == duda_usuario
       end
     end
+
     if @dudas.empty?
       texto = "No ha creado ninguna duda para el curso #{@curso.nombre}."
       @@bot.api.send_message(chat_id: @ultimo_mensaje.usuario.id_telegram, text: texto)
@@ -40,10 +41,10 @@ class ListarMisDudas < ListarDudas
     end
   end
 
-  #  Elije que hace en función del botón pulsado por el usuario 
+  #  Elije que hace en función del botón pulsado por el usuario
   #    *Args*    :
-  #   - +datos_mensaje+ -> datos del último mensaje recibido 
-  #   
+  #   - +datos_mensaje+ -> datos del último mensaje recibido
+  #
   #
   def respuesta_segun_accion_pulsada(datos_mensaje)
 
