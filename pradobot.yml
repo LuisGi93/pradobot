@@ -47,7 +47,14 @@
      args:
        chdir: pradobot
        executable: /bin/bash
-         
+     
+      -  name: Instalamos el proyecto
+     become: true  
+     become_user: ubuntu 
+     shell: source ~/.rvm/scripts/rvm && ruby config/primer_inicio_aplicacion.rb 
+     args:
+       chdir: pradobot
+       executable: /bin/bash
   
   -  name: Lo arrancamos
      become: true  
