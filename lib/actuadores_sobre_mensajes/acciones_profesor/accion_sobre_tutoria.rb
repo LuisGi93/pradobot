@@ -57,7 +57,7 @@ class AccionSobreTutoria < Accion
     if @accion
       @accion.generar_respuesta_mensaje(mensaje)
     else
-      respuesta_segun_accion_pulsada @ultimo_mensaje.datos_mensaje
+      respuesta_segun_accion_pulsada
     end
   end
 
@@ -80,30 +80,34 @@ class AccionSobreTutoria < Accion
   # # * *Args*    :
 #   - +datos_mensaje+ -> cadena de carácteres que determina la proxima acción activa
 
-  def respuesta_segun_accion_pulsada(datos_mensaje)
-    case datos_mensaje
-      when /\#\#\$\$tutoria/
-             datos_mensaje.slice! "#\#$$tutoria"
-             indice_tutoria = datos_mensaje.to_i
-             puts datos_mensaje
-             puts indice_tutoria
-             puts @tutorias.to_s
-             @tutoria = @tutorias.at(indice_tutoria)
-             mostrar_opciones_tutoria
-      when /\#\#\$\$Borrar tutoría/
-            @accion = BorrarTutorias.new(self, @tutoria)
-            @accion.generar_respuesta_mensaje(@ultimo_mensaje)
-      when /\#\#\$\$Cola alumnos/
-            @accion = VerInformacionTutorias.new(self, @tutoria)
-            @accion.generar_respuesta_mensaje(@ultimo_mensaje)
-      when /\#\#\$\$Peticiones pendientes de aceptar/
-            @accion = PeticionesPendientesTutoria.new(self, @tutoria)
-            @accion.generar_respuesta_mensaje(@ultimo_mensaje)
-      when /\#\#\$\$Volver/
-            solicitar_seleccion_tutoria 'editar'
-        else
-          solicitar_seleccion_tutoria 'nuevo'
-  
+  def respuesta_segun_accion_pulsada()
+    if(@ultimo_mensaje.tipo=='callbackquery')
+      datos_mensaje=@ultimo_mensaje.datos_mensaje
+      case @ultimo_mensaje.datos_mensaje
+        when /\#\#\$\$tutoria/
+               datos_mensaje.slice! "#\#$$tutoria"
+               indice_tutoria = datos_mensaje.to_i
+               puts datos_mensaje
+               puts indice_tutoria
+               puts @tutorias.to_s
+               @tutoria = @tutorias.at(indice_tutoria)
+               mostrar_opciones_tutoria
+        when /\#\#\$\$Borrar tutoría/
+              @accion = BorrarTutorias.new(self, @tutoria)
+              @accion.generar_respuesta_mensaje(@ultimo_mensaje)
+        when /\#\#\$\$Cola alumnos/
+              @accion = VerInformacionTutorias.new(self, @tutoria)
+              @accion.generar_respuesta_mensaje(@ultimo_mensaje)
+        when /\#\#\$\$Peticiones pendientes de aceptar/
+              @accion = PeticionesPendientesTutoria.new(self, @tutoria)
+              @accion.generar_respuesta_mensaje(@ultimo_mensaje)
+        when /\#\#\$\$Volver/
+              solicitar_seleccion_tutoria 'editar'
+          else
+            solicitar_seleccion_tutoria 'nuevo'
+      end
+    else
+      solicitar_seleccion_tutoria 'nuevo'
     end
   end
 

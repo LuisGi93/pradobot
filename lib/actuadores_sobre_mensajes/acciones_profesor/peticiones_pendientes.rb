@@ -33,22 +33,22 @@ class PeticionesPendientesTutoria < Accion
   #   - +datos_mensaje+ -> Contido del último mensaje recibido por el bot de Telegram.
 
   def respuesta_segun_datos_mensaje(datos_mensaje)
-    case datos_mensaje
-    when /\#\#\$\$Peticion /
-      puts 'Entro en la peticion'
-      datos_mensaje.slice! "\#\#\$\$Peticion"
-      id_estudiante_peticion = datos_mensaje[/[^_]*/].to_i
-      solicitar_accion_sobre_peticion id_estudiante_peticion
-      @fase = 'peticion_elegida'
-    when /(\#\#\$\$Aceptar|\#\#\$\$Denegar)/
-      aceptar_denegar_peticion(datos_mensaje)
-    when /\#\#\$\$Volver/
-      mostrar_menu_anterior
-    else
-      puts 'Entro en el else'
-      mostrar_peticiones_pendientes
-      fase = 'mostrando_peticiones'
-      end
+    if(@ultimo_mensaje.tipo=='callbackquery')
+      case datos_mensaje
+        when /\#\#\$\$Peticion /
+          datos_mensaje.slice! "\#\#\$\$Peticion"
+          id_estudiante_peticion = datos_mensaje[/[^_]*/].to_i
+          solicitar_accion_sobre_peticion id_estudiante_peticion
+          @fase = 'peticion_elegida'
+        when /(\#\#\$\$Aceptar|\#\#\$\$Denegar)/
+          aceptar_denegar_peticion(datos_mensaje)
+        when /\#\#\$\$Volver/
+          mostrar_menu_anterior
+        else
+          mostrar_peticiones_pendientes
+          fase = 'mostrando_peticiones'
+          end
+    end
   end
 
   def reiniciar
