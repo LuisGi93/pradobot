@@ -32,12 +32,12 @@ class Moodle
 
     request = Typhoeus::Request.new(
       'http://' + ENV['MOODLE_HOST'] + '/login/token.php',
-     params: { :wstoken => @user_token, moodlewsrestformat: 'json' },
+     params: { :username => _username,:password => _password, service: _service },
      ssl_verifypeer: false,
      ssl_verifyhost: 0
 )
     salida = request.run
-
+    puts salida.body
     JSON.parse(salida.body)
   end
 

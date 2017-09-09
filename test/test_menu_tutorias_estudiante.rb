@@ -20,6 +20,7 @@ describe MenuTutorias do
 
     @db[:peticion_tutoria].insert(id_profesor: 2222, id_estudiante: 1111, hora_solicitud: '2020-07-02 12:39:08', dia_semana_hora: '2020-07-02 18:39:08')
     @db[:peticion_tutoria].insert(id_profesor: 2222, id_estudiante: 1111, hora_solicitud: '2020-07-03 13:39:08', dia_semana_hora: '2020-07-05 18:39:08')
+    @db.disconnect
 
   }
 

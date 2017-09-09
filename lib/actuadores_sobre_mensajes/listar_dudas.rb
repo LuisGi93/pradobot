@@ -174,7 +174,7 @@ class ListarDudas < Accion
     acciones = ['Volver']
     menu = MenuInlineTelegram.crear(acciones)
 
-    if contenido_respuesta < 700
+    if contenido_respuesta.size < 700
     usuario = UsuarioRegistrado.new(@ultimo_mensaje.usuario.id_telegram)
     respuesta = Respuesta.new(contenido_respuesta, usuario, @dudas.at(@indice_duda_seleccionada))
     @dudas.at(@indice_duda_seleccionada).nueva_respuesta(respuesta)
