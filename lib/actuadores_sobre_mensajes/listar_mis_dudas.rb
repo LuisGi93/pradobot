@@ -25,7 +25,7 @@ class ListarMisDudas < ListarDudas
 
     if @dudas.empty?
       texto = "No ha creado ninguna duda para el curso #{@curso.nombre}."
-      @@bot.api.send_message(chat_id: @ultimo_mensaje.usuario.id_telegram, text: texto)
+      @id_ultimo_mensaje_respuesta=@@bot.api.send_message(chat_id: @ultimo_mensaje.usuario.id_telegram, text: texto)['result']['message_id']
     else
       texto = "Sus dudas creadas para #{@curso.nombre} son:\n"
       texto += crear_indice_respuestas_dudas(@dudas)

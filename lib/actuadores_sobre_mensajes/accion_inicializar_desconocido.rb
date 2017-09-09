@@ -81,7 +81,7 @@ class AccionInicializarDesconocido < Accion
             siguiente_accion = MenuPrincipalEstudiante.new
           end
           siguiente_accion.iniciar_cambio_curso(@ultimo_mensaje.usuario.id_telegram, cursos[0].id_curso)
-          siguiente_accion.ejecutar(@usuario_desconocido.id_telegram)
+          siguiente_accion.ejecutar(@ultimo_mensaje)
         end
       else
         @@bot.api.send_message(chat_id: @usuario_desconocido.id_telegram, text: 'Datos de login incorrectos o bien el usuario no esta autorizado a utilizar el bot', parse_mode: 'Markdown')

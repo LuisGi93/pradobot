@@ -45,7 +45,6 @@ class VerInformacionTutorias < Accion
     menu = MenuInlineTelegram.crear([] << 'Volver')
     if peticiones_aprobadas.empty?
       @@bot.api.edit_message_text(chat_id: @ultimo_mensaje.id_chat, message_id: @ultimo_mensaje.id_mensaje, text: 'No ha aprobado ninguna petición para la tutoría elegida.', parse_mode: 'Markdown', reply_markup: menu)
-      # @@bot.api.send_message( chat_id: @ultimo_mensaje.usuario.id_telegram, text: "No ha aprobado ninguna petición para la tutoría elegida.", parse_mode: "Markdown" )
     else
       texto = "Cola asistencia tutoria:\n"
       peticiones_aprobadas.sort_by(&:hora)

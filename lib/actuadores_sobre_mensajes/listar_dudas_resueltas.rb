@@ -6,7 +6,7 @@ class ListarDudasResueltas < ListarDudas
     @dudas = @curso.obtener_dudas_resueltas
     if @dudas.empty?
       texto = "El curso #{@curso.nombre} no hay ninguna duda resuelta."
-      @@bot.api.send_message(chat_id: @ultimo_mensaje.usuario.id_telegram, text: texto)
+      @id_ultimo_mensaje_respuesta=@@bot.api.send_message(chat_id: @ultimo_mensaje.usuario.id_telegram, text: texto)['result']['message_id']
     else
       texto = "Dudas resueltas para #{@curso.nombre} son:\n"
       texto += crear_indice_respuestas_dudas(@dudas)
@@ -17,7 +17,6 @@ class ListarDudasResueltas < ListarDudas
         @@bot.api.edit_message_text(chat_id: @ultimo_mensaje.id_chat, message_id: @ultimo_mensaje.id_mensaje, text: texto, reply_markup: menu, parse_mode: 'Markdown')
       else
         @id_ultimo_mensaje_respuesta = @@bot.api.send_message(chat_id: @ultimo_mensaje.usuario.id_telegram, text: texto, reply_markup: menu, parse_mode: 'Markdown')['result']['message_id']
-        puts @mensaje
       end
     end
   end  

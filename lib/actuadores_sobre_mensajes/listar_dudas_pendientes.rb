@@ -13,7 +13,7 @@ class ListarDudasPendientes < ListarDudas
     @dudas = @curso.obtener_dudas_sin_resolver
     if @dudas.empty?
       texto = "El curso #{@curso.nombre} no hay ninguna duda pendiente de respuesta."
-      @@bot.api.send_message(chat_id: @ultimo_mensaje.usuario.id_telegram, text: texto)
+      @id_ultimo_mensaje_respuesta=@@bot.api.send_message(chat_id: @ultimo_mensaje.usuario.id_telegram, text: texto)['result']['message_id']
     else
       texto = "Dudas sin solución para #{@curso.nombre} son:\n"
       texto += crear_indice_respuestas_dudas(@dudas)

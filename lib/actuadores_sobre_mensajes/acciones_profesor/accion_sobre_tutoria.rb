@@ -25,12 +25,12 @@ class AccionSobreTutoria < Accion
   def solicitar_seleccion_tutoria(modo)
     @accion = nil
       @tutoria = nil
-      if @tutorias.empty?
+      if @tutorias.nil? || @tutorias.empty?
         @tutorias = Profesor.new(@ultimo_mensaje.usuario.id_telegram).obtener_tutorias
       end
 
       mensaje = ''
-      if @tutorias.empty?
+      if @tutorias.nil? || @tutorias.empty?
         mensaje = 'No tiene ninguna tutoría creada.'
         @@bot.api.send_message(chat_id: @ultimo_mensaje.usuario.id_telegram, text: mensaje, parse_mode: 'Markdown')
 
@@ -64,6 +64,7 @@ class AccionSobreTutoria < Accion
   def reiniciar
     @accion = nil
     @tutoria = nil
+    @tutorias=nil
   end
 
   #  Muestra un menu tipo inline en el chat dle usuario con las opciones "Peticiones pendientes de aceptar", "Cola alumnos", "Borrar tutoria", "Volver"
