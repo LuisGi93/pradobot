@@ -90,6 +90,7 @@ describe SolicitarTutoria do
   it 'Si selecciona una tutoría debe enviarse la petición de asistencia al profesor' do
     allow(@stub_mensaje).to receive(:datos_mensaje) { 'Realizar petición tutoría' }
     @accion.recibir_mensaje(@stub_mensaje)
+    allow(@stub_mensaje).to receive(:tipo) { 'callbackquery' }
     allow(@stub_mensaje).to receive(:datos_mensaje) { '##$$Tutoria0' }
 
     expect(@stub_profesor).to receive(:solicitar_tutoria)
@@ -100,6 +101,7 @@ describe SolicitarTutoria do
   it 'Si selecciona una tutoría se tiene que editar el texto del último mensaje enviado y no enviar uno nuevo ' do
     allow(@stub_mensaje).to receive(:datos_mensaje) { 'Realizar petición tutoría' }
     @accion.recibir_mensaje(@stub_mensaje)
+    allow(@stub_mensaje).to receive(:tipo) { 'callbackquery' }
     allow(@stub_mensaje).to receive(:datos_mensaje) { '##$$Tutoria0' }
 
     allow(@stub_profesor).to receive(:solicitar_tutoria){TRUE}
@@ -111,6 +113,7 @@ describe SolicitarTutoria do
   it 'La tutoria sobre la que el alumno solicita debe corresponder con la que ha seleccionado' do
     allow(@stub_mensaje).to receive(:datos_mensaje) { 'Realizar petición tutoría' }
     @accion.recibir_mensaje(@stub_mensaje)
+    allow(@stub_mensaje).to receive(:tipo) { 'callbackquery' }
     allow(@stub_mensaje).to receive(:datos_mensaje) { '##$$Tutoria0' }
 
     expect(@stub_profesor).to receive(:solicitar_tutoria){ |peticion|
@@ -123,6 +126,7 @@ describe SolicitarTutoria do
   it 'La petición tiene que haber sido realizada por el estudiante' do
     allow(@stub_mensaje).to receive(:datos_mensaje) { 'Realizar petición tutoría' }
     @accion.recibir_mensaje(@stub_mensaje)
+    allow(@stub_mensaje).to receive(:tipo) { 'callbackquery' }
     allow(@stub_mensaje).to receive(:datos_mensaje) { '##$$Tutoria0' }
 
     expect(@stub_profesor).to receive(:solicitar_tutoria){ |peticion|
@@ -134,6 +138,7 @@ describe SolicitarTutoria do
   it 'Debe mandarse un mensaje al estudiante si la petición es aceptada' do
     allow(@stub_mensaje).to receive(:datos_mensaje) { 'Realizar petición tutoría' }
     @accion.recibir_mensaje(@stub_mensaje)
+    allow(@stub_mensaje).to receive(:tipo) { 'callbackquery' }
     allow(@stub_mensaje).to receive(:datos_mensaje) { '##$$Tutoria0' }
 
     allow(@stub_profesor).to receive(:solicitar_tutoria){TRUE}
@@ -147,6 +152,7 @@ describe SolicitarTutoria do
   it 'Debe mandarse un mensaje al estudiante si la petición es rechazada' do
     allow(@stub_mensaje).to receive(:datos_mensaje) { 'Realizar petición tutoría' }
     @accion.recibir_mensaje(@stub_mensaje)
+    allow(@stub_mensaje).to receive(:tipo) { 'callbackquery' }
     allow(@stub_mensaje).to receive(:datos_mensaje) { '##$$Tutoria0' }
 
     allow(@stub_profesor).to receive(:solicitar_tutoria){FALSE}
@@ -173,6 +179,7 @@ describe SolicitarTutoria do
     allow(@stub_mensaje).to receive(:datos_mensaje) { 'Realizar petición tutoría' }
     @accion.recibir_mensaje(@stub_mensaje)
     allow(@stub_mensaje).to receive(:datos_mensaje) { '##$$Tutoria0' }
+    allow(@stub_mensaje).to receive(:tipo) { 'callbackquery' }
     allow(@stub_profesor).to receive(:solicitar_tutoria){TRUE}
     @accion.recibir_mensaje(@stub_mensaje)
     allow(@stub_mensaje).to receive(:datos_mensaje) { '##$$Volver' }

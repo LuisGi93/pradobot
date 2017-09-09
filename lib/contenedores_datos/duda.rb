@@ -14,8 +14,11 @@ class Duda < ConexionBD
   #   # * *Args*    :
   #   - +respuesta+ -> Nueva respuesta 
   def nueva_respuesta(respuesta)
-    @@db[:respuestas].insert(id_usuario_respuesta: respuesta.usuario.id_telegram, contenido_respuesta: respuesta.contenido)
-    @@db[:respuesta_duda].insert(id_usuario_respuesta: respuesta.usuario.id_telegram, contenido_respuesta: respuesta.contenido, id_usuario_duda: @usuario.id_telegram, contenido_duda: @contenido)
+    if respuesta.contenido.size < 600 && verificar_entrada_texto(respuesta.contenido)
+
+      @@db[:respuestas].insert(id_usuario_respuesta: respuesta.usuario.id_telegram, contenido_respuesta: respuesta.contenido)
+      @@db[:respuesta_duda].insert(id_usuario_respuesta: respuesta.usuario.id_telegram, contenido_respuesta: respuesta.contenido, id_usuario_duda: @usuario.id_telegram, contenido_duda: @contenido)
+    end
   end
 
  # Devuelve las respuesta de la duda 
@@ -38,8 +41,10 @@ class Duda < ConexionBD
   #   # * *Args*    :
   #   - +respuesta+ -> Nueva respuesta 
   def insertar_solucion(respuesta)
-    @@db[:dudas_resueltas].insert(id_usuario_duda: @usuario.id_telegram, contenido_duda: @contenido)
-    @@db[:respuesta_resuelve_duda].insert(id_usuario_respuesta: respuesta.usuario.id_telegram, contenido_respuesta: respuesta.contenido, id_usuario_duda: @usuario.id_telegram, contenido_duda: @contenido)
+    if respuesta.contenido.size < 600 && verificar_entrada_texto(respuesta.contenido)
+      @@db[:dudas_resueltas].insert(id_usuario_duda: @usuario.id_telegram, contenido_duda: @contenido)
+      @@db[:respuesta_resuelve_duda].insert(id_usuario_respuesta: respuesta.usuario.id_telegram, contenido_respuesta: respuesta.contenido, id_usuario_duda: @usuario.id_telegram, contenido_duda: @contenido)
+    end
   end
 
   #Devuelve la Respuesta que es solución de la duda 

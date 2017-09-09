@@ -31,7 +31,17 @@
       - libtool
       - bison
       - libffi-dev
-      
+     
+  -  name: instalamos git
+     apt:
+       name: git
+       state: present
+
+  -  name: instalamos libpq-dev
+     apt:
+       name: libpq-dev
+       state: present
+
   -  name: clonamos repo de la web
      become: true  
      become_user: ubuntu
@@ -47,13 +57,13 @@
      args:
        chdir: pradobot
        executable: /bin/bash
-         
-  
-  -  name: Lo arrancamos
+     
+      -  name: Creamos las tablas de la base de datos
      become: true  
-     become_user: ubuntu
-     shell:source ~/.rvm/scripts/rvm && export TOKEN_BOT_MOODLE='' && export MOODLE_HOST="127.0.0.1/moodle" && export TOKEN_BOT='' && export URL_DATABASE=""  && ruby bin/run.rb start
+     become_user: ubuntu 
+     shell: source ~/.rvm/scripts/rvm && export URL_DATABASE_TRAVIS="" &&  ruby config/primer_inicio_aplicacion.rb
      args:
        chdir: pradobot
        executable: /bin/bash
+  
 

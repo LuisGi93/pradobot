@@ -41,10 +41,15 @@ class AccionInicializarDesconocido < Accion
     siguiente_accion = self
 
     case @fase
-    when 'peticion_email'
-      @usuario_desconocido.email = datos_mensaje
-      @@bot.api.send_message(chat_id: @usuario_desconocido.id_telegram, text: 'Introduzca su contraseña:', parse_mode: 'Markdown')
-      @fase = 'peticion_contraseña'
+      when 'peticion_email'
+        if datos_mensaje =~ /\A[^@\s]+@[^@\s]+\z/
+          @usuario_desconocido.email = datos_mensaje
+          @@bot.api.send_message(chat_id: @usuario_desconocido.id_telegram, text: 'Introduzca su contraseña:', parse_mode: 'Markdown')
+          @fase = 'peticion_contraseña'
+        else
+          @@bot.api.send_message(chat_id: @usuario_desconocido.id_telegram, text: 'Formato email introducido inválido. Pruebe otro:')
+        end
+
     when 'peticion_contraseña'
       @usuario_desconocido.contrasena = datos_mensaje
       token = Moodle.obtener_token(@usuario_desconocido.email, datos_mensaje, ENV['WEBSERVICE_PROFESOR_MOODLE'])['token']

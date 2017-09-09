@@ -64,8 +64,11 @@ describe VerInformacionTutorias do
                          }
     @accion.recibir_mensaje(@stub_mensaje)
   end
+
   it 'Debe poderse elegir una tutoría entre las mostradas' do
     @accion.recibir_mensaje(@stub_mensaje)
+
+    allow(@stub_mensaje).to receive(:tipo) { 'callbackquery' }
     allow(@stub_mensaje).to receive(:datos_mensaje) { '##$$tutoria0' }
 
     expect(@stub_bot).to receive_message_chain(:api, :edit_message_text) { |mensaje|
@@ -77,6 +80,8 @@ describe VerInformacionTutorias do
 
   it 'Mostrar un mensaje de confirmación si elige borrar la tutoría elegida' do
     @accion.recibir_mensaje(@stub_mensaje)
+
+    allow(@stub_mensaje).to receive(:tipo) { 'callbackquery' }
     allow(@stub_mensaje).to receive(:datos_mensaje) { '##$$tutoria0' }
     @accion.recibir_mensaje(@stub_mensaje)
 
@@ -89,6 +94,8 @@ describe VerInformacionTutorias do
   end
   it 'Borrar una tutoría' do
     @accion.recibir_mensaje(@stub_mensaje)
+
+    allow(@stub_mensaje).to receive(:tipo) { 'callbackquery' }
     allow(@stub_mensaje).to receive(:datos_mensaje) { '##$$tutoria0' }
     @accion.recibir_mensaje(@stub_mensaje)
     allow(@stub_mensaje).to receive(:datos_mensaje) { '##$$Borrar tutoría' }
@@ -111,6 +118,8 @@ describe VerInformacionTutorias do
 
   it 'Volver a mostrar tutorias si se elige  que no se quiere borrar tutoría' do
     @accion.recibir_mensaje(@stub_mensaje)
+
+    allow(@stub_mensaje).to receive(:tipo) { 'callbackquery' }
     allow(@stub_mensaje).to receive(:datos_mensaje) { '##$$tutoria0' }
     @accion.recibir_mensaje(@stub_mensaje)
     allow(@stub_mensaje).to receive(:datos_mensaje) { '##$$Borrar tutoría' }
@@ -126,6 +135,8 @@ describe VerInformacionTutorias do
 
   it 'Mostrar cola de estudiantes a una tutoría' do
     @accion.recibir_mensaje(@stub_mensaje)
+
+    allow(@stub_mensaje).to receive(:tipo) { 'callbackquery' }
     allow(@stub_mensaje).to receive(:datos_mensaje) { '##$$tutoria0' }
     @accion.recibir_mensaje(@stub_mensaje)
     allow(@stub_mensaje).to receive(:datos_mensaje) { '##$$Cola alumnos' }
@@ -137,6 +148,8 @@ describe VerInformacionTutorias do
   end
   it 'Mostrar mensaje de error si no hay peticiones aprobadas para una cola' do
     @accion.recibir_mensaje(@stub_mensaje)
+
+    allow(@stub_mensaje).to receive(:tipo) { 'callbackquery' }
     allow(@stub_mensaje).to receive(:datos_mensaje) { '##$$tutoria1' }
     @accion.recibir_mensaje(@stub_mensaje)
     allow(@stub_mensaje).to receive(:datos_mensaje) { '##$$Cola alumnos' }
@@ -148,6 +161,8 @@ describe VerInformacionTutorias do
   end
   it 'Mostrar peticiones pendientes de ser aceptadas tutoría' do
     @accion.recibir_mensaje(@stub_mensaje)
+
+    allow(@stub_mensaje).to receive(:tipo) { 'callbackquery' }
     allow(@stub_mensaje).to receive(:datos_mensaje) { '##$$tutoria1' }
     @accion.recibir_mensaje(@stub_mensaje)
     allow(@stub_mensaje).to receive(:datos_mensaje) { '##$$Peticiones pendientes de aceptar' }
@@ -160,6 +175,8 @@ describe VerInformacionTutorias do
 
   it 'Denegar petición a una tutoría' do
     @accion.recibir_mensaje(@stub_mensaje)
+
+    allow(@stub_mensaje).to receive(:tipo) { 'callbackquery' }
     allow(@stub_mensaje).to receive(:datos_mensaje) { '##$$tutoria1' }
     @accion.recibir_mensaje(@stub_mensaje)
     allow(@stub_mensaje).to receive(:datos_mensaje) { '##$$Peticiones pendientes de aceptar' }
@@ -179,6 +196,7 @@ describe VerInformacionTutorias do
   end
   it 'Aprobar petición a una tutoría' do
     @accion.recibir_mensaje(@stub_mensaje)
+    allow(@stub_mensaje).to receive(:tipo) { 'callbackquery' }
     allow(@stub_mensaje).to receive(:datos_mensaje) { '##$$tutoria1' }
     @accion.recibir_mensaje(@stub_mensaje)
     allow(@stub_mensaje).to receive(:datos_mensaje) { '##$$Peticiones pendientes de aceptar' }

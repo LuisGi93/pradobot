@@ -17,7 +17,7 @@ class BorrarTutorias < Accion
 
   def generar_respuesta_mensaje(mensaje)
     @ultimo_mensaje = mensaje
-    respuesta_segun_datos_mensaje(@ultimo_mensaje.datos_mensaje)
+    respuesta_segun_datos_mensaje
   end
   # Envía un mensaje al profesor pidiendo que confirme el borrado de la duda seleccionada 
 
@@ -31,21 +31,23 @@ class BorrarTutorias < Accion
   end
 
   # Realiza una acción según el botón pulsado por el profesor 
-  def respuesta_segun_datos_mensaje(datos_mensaje)
-    case datos_mensaje
-    when /\#\#\$\$Si/
-      profesor=Profesor.new(@ultimo_mensaje.usuario.id_telegram)
-      profesor.borrar_tutoria(@tutoria)
-      menu = MenuInlineTelegram.crear([] << 'Volver')
-      @@bot.api.answer_callback_query(callback_query_id: @ultimo_mensaje.id_callback, text: 'Borrada!')
-      @@bot.api.edit_message_text(chat_id: @ultimo_mensaje.id_chat, message_id: @ultimo_mensaje.id_mensaje, text: "Tutoria #{@tutoria.fecha} borrada.", parse_mode: 'Markdown', reply_markup: menu)
-    when /\#\#\$\$No/
-      puts 'Entro en el no'
-      @selector_tutorias.reiniciar
-      @selector_tutorias.solicitar_seleccion_tutoria 'editar'
-    else
-      confirmar_borrado
+  def respuesta_segun_datos_mensaje()
+    if(@ultimo_mensaje.tipo=='callbackquery')
+
+      case @ultimo_mensaje.datos_mensaje
+        when /\#\#\$\$Si/
+          profesor=Profesor.new(@ultimo_mensaje.usuario.id_telegram)
+          profesor.borrar_tutoria(@tutoria)
+          menu = MenuInlineTelegram.crear([] << 'Volver')
+          @@bot.api.answer_callback_query(callback_query_id: @ultimo_mensaje.id_callback, text: 'Borrada!')
+          @@bot.api.edit_message_text(chat_id: @ultimo_mensaje.id_chat, message_id: @ultimo_mensaje.id_mensaje, text: "Tutoria #{@tutoria.fecha} borrada.", parse_mode: 'Markdown', reply_markup: menu)
+        when /\#\#\$\$No/
+          @selector_tutorias.reiniciar
+          @selector_tutorias.solicitar_seleccion_tutoria 'editar'
+        else
+          confirmar_borrado
       end
+    end
   end
 
   public_class_method :new

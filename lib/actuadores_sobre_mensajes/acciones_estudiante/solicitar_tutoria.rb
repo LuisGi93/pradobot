@@ -66,25 +66,32 @@ class SolicitarTutoria < Accion
   def recibir_mensaje(mensaje)
     @ultimo_mensaje = mensaje
     datos_mensaje = @ultimo_mensaje.datos_mensaje
+    if(@ultimo_mensaje.tipo=='callbackquery')
+
     case datos_mensaje
-    when /\#\#\$\$Tutoria/
-        datos_mensaje.slice! "#\#$$Tutoria"
-        acciones = ['Volver']
-        menu = MenuInlineTelegram.crear(acciones)
-        if solicitar_tutoria @tutorias.at(datos_mensaje.to_i)
-          @@bot.api.answer_callback_query(callback_query_id: @ultimo_mensaje.id_callback, text: 'Recibido')
-          @@bot.api.edit_message_text(chat_id: @ultimo_mensaje.id_chat, message_id: @ultimo_mensaje.id_mensaje, reply_markup: menu, text: "Solicitud para la tutoria #{@tutorias.at(datos_mensaje.to_i).fecha} registrada.", parse_mode: 'Markdown')
-        else
-          @@bot.api.answer_callback_query(callback_query_id: @ultimo_mensaje.id_callback, text: 'No disponible')
-          @@bot.api.edit_message_text(chat_id: @ultimo_mensaje.id_chat, message_id: @ultimo_mensaje.id_mensaje, reply_markup: menu, text: 'La tutoria elegida no está disponible, compruebe si ya ha solicitado para dicha sesión sino vuelva a intentarlo', parse_mode: 'Markdown')
-        end
-    when /\#\#\$\$Volver/
-        mostrar_tutorias('editar_mensaje')
-        @fase = ''
+      when /\#\#\$\$Tutoria/
+          datos_mensaje.slice! "#\#$$Tutoria"
+          acciones = ['Volver']
+          menu = MenuInlineTelegram.crear(acciones)
+          if solicitar_tutoria @tutorias.at(datos_mensaje.to_i)
+            @@bot.api.answer_callback_query(callback_query_id: @ultimo_mensaje.id_callback, text: 'Recibido')
+            @@bot.api.edit_message_text(chat_id: @ultimo_mensaje.id_chat, message_id: @ultimo_mensaje.id_mensaje, reply_markup: menu, text: "Solicitud para la tutoria #{@tutorias.at(datos_mensaje.to_i).fecha} registrada.", parse_mode: 'Markdown')
+          else
+            @@bot.api.answer_callback_query(callback_query_id: @ultimo_mensaje.id_callback, text: 'No disponible')
+            @@bot.api.edit_message_text(chat_id: @ultimo_mensaje.id_chat, message_id: @ultimo_mensaje.id_mensaje, reply_markup: menu, text: 'La tutoria elegida no está disponible, compruebe si ya ha solicitado para dicha sesión sino vuelva a intentarlo', parse_mode: 'Markdown')
+          end
+      when /\#\#\$\$Volver/
+          mostrar_tutorias('editar_mensaje')
+          @fase = ''
       else
-        @profesor_curso = @curso.obtener_profesor_curso
-        @tutorias = @profesor_curso.obtener_tutorias
-        mostrar_tutorias('nuevo_mensaje')
+          @profesor_curso = @curso.obtener_profesor_curso
+          @tutorias = @profesor_curso.obtener_tutorias
+          mostrar_tutorias('nuevo_mensaje')
+      end
+    else
+      @profesor_curso = @curso.obtener_profesor_curso
+      @tutorias = @profesor_curso.obtener_tutorias
+      mostrar_tutorias('nuevo_mensaje')
     end
   end
 

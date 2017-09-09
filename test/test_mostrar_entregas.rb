@@ -117,6 +117,7 @@ describe AccionMostrarEntregas do
     allow(@stub_mensaje).to receive(:datos_mensaje) { 'Ver próximas entregas' }
     @accion.recibir_mensaje(@stub_mensaje)
 
+    allow(@stub_mensaje).to receive(:tipo) { 'callbackquery' }
     allow(@stub_mensaje).to receive(:datos_mensaje) { '##$$Entrega0' }
 
     expect(@stub_entrega2).to receive(:descripcion)
@@ -131,6 +132,7 @@ describe AccionMostrarEntregas do
     allow(@stub_mensaje).to receive(:datos_mensaje) { 'Ver próximas entregas' }
     @accion.recibir_mensaje(@stub_mensaje)
 
+    allow(@stub_mensaje).to receive(:tipo) { 'callbackquery' }
     allow(@stub_mensaje).to receive(:datos_mensaje) { '##$$Entrega0' }
 
 
@@ -143,6 +145,7 @@ describe AccionMostrarEntregas do
     allow(@stub_mensaje).to receive(:datos_mensaje) { 'Ver próximas entregas' }
     @accion.recibir_mensaje(@stub_mensaje)
 
+    allow(@stub_mensaje).to receive(:tipo) { 'callbackquery' }
     allow(@stub_mensaje).to receive(:datos_mensaje) { '##$$Entrega0' }
     @accion.recibir_mensaje(@stub_mensaje)
 

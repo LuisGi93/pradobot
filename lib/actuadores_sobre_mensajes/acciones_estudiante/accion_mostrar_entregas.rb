@@ -92,18 +92,24 @@ class AccionMostrarEntregas < Accion
   #    
   def recibir_mensaje(mensaje)
     @ultimo_mensaje = mensaje
-    datos_mensaje = @ultimo_mensaje.datos_mensaje
-    # puts datos_mensaje
-    case datos_mensaje
-    when /\#\#\$\$Entrega/
-      datos_mensaje.slice! "#\#$$Entrega"
-      datos_mensaje = datos_mensaje.to_i
-      @@bot.api.answer_callback_query(callback_query_id: @ultimo_mensaje.id_callback, text: 'Obteniendo información entrega...')
-      mostrar_informacion_entrega(@entregas.at(datos_mensaje))
-      @fase = 'mostrar_entregas'
-    when /\#\#\$\$Volver/
-      mostrar_entregas('editar_mensaje')
-      @fase = ''
+    if(@ultimo_mensaje.tipo=='callbackquery')
+      datos_mensaje=@ultimo_mensaje.datos_mensaje
+      case @ultimo_mensaje.datos_mensaje
+        when /\#\#\$\$Entrega/
+          datos_mensaje.slice! "#\#$$Entrega"
+          datos_mensaje = datos_mensaje.to_i
+          @@bot.api.answer_callback_query(callback_query_id: @ultimo_mensaje.id_callback, text: 'Obteniendo información entrega...')
+          mostrar_informacion_entrega(@entregas.at(datos_mensaje))
+          @fase = 'mostrar_entregas'
+        when /\#\#\$\$Volver/
+          mostrar_entregas('editar_mensaje')
+          @fase = ''
+        else
+          @fase = ''
+          @entregas = proximas_entregas(@curso.entregas)
+          mostrar_entregas('nuevo_mensaje')
+      end
+
     else
       @fase = ''
       @entregas = proximas_entregas(@curso.entregas)

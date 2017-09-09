@@ -83,8 +83,13 @@ class CrearDuda < Accion
 
     if @fase == 'escribiendo_duda'
       @duda = @ultimo_mensaje.datos_mensaje
+      if @duda.size < 700
       confirmar_denegar_duda
       @fase = 'solicitar_confirmacion'
+      else
+        solicitar_escribir_duda
+      end
+
     elsif @ultimo_mensaje.datos_mensaje =~ /(crear_duda_|descartar_duda_)/
       crear_descartar_duda
       reiniciar

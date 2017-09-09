@@ -52,12 +52,14 @@ class Curso < ConexionBD
   #   # * *Args*    :
   #   - +nombre_chat_telegram+ -> nombre del chat de telegram al cual se va a asociar al curso 
   def asociar_chat(nombre_chat_telegram)
-    chat = @@db[:chat_curso].where(id_moodle_curso: @id_curso)
-    if chat.empty?
-      @@db[:chat_telegram].insert(nombre_chat: nombre_chat_telegram.titleize)
-      @@db[:chat_curso].insert(nombre_chat_telegram: nombre_chat_telegram.titleize, id_moodle_curso: @id_curso)
-    else
-      @@db[:chat_telegram].where(nombre_chat: chat.first[:nombre_chat_telegram]).update(nombre_chat: nombre_chat_telegram.titleize)
+    if nombre_chat_telegram.size < 50 && verificar_entrada_texto(nombre_chat_telegram)
+      chat = @@db[:chat_curso].where(id_moodle_curso: @id_curso)
+        if chat.empty?
+          @@db[:chat_telegram].insert(nombre_chat: nombre_chat_telegram.titleize)
+          @@db[:chat_curso].insert(nombre_chat_telegram: nombre_chat_telegram.titleize, id_moodle_curso: @id_curso)
+        else
+          @@db[:chat_telegram].where(nombre_chat: chat.first[:nombre_chat_telegram]).update(nombre_chat: nombre_chat_telegram.titleize)
+        end
     end
   end  
 
@@ -69,9 +71,7 @@ class Curso < ConexionBD
   def entregas
       # Se refreca cada vez que se consultan las entregas consultando moodle para evitar almacenar para siempre jamas las entregas que se consultaron por primera vez
     @entregas = []
-      puts @id_curso
       datos_curso = @@moodle.api('mod_assign_get_assignments', 'courseids[0]' => @id_curso)
-      puts datos_curso.to_s
       entregas = datos_curso['courses'][0]['assignments']
 
       entregas.each { |entrega|
@@ -91,8 +91,11 @@ class Curso < ConexionBD
   #   - +duda+ -> nueva duda a añadir al curso 
 
   def nueva_duda(duda)
-    @@db[:dudas].insert(id_usuario_duda: duda.usuario.id_telegram, contenido_duda: duda.contenido)
-    @@db[:dudas_curso].insert(id_usuario_duda: duda.usuario.id_telegram, id_moodle_curso: @id_curso, contenido_duda: duda.contenido)
+    if duda.contenido.size < 600 && verificar_entrada_texto(duda.contenido)
+
+      @@db[:dudas].insert(id_usuario_duda: duda.usuario.id_telegram, contenido_duda: duda.contenido)
+      @@db[:dudas_curso].insert(id_usuario_duda: duda.usuario.id_telegram, id_moodle_curso: @id_curso, contenido_duda: duda.contenido)
+    end
   end
 
   #Obtiene las dudas sin resolver que tiene el curso 

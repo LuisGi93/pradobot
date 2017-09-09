@@ -171,13 +171,18 @@ class ListarDudas < Accion
   #   - +contenido_respuesta+ -> contenido de la respuesta  #   
   #
   def nueva_respuesta_duda(contenido_respuesta)
+    acciones = ['Volver']
+    menu = MenuInlineTelegram.crear(acciones)
+
+    if contenido_respuesta < 700
     usuario = UsuarioRegistrado.new(@ultimo_mensaje.usuario.id_telegram)
     respuesta = Respuesta.new(contenido_respuesta, usuario, @dudas.at(@indice_duda_seleccionada))
     @dudas.at(@indice_duda_seleccionada).nueva_respuesta(respuesta)
-    acciones = ['Volver']
-    menu = MenuInlineTelegram.crear(acciones)
     @fase = 'opciones_sobre_duda'
     @id_ultimo_mensaje_respuesta = @@bot.api.send_message(chat_id: @ultimo_mensaje.usuario.id_telegram, text: "Respuesta *#{contenido_respuesta}* guardada correctamente.", reply_markup: menu, parse_mode: 'Markdown')['result']['message_id']
+    else
+      @id_ultimo_mensaje_respuesta = @@bot.api.send_message(chat_id: @ultimo_mensaje.usuario.id_telegram, text: "Respuesta demasiado larga.", reply_markup: menu, parse_mode: 'Markdown')['result']['message_id']
+    end
   end
 
   #  
