@@ -89,4 +89,5 @@ describe Peticion do
     expect(@peticion <=> Peticion.new(Tutoria.new(Profesor.new(3333), '2020-07-02 18:39:08'), Estudiante.new(1111))).to be 0
     expect(@peticion <=> Peticion.new(Tutoria.new(Profesor.new(3333), '2020-07-02 18:39:08'), Estudiante.new(4444))).to be 1
   end
+
 end

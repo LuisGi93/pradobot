@@ -214,4 +214,9 @@ describe VerInformacionTutorias do
 
     @accion.recibir_mensaje(@stub_mensaje)
   end
+
+  after(:all)do
+  @db.disconnect
+
+    end
 end

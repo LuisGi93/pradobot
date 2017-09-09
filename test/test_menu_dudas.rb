@@ -9,6 +9,7 @@ describe MenuDudas do
 
     @db[:dudas].insert(id_usuario_duda: 1111, contenido_duda: 'contenido duda 1')
     @db[:dudas].insert(id_usuario_duda: 1111, contenido_duda: 'contenido duda 7')
+    @db.disconnect
 
   end
 

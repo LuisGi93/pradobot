@@ -23,6 +23,7 @@ describe Menu do
     @db[:profesor_curso].insert(id_profesor: 2222, id_moodle_curso: 9)
 
 
+    @db.disconnect
 
   end
 
@@ -114,6 +115,7 @@ describe Menu do
     @db = Sequel.connect(ENV['URL_DATABASE_TRAVIS'])
     @db[:curso].delete
     @db[:usuario_telegram].delete
+    @db.disconnect
   end
 
 
