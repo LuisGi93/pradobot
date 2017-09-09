@@ -1,5 +1,5 @@
 # Pradobot
-[![Build Status](https://travis-ci.org/LuisGi93/pradobot.svg?branch=desarrollo)](https://travis-ci.org/LuisGi93/pradobot)
+[![Build Status](https://travis-ci.org/LuisGi93/pradobot.svg?branch=master)](https://travis-ci.org/LuisGi93/pradobot)
 
 ## Proyecto fin de carrera del Grado en Ingeniería Informática de la Universidad de Granada
 
