@@ -34,6 +34,7 @@ describe SolicitarTutoria do
     @db[:peticion_tutoria].insert(id_profesor: 3333, id_estudiante: 1111, hora_solicitud: '2020-07-05 12:39:08', dia_semana_hora: '2020-02-02 18:39:08')
     @db[:peticion_tutoria].insert(id_profesor: 3333, id_estudiante: 1111, hora_solicitud: '2020-07-05 13:39:08', dia_semana_hora: '2020-02-05 18:39:08')
 
+    @db.disconnect
 
 
   }
