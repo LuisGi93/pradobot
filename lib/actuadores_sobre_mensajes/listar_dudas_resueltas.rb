@@ -23,7 +23,7 @@ class ListarDudasResueltas < ListarDudas
 
   def mostrar_acciones(_datos_mensaje)
     solucion_duda = @dudas[@indice_duda_seleccionada].solucion
-    creador_o_profesor = @curso.obtener_profesor_curso.id_telegram == @ultimo_mensaje.usuario.id_telegram || @dudas[@indice_duda_seleccionada].usuario.id_telegram
+    creador_o_profesor = @curso.obtener_profesor_curso.id_telegram == @ultimo_mensaje.usuario.id_telegram || @dudas[@indice_duda_seleccionada].usuario.id_telegram == @ultimo_mensaje.usuario.id_telegram
     if creador_o_profesor && solucion_duda
       @acciones = ['Solución duda', 'Todas respuestas', 'Borrar duda', 'Volver']
     else

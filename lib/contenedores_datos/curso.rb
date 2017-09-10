@@ -70,12 +70,11 @@ class Curso < ConexionBD
   
   def entregas
       # Se refreca cada vez que se consultan las entregas consultando moodle para evitar almacenar para siempre jamas las entregas que se consultaron por primera vez
-    @entregas = []
+      @entregas = []
       datos_curso = @@moodle.api('mod_assign_get_assignments', 'courseids[0]' => @id_curso)
       entregas = datos_curso['courses'][0]['assignments']
 
       entregas.each { |entrega|
-        fecha_convertida = Time.at(entrega['duedate'].to_i).to_datetime
         fecha_convertida = Time.at(entrega['duedate'].to_i).strftime('%Y-%m-%d %H:%M:%S')
         @entregas << Entrega.new(entrega['id'], fecha_convertida, entrega['name'])
         if entrega['intro']

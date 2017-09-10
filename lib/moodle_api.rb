@@ -1,12 +1,20 @@
 require 'json'
 require 'typhoeus'
 
+# Clase encargada de utilizar la API de Moodle
+#
 class Moodle
   def initialize(user_token)
     @user_token = user_token
     @moodle_url = 'https://' + ENV['MOODLE_HOST'] + '/webservice/rest/server.php'
-  end 
+  end
 
+  # Realiza las peticiones a la API REST de Moodle
+  #    * *Args*    :
+  #   - +function+ -> función de la API de Moodle
+  #   - +params+ -> parámetros utilizados por la API de moodle
+  # * *Returns* :
+  #   - Datos en formato JSON devueltos por la llamada a la API
   def api(function, params = nil)
     if params
       request = Typhoeus::Request.new(
@@ -28,6 +36,13 @@ class Moodle
     JSON.parse(salida.body)
   end
 
+  # Llama a la función de Moodle encargada de obtener la token para un usuario
+  #    * *Args*    :
+  #   - +_username+ -> email del usuario o bien su nombre de usuario
+  #   - +_password+ -> contraseña del usuario
+  #   - +_service+ -> nombre del webservice de Moodle para el cual quiere obtener la token
+  # * *Returns* :
+  #   - String que contiene la token del usuario
   def self.obtener_token(_username, _password, _service)
 
     request = Typhoeus::Request.new(
@@ -37,10 +52,14 @@ class Moodle
      ssl_verifyhost: 0
 )
     salida = request.run
-    puts salida.body
     JSON.parse(salida.body)
   end
 
+  # Obtiene las entregas asociadas a un curso en Moodle
+  #    * *Args*    :
+  #   - +curso+ -> curso para el cual se quieren obtener sus entregas
+  # * *Returns* :
+  #   - Array de Entregas del curso.
   def obtener_entregas_curso(curso)
     # Daria la fecha incorrecta si el servidor de moodle y el local tienen una hora diferentes
     datos_curso = api('mod_assign_get_assignments', 'courseids[0]' => curso.id_curso)
@@ -61,6 +80,11 @@ class Moodle
     curso
   end
 
+  # Obtiene los cursos de Moodle a los cuales está autorizado a acceder el usuario.
+  #    * *Args*    :
+  #   - +id_moodle_usuario+ -> identificador del usuario en Moodle
+  # * *Returns* :
+  #   - Array que contiene los Cursos a los cuales puede acceder el usuario utilizando el bot
   def obtener_cursos_usuario(id_moodle_usuario)
     cursos_usuario = []
         params = { 'userid' => id_moodle_usuario }
@@ -71,6 +95,11 @@ class Moodle
         cursos_usuario
   end
 
+  # Obtiene el identificador de Moodle para un usuario.
+  #    * *Args*    :
+  #   - +email+ -> email del usuario para el cual se desea obtener su identificador de Moodle
+  # * *Returns* :
+  #   - Integer que contiene el id de Moodle para el usuario identificado por email
   def obtener_identificador_moodle(email)
     params = { 'field' => 'email', 'values[0]' => email }
     usuario = api('core_user_get_users_by_field ', params)
@@ -80,6 +109,13 @@ class Moodle
 
     id_usuario_moodle
   end
+
+  # Obtiene una entrega de un curso de Moodle
+  #    * *Args*    :
+  #   - +entrega+ -> Entrega que se desea obtener del curso
+  #   - +curso+ -> Curso del cual se desea obtener la entrega
+  # * *Returns* :
+  #   - Entrega con los datos rellenos
   def obtener_entrega(entrega, curso)
     curso = obtener_entregas_curso(curso)
     index = 0
