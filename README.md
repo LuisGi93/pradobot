@@ -15,3 +15,5 @@ El bot para funcionar necesita de las siguientes variables de entorno:
 * URL_DATABASE_PRUEBA=Si se quieren ejecutar los tests
 
 Próximamente se añadirá las intrucciones para  configurar de Moodle de tal forma que el bot para funcionar.
+
+La memoria asociada a este proyecto se puede encontrar en https://github.com/LuisGi93/Memoria-TFG y puede ser [descargada](https://github.com/LuisGi93/Memoria-TFG/releases/download/1/proyecto.pdf).
